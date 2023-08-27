@@ -459,7 +459,7 @@ constexpr std::pair<std::string_view, std::string_view> FrontChar(
     return {};
   }
   const uint8_t len = OneCharLen(s.front());
-  return {absl::ClippedSubstr(s, 0, len), absl::ClippedSubstr(s, len)};
+  return {s.substr(0, len), s.substr(len, s.npos)};
 }
 
 }  // namespace strings
