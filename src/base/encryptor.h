@@ -35,7 +35,7 @@
 #include <cstdint>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -51,17 +51,17 @@ class Encryptor {
     // You can also set an initialization vector whose
     // size must be iv_size().
     // if iv is nullptr, default iv is used.
-    bool DeriveFromPassword(absl::string_view password, absl::string_view salt,
+    bool DeriveFromPassword(std::string_view password, std::string_view salt,
                             const uint8_t *iv);
 
     // use default iv.
-    bool DeriveFromPassword(const absl::string_view password,
-                            const absl::string_view salt) {
+    bool DeriveFromPassword(const std::string_view password,
+                            const std::string_view salt) {
       return DeriveFromPassword(password, salt, nullptr);
     }
 
     // use empty salt and default iv
-    bool DeriveFromPassword(const absl::string_view password) {
+    bool DeriveFromPassword(const std::string_view password) {
       return DeriveFromPassword(password, "", nullptr);
     }
 
@@ -121,12 +121,12 @@ class Encryptor {
   // http://msdn.microsoft.com/en-us/library/aa380261.aspx
   // Basically, it uses a OS-specific encrpytor object to
   // encrypt/decrypt data
-  static bool ProtectData(absl::string_view plain_text,
+  static bool ProtectData(std::string_view plain_text,
                           std::string *cipher_text);
 
   // Decrpyt string to unprotect cipher_text.
   // It uses CryptUnprotectData API to decrypt data on Windows.
-  static bool UnprotectData(absl::string_view cipher_text,
+  static bool UnprotectData(std::string_view cipher_text,
                             std::string *plain_text);
 };
 }  // namespace mozc

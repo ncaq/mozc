@@ -32,7 +32,7 @@
 
 #include "engine/user_data_manager_interface.h"
 #include "testing/gmock.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -47,7 +47,7 @@ class MockUserDataManager : public UserDataManagerInterface {
   MOCK_METHOD(bool, ClearUserPrediction, (), (override));
   MOCK_METHOD(bool, ClearUnusedUserPrediction, (), (override));
   MOCK_METHOD(bool, ClearUserPredictionEntry,
-              (absl::string_view key, absl::string_view value), (override));
+              (std::string_view key, std::string_view value), (override));
   MOCK_METHOD(bool, Wait, (), (override));
 };
 

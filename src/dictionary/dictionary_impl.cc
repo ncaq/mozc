@@ -40,7 +40,7 @@
 #include "dictionary/pos_matcher.h"
 #include "dictionary/suppression_dictionary.h"
 #include "protocol/config.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -68,7 +68,7 @@ DictionaryImpl::DictionaryImpl(
 
 DictionaryImpl::~DictionaryImpl() { dics_.clear(); }
 
-bool DictionaryImpl::HasKey(absl::string_view key) const {
+bool DictionaryImpl::HasKey(std::string_view key) const {
   for (size_t i = 0; i < dics_.size(); ++i) {
     if (dics_[i]->HasKey(key)) {
       return true;
@@ -77,7 +77,7 @@ bool DictionaryImpl::HasKey(absl::string_view key) const {
   return false;
 }
 
-bool DictionaryImpl::HasValue(absl::string_view value) const {
+bool DictionaryImpl::HasValue(std::string_view value) const {
   for (size_t i = 0; i < dics_.size(); ++i) {
     if (dics_[i]->HasValue(value)) {
       return true;
@@ -103,16 +103,16 @@ class CallbackWithFilter : public DictionaryInterface::Callback {
         suppression_dictionary_(suppression_dictionary),
         callback_(callback) {}
 
-  ResultType OnKey(absl::string_view key) override {
+  ResultType OnKey(std::string_view key) override {
     return callback_->OnKey(key);
   }
 
-  ResultType OnActualKey(absl::string_view key, absl::string_view actual_key,
+  ResultType OnActualKey(std::string_view key, std::string_view actual_key,
                          int num_expanded) override {
     return callback_->OnActualKey(key, actual_key, num_expanded);
   }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     if (!(token.attributes & Token::USER_DICTIONARY)) {
       if (!use_spelling_correction_ &&
@@ -145,7 +145,7 @@ class CallbackWithFilter : public DictionaryInterface::Callback {
 }  // namespace
 
 void DictionaryImpl::LookupPredictive(
-    absl::string_view key, const ConversionRequest &conversion_request,
+    std::string_view key, const ConversionRequest &conversion_request,
     Callback *callback) const {
   CallbackWithFilter callback_with_filter(
       conversion_request.config().use_spelling_correction(),
@@ -157,7 +157,7 @@ void DictionaryImpl::LookupPredictive(
   }
 }
 
-void DictionaryImpl::LookupPrefix(absl::string_view key,
+void DictionaryImpl::LookupPrefix(std::string_view key,
                                   const ConversionRequest &conversion_request,
                                   Callback *callback) const {
   CallbackWithFilter callback_with_filter(
@@ -170,7 +170,7 @@ void DictionaryImpl::LookupPrefix(absl::string_view key,
   }
 }
 
-void DictionaryImpl::LookupExact(absl::string_view key,
+void DictionaryImpl::LookupExact(std::string_view key,
                                  const ConversionRequest &conversion_request,
                                  Callback *callback) const {
   CallbackWithFilter callback_with_filter(
@@ -183,7 +183,7 @@ void DictionaryImpl::LookupExact(absl::string_view key,
   }
 }
 
-void DictionaryImpl::LookupReverse(absl::string_view str,
+void DictionaryImpl::LookupReverse(std::string_view str,
                                    const ConversionRequest &conversion_request,
                                    Callback *callback) const {
   CallbackWithFilter callback_with_filter(
@@ -196,8 +196,8 @@ void DictionaryImpl::LookupReverse(absl::string_view str,
   }
 }
 
-bool DictionaryImpl::LookupComment(absl::string_view key,
-                                   absl::string_view value,
+bool DictionaryImpl::LookupComment(std::string_view key,
+                                   std::string_view value,
                                    const ConversionRequest &conversion_request,
                                    std::string *comment) const {
   // TODO(komatsu): UserDictionary should be treated as the highest priority.
@@ -213,7 +213,7 @@ bool DictionaryImpl::LookupComment(absl::string_view key,
 
 bool DictionaryImpl::Reload() { return user_dictionary_->Reload(); }
 
-void DictionaryImpl::PopulateReverseLookupCache(absl::string_view str) const {
+void DictionaryImpl::PopulateReverseLookupCache(std::string_view str) const {
   for (size_t i = 0; i < dics_.size(); ++i) {
     dics_[i]->PopulateReverseLookupCache(str);
   }

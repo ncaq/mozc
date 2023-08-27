@@ -34,7 +34,7 @@
 
 #include "protocol/commands.pb.h"
 #include "session/session_observer_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -57,7 +57,7 @@ class SessionHandlerInterface {
 
   virtual void AddObserver(session::SessionObserverInterface *observer) = 0;
 
-  virtual absl::string_view GetDataVersion() const = 0;
+  virtual std::string_view GetDataVersion() const = 0;
 };
 
 }  // namespace mozc

@@ -42,7 +42,7 @@
 #include "protocol/user_dictionary_storage.pb.h"
 #include "request/conversion_request.h"
 #include "absl/base/thread_annotations.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -59,28 +59,28 @@ class UserDictionary : public DictionaryInterface {
 
   ~UserDictionary() override;
 
-  bool HasKey(absl::string_view key) const override;
-  bool HasValue(absl::string_view value) const override;
+  bool HasKey(std::string_view key) const override;
+  bool HasValue(std::string_view value) const override;
 
   // Lookup methods don't support kana modifier insensitive lookup, i.e.,
   // Callback::OnActualKey() is never called.
-  void LookupPredictive(absl::string_view key,
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override;
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override;
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override;
-  void LookupReverse(absl::string_view key,
+  void LookupReverse(std::string_view key,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override;
 
   // Looks up a user comment from a pair of key and value.  When (key, value)
   // doesn't exist in this dictionary or user comment is empty, bool is
   // returned and string is kept as-is.
-  bool LookupComment(absl::string_view key, absl::string_view value,
+  bool LookupComment(std::string_view key, std::string_view value,
                      const ConversionRequest &conversion_request,
                      std::string *comment) const override;
 
@@ -98,7 +98,7 @@ class UserDictionary : public DictionaryInterface {
   std::vector<std::string> GetPosList() const;
 
   // Sets user dicitonary filename for unittesting
-  static void SetUserDictionaryName(absl::string_view filename);
+  static void SetUserDictionaryName(std::string_view filename);
 
   enum RequestType { PREFIX, PREDICTIVE, EXACT };
 

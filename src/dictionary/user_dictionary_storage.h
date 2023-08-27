@@ -67,7 +67,7 @@
 
 #include "protocol/user_dictionary_storage.pb.h"
 #include "absl/status/status.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -132,13 +132,13 @@ class UserDictionaryStorage {
   // Create a new dictionary with a specified name. Returns the id of
   // the new instance via new_dic_id.
 
-  bool CreateDictionary(absl::string_view dic_name, uint64_t *new_dic_id);
+  bool CreateDictionary(std::string_view dic_name, uint64_t *new_dic_id);
 
   // Delete a dictionary.
   bool DeleteDictionary(uint64_t dic_id);
 
   // Rename a dictionary.
-  bool RenameDictionary(uint64_t dic_id, absl::string_view dic_name);
+  bool RenameDictionary(uint64_t dic_id, std::string_view dic_name);
 
   // return the index of "dic_id"
   // return -1 if no dictionary is found.
@@ -150,7 +150,7 @@ class UserDictionaryStorage {
   // Searches a dictionary from a dictionary name, and the dictionary id is
   // stored in "dic_id".
   // Returns false if the name is not found.
-  bool GetUserDictionaryId(absl::string_view dic_name, uint64_t *dic_id);
+  bool GetUserDictionaryId(std::string_view dic_name, uint64_t *dic_id);
 
   // return last error type.
   // You can obtain the reason of the error of dictionary operation.
@@ -191,7 +191,7 @@ class UserDictionaryStorage {
  private:
   // Return true if this object can accept the given dictionary name.
   // This changes the internal state.
-  bool IsValidDictionaryName(absl::string_view name);
+  bool IsValidDictionaryName(std::string_view name);
 
   // Load the data from file_name actually.
   absl::Status LoadInternal();

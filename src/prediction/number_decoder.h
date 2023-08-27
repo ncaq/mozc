@@ -41,7 +41,7 @@
 
 #include "base/container/trie.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -66,7 +66,7 @@ struct Entry {
   Type type = Type::STOP_DECODING;
   int number = 0;
   int digit = 1;
-  absl::string_view digit_str;
+  std::string_view digit_str;
   // Output the current status before decoding the input with the entry.
   bool output_before_decode = false;
   // For UNIT_AND_BIG_DIGIT and UNIT_AND_STOP_DECODING.
@@ -109,11 +109,11 @@ struct State {
   size_t consumed_key_byte_len = 0;
 
   // Key to decode
-  absl::string_view key;
+  std::string_view key;
 
   // Consumed keys
   // ["に", "じゅう"] for "にじゅう": "20"
-  std::vector<absl::string_view> consumed_keys;
+  std::vector<std::string_view> consumed_keys;
 };
 
 }  // namespace number_decoder_internal
@@ -150,20 +150,20 @@ class NumberDecoder {
   NumberDecoder(NumberDecoder &&) = default;
   NumberDecoder &operator=(NumberDecoder &&) = default;
 
-  std::vector<Result> Decode(absl::string_view key) const;
+  std::vector<Result> Decode(std::string_view key) const;
 
  private:
-  void DecodeAux(absl::string_view key, number_decoder_internal::State &state,
+  void DecodeAux(std::string_view key, number_decoder_internal::State &state,
                  std::vector<Result> &results) const;
-  bool HandleUnitEntry(absl::string_view key,
+  bool HandleUnitEntry(std::string_view key,
                        const number_decoder_internal::Entry &entry,
                        number_decoder_internal::State &state,
                        std::vector<Result> &results) const;
-  bool HandleSmallDigitEntry(absl::string_view key,
+  bool HandleSmallDigitEntry(std::string_view key,
                              const number_decoder_internal::Entry &entry,
                              number_decoder_internal::State &state,
                              std::vector<Result> &results) const;
-  bool HandleBigDigitEntry(absl::string_view key,
+  bool HandleBigDigitEntry(std::string_view key,
                            const number_decoder_internal::Entry &entry,
                            number_decoder_internal::State &state,
                            std::vector<Result> &results) const;

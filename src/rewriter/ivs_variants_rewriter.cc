@@ -36,19 +36,19 @@
 #include "converter/segments.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
 struct ExpansionValue {
-  absl::string_view ivs_surface;
-  absl::string_view additional_description;
+  std::string_view ivs_surface;
+  std::string_view additional_description;
 };
 
 // {"reading", "base surface"}, {"IVS surface", "additional description"}},
 const auto *kIvsExpansionTable = new absl::flat_hash_map<
-    std::pair<absl::string_view, absl::string_view>, ExpansionValue>{
+    std::pair<std::string_view, std::string_view>, ExpansionValue>{
     {{"かつらぎし", "葛城市"}, {"葛\U000E0100城市", "正式字体"}},  // 葛󠄀城市
     {{"ぎおん", "祇園"}, {"祇\U000E0100園", "礻"}},                // 祇󠄀園
     {{"つじのぞみ", "辻希美"}, {"辻\U000E0100希美", "「辻󠄀」"}},  // 辻󠄀希美
@@ -142,8 +142,8 @@ bool ExpandIvsVariantsWithSegment(Segment *seg) {
     auto new_candidate =
         std::make_unique<Segment::Candidate>(original_candidate);
     // "は" for "葛城市は"
-    const absl::string_view non_content_value =
-        absl::string_view(original_candidate.value)
+    const std::string_view non_content_value =
+        std::string_view(original_candidate.value)
             .substr(original_candidate.content_value.size());
     new_candidate->value = absl::StrCat(value.ivs_surface, non_content_value);
     new_candidate->content_value.assign(value.ivs_surface.data(),

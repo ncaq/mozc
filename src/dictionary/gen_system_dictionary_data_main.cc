@@ -53,7 +53,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(std::string, input, "", "space separated input text files");
 ABSL_FLAG(std::string, user_pos_manager_data, "", "user pos manager data");
@@ -69,18 +69,18 @@ namespace {
 // flags for dictionary and reading correction, but due to the limitation
 // of internal build system, it turned out that the description of the rules
 // will become much complicated, if we use two flags.
-constexpr absl::string_view kReadingCorrectionFile = "reading_correction.tsv";
+constexpr std::string_view kReadingCorrectionFile = "reading_correction.tsv";
 
 // Converts space delimited text to CSV and returns {system_dictionary_input,
 // reading_correction_input}.
 std::pair<std::string, std::string> GetInputFileName(
-    const absl::string_view input_file) {
-  constexpr absl::string_view kDelimiter = ",";
-  const std::vector<absl::string_view> fields =
+    const std::string_view input_file) {
+  constexpr std::string_view kDelimiter = ",";
+  const std::vector<std::string_view> fields =
       absl::StrSplit(input_file, ' ', absl::SkipWhitespace());
-  std::vector<absl::string_view> system_dictionary_inputs,
+  std::vector<std::string_view> system_dictionary_inputs,
       reading_correction_inputs;
-  for (const absl::string_view &field : fields) {
+  for (const std::string_view &field : fields) {
     if (absl::EndsWith(field, kReadingCorrectionFile)) {
       reading_correction_inputs.push_back(field);
     } else {

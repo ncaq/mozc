@@ -37,7 +37,7 @@
 #include "base/run_level.h"
 #include "base/util.h"
 #include "protocol/renderer_command.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 #include "renderer/win32/window_manager.h"
 
@@ -131,7 +131,7 @@ void Win32Server::SetSendCommandInterface(
   window_manager_->SetSendCommandInterface(send_command_interface);
 }
 
-bool Win32Server::AsyncExecCommand(absl::string_view proto_message) {
+bool Win32Server::AsyncExecCommand(std::string_view proto_message) {
   // Take the ownership of |proto_message|.
   absl::MutexLock l(&mutex_);
   if (message_ == proto_message) {

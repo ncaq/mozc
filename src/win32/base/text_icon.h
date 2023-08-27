@@ -33,7 +33,7 @@
 #include <stddef.h>
 #include <windows.h>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace win32 {
@@ -50,8 +50,8 @@ class TextIcon {
   // GDI handle leak when ITfLangBarItemButton::GetIcon returns an icon which
   // consists only of mask bitmap (AND bitmap).
   static HICON CreateMonochromeIcon(size_t width, size_t height,
-                                    absl::string_view text,
-                                    absl::string_view fontname,
+                                    std::string_view text,
+                                    std::string_view fontname,
                                     COLORREF text_color);
 };
 

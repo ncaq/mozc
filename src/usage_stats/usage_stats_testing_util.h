@@ -35,36 +35,36 @@
 
 #include "config/stats_config_util_mock.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace usage_stats {
 namespace internal {
-::testing::AssertionResult ExpectStatsExist(absl::string_view name_string,
-                                            absl::string_view param_string,
-                                            absl::string_view name,
+::testing::AssertionResult ExpectStatsExist(std::string_view name_string,
+                                            std::string_view param_string,
+                                            std::string_view name,
                                             bool expected);
 
-::testing::AssertionResult ExpectCountStats(absl::string_view name_string,
-                                            absl::string_view expected_string,
-                                            absl::string_view name,
+::testing::AssertionResult ExpectCountStats(std::string_view name_string,
+                                            std::string_view expected_string,
+                                            std::string_view name,
                                             uint32_t expected);
 
-::testing::AssertionResult ExpectIntegerStats(absl::string_view name_string,
-                                              absl::string_view expected_string,
-                                              absl::string_view name,
+::testing::AssertionResult ExpectIntegerStats(std::string_view name_string,
+                                              std::string_view expected_string,
+                                              std::string_view name,
                                               int32_t expected);
 
-::testing::AssertionResult ExpectBooleanStats(absl::string_view name_string,
-                                              absl::string_view expected_string,
-                                              absl::string_view name,
+::testing::AssertionResult ExpectBooleanStats(std::string_view name_string,
+                                              std::string_view expected_string,
+                                              std::string_view name,
                                               bool expected);
 
 ::testing::AssertionResult ExpectTimingStats(
-    absl::string_view name_string, absl::string_view expected_total_string,
-    absl::string_view expected_num_string,
-    absl::string_view expected_min_string,
-    absl::string_view expected_max_string, absl::string_view name,
+    std::string_view name_string, std::string_view expected_total_string,
+    std::string_view expected_num_string,
+    std::string_view expected_min_string,
+    std::string_view expected_max_string, std::string_view name,
     uint64_t expected_total, uint32_t expected_num, uint32_t expected_min,
     uint32_t expected_max);
 }  // namespace internal

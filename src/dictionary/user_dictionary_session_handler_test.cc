@@ -43,7 +43,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "testing/testing_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -109,7 +109,7 @@ class UserDictionarySessionHandlerTest
   }
 
   uint64_t CreateUserDictionary(const uint64_t session_id,
-                                const absl::string_view name) {
+                                const std::string_view name) {
     Clear();
     command_->set_type(UserDictionaryCommand::CREATE_DICTIONARY);
     command_->set_session_id(session_id);
@@ -123,10 +123,10 @@ class UserDictionarySessionHandlerTest
 
   void AddUserDictionaryEntry(const uint64_t session_id,
                               const uint64_t dictionary_id,
-                              const absl::string_view key,
-                              const absl::string_view value,
+                              const std::string_view key,
+                              const std::string_view value,
                               const UserDictionary::PosType pos,
-                              const absl::string_view comment) {
+                              const std::string_view comment) {
     Clear();
     command_->set_type(UserDictionaryCommand::ADD_ENTRY);
     command_->set_session_id(session_id);

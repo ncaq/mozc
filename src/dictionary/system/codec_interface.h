@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -65,22 +65,22 @@ class SystemDictionaryCodecInterface {
   virtual std::string GetSectionNameForPos() const = 0;
 
   // Encode value(word) string
-  virtual void EncodeValue(absl::string_view src, std::string *dst) const = 0;
+  virtual void EncodeValue(std::string_view src, std::string *dst) const = 0;
 
   // Decode value(word) string
-  virtual void DecodeValue(absl::string_view src, std::string *dst) const = 0;
+  virtual void DecodeValue(std::string_view src, std::string *dst) const = 0;
 
   // Encode key(reading) string
-  virtual void EncodeKey(absl::string_view src, std::string *dst) const = 0;
+  virtual void EncodeKey(std::string_view src, std::string *dst) const = 0;
 
   // Decode key(reading) string
-  virtual void DecodeKey(absl::string_view src, std::string *dst) const = 0;
+  virtual void DecodeKey(std::string_view src, std::string *dst) const = 0;
 
   // Returns the length of encoded key string.
-  virtual size_t GetEncodedKeyLength(absl::string_view src) const = 0;
+  virtual size_t GetEncodedKeyLength(std::string_view src) const = 0;
 
   // Returns the length of decoded key string.
-  virtual size_t GetDecodedKeyLength(absl::string_view src) const = 0;
+  virtual size_t GetDecodedKeyLength(std::string_view src) const = 0;
 
   // Encode tokens(word info) for a certain key
   virtual void EncodeTokens(const std::vector<TokenInfo> &tokens,

@@ -45,7 +45,7 @@
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
 #include "rewriter/rewriter_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 using mozc::dictionary::PosMatcher;
 
@@ -228,8 +228,8 @@ bool SingleKanjiRewriter::InsertCandidate(
   return true;
 }
 
-void SingleKanjiRewriter::FillCandidate(const absl::string_view key,
-                                        const absl::string_view value,
+void SingleKanjiRewriter::FillCandidate(const std::string_view key,
+                                        const std::string_view value,
                                         const int cost,
                                         const uint16_t single_kanji_id,
                                         Segment::Candidate *cand) const {

@@ -36,7 +36,7 @@
 
 #include "base/container/serialized_string_array.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -75,14 +75,14 @@ const char *kTestStrings[] = {
 // Initializes a ZeroQueryDict from the above test data.  Note that the returned
 // buffer contains the internal data used by |dict|, so it must outlive |dict|.
 std::unique_ptr<uint32_t[]> InitTestZeroQueryDict(ZeroQueryDict *dict) {
-  // kTestTokenArray contains a trailing '\0', so create a absl::string_view
+  // kTestTokenArray contains a trailing '\0', so create a std::string_view
   // that excludes it by subtracting 1.
-  const absl::string_view token_array_data(kTestTokenArray,
+  const std::string_view token_array_data(kTestTokenArray,
                                            std::size(kTestTokenArray) - 1);
-  std::vector<absl::string_view> strs(std::begin(kTestStrings),
+  std::vector<std::string_view> strs(std::begin(kTestStrings),
                                       std::end(kTestStrings));
   std::unique_ptr<uint32_t[]> string_data_buffer;
-  const absl::string_view string_array_data =
+  const std::string_view string_array_data =
       SerializedStringArray::SerializeToBuffer(strs, &string_data_buffer);
   dict->Init(token_array_data, string_array_data);
   return string_data_buffer;

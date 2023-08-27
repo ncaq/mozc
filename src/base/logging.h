@@ -39,7 +39,7 @@
 
 #include "absl/flags/declare.h"
 #include "absl/flags/flag.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_DECLARE_FLAG(bool, logtostderr);
 
@@ -154,8 +154,8 @@ class WorkingLogStream {
   // Sink methods.
   // https://github.com/abseil/abseil-cpp/blob/master/absl/strings/internal/stringify_sink.h
   void Append(size_t count, char ch);
-  void Append(absl::string_view v);
-  friend void AbslFormatFlush(WorkingLogStream *sink, absl::string_view v) {
+  void Append(std::string_view v);
+  friend void AbslFormatFlush(WorkingLogStream *sink, std::string_view v) {
     sink->Append(v);
   }
 

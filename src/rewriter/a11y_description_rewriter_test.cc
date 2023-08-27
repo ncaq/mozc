@@ -36,12 +36,12 @@
 #include "data_manager/testing/mock_data_manager.h"
 #include "protocol/commands.pb.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddCandidateWithValue(const absl::string_view value, Segment *segment) {
+void AddCandidateWithValue(const std::string_view value, Segment *segment) {
   Segment::Candidate *candidate = segment->add_candidate();
   candidate->key = segment->key();
   candidate->content_key = segment->key();

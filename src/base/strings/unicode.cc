@@ -33,12 +33,12 @@
 #include <string_view>
 
 #include "base/strings/internal/utf8_internal.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace strings {
 
-bool IsValidUtf8(const absl::string_view sv) {
+bool IsValidUtf8(const std::string_view sv) {
   const char *const last = sv.data() + sv.size();
   for (const char *ptr = sv.data(); ptr != last;) {
     const utf8_internal::DecodeResult dr = utf8_internal::Decode(ptr, last);
@@ -50,7 +50,7 @@ bool IsValidUtf8(const absl::string_view sv) {
   return true;
 }
 
-std::u32string Utf8ToUtf32(const absl::string_view sv) {
+std::u32string Utf8ToUtf32(const std::string_view sv) {
   const Utf8AsChars32 c32s{sv};
   // Most strings in Mozc are fairly short, so it's faster to depend on
   // automatic growth rather than calling reserve(CharsLen()).
@@ -66,7 +66,7 @@ std::string Utf32ToUtf8(const std::u32string_view sv) {
   return result;
 }
 
-absl::string_view Utf8Substring(absl::string_view sv, size_t pos) {
+std::string_view Utf8Substring(std::string_view sv, size_t pos) {
   while (pos > 0) {
     sv.remove_prefix(OneCharLen(sv.front()));
     --pos;
@@ -74,7 +74,7 @@ absl::string_view Utf8Substring(absl::string_view sv, size_t pos) {
   return sv;
 }
 
-absl::string_view Utf8Substring(absl::string_view sv, const size_t pos,
+std::string_view Utf8Substring(std::string_view sv, const size_t pos,
                                 size_t count) {
   sv = Utf8Substring(sv, pos);
   size_t i = 0;

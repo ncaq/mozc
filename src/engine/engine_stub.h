@@ -39,7 +39,7 @@
 #include "engine/engine_interface.h"
 #include "engine/user_data_manager_interface.h"
 #include "prediction/predictor_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -55,8 +55,8 @@ class EngineStub : public EngineInterface {
   bool Reload() override { return true; }
   bool ReloadAndWait() override { return true; }
   UserDataManagerInterface *GetUserDataManager() override { return nullptr; }
-  absl::string_view GetDataVersion() const override {
-    return absl::string_view();
+  std::string_view GetDataVersion() const override {
+    return std::string_view();
   }
   const DataManagerInterface *GetDataManager() const override {
     return nullptr;

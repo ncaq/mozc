@@ -34,12 +34,12 @@
 #include "converter/segments.h"
 #include "testing/gunit.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddCandidate(const absl::string_view key, const absl::string_view value,
+void AddCandidate(const std::string_view key, const std::string_view value,
                   Segment *segment) {
   Segment::Candidate *candidate = segment->push_back_candidate();
   candidate->key = std::string(key);

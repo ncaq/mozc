@@ -37,7 +37,7 @@
 
 #include "dictionary/file/section.h"
 #include "absl/status/status.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -54,7 +54,7 @@ class DictionaryFileCodecInterface {
       std::vector<DictionaryFileSection> *sections) const = 0;
 
   // Gets section name.
-  virtual std::string GetSectionName(absl::string_view name) const = 0;
+  virtual std::string GetSectionName(std::string_view name) const = 0;
 
  protected:
   DictionaryFileCodecInterface() = default;

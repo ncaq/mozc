@@ -48,7 +48,7 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/notification.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
@@ -224,13 +224,13 @@ TEST_F(ConfigHandlerTest, LoadTestConfig) {
   // TODO(yukawa): Generate test data automatically so that we can keep
   //     the compatibility among variety of config files.
   // TODO(yukawa): Enumerate test data in the directory automatically.
-  constexpr std::array<absl::string_view, 3> kDataFiles = {
+  constexpr std::array<std::string_view, 3> kDataFiles = {
       "linux_config1.db",
       "mac_config1.db",
       "win_config1.db",
   };
 
-  for (absl::string_view file_name : kDataFiles) {
+  for (std::string_view file_name : kDataFiles) {
     const std::string src_path = mozc::testing::GetSourceFileOrDie(
         {MOZC_DICT_DIR_COMPONENTS, "test", "config", file_name});
     const std::string dest_path =
@@ -262,7 +262,7 @@ TEST_F(ConfigHandlerTest, GetDefaultConfig) {
   EXPECT_EQ(output.character_form_rules_size(), 13);
 
   struct TestCase {
-    absl::string_view group;
+    std::string_view group;
     Config::CharacterForm preedit_character_form;
     Config::CharacterForm conversion_character_form;
   };

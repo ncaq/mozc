@@ -54,14 +54,14 @@
 #include "storage/lru_cache.h"
 #include "testing/gunit_prod.h"  // IWYU pragma: keep
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::prediction {
 
 // Added serialization method for UserHistory.
 class UserHistoryStorage {
  public:
-  explicit UserHistoryStorage(const absl::string_view filename)
+  explicit UserHistoryStorage(const std::string_view filename)
       : storage_(filename) {}
 
   // Loads from encrypted file.
@@ -131,8 +131,8 @@ class UserHistoryPredictor : public PredictorInterface {
   bool ClearUnusedHistory() override;
 
   // Clears a specific history entry.
-  bool ClearHistoryEntry(absl::string_view key,
-                         absl::string_view value) override;
+  bool ClearHistoryEntry(std::string_view key,
+                         std::string_view value) override;
 
   // Implements PredictorInterface.
   bool Wait() override;
@@ -150,8 +150,8 @@ class UserHistoryPredictor : public PredictorInterface {
   typedef user_history_predictor::UserHistory::Entry::EntryType EntryType;
 
   // Returns fingerprints from various object.
-  static uint32_t Fingerprint(absl::string_view key, absl::string_view value);
-  static uint32_t Fingerprint(absl::string_view key, absl::string_view value,
+  static uint32_t Fingerprint(std::string_view key, std::string_view value);
+  static uint32_t Fingerprint(std::string_view key, std::string_view value,
                               EntryType type);
   static uint32_t EntryFingerprint(const Entry &entry);
   static uint32_t SegmentFingerprint(const Segment &segment);
@@ -268,13 +268,13 @@ class UserHistoryPredictor : public PredictorInterface {
   static uint16_t revert_id();
 
   // Gets match type from two strings
-  static MatchType GetMatchType(absl::string_view lstr, absl::string_view rstr);
+  static MatchType GetMatchType(std::string_view lstr, std::string_view rstr);
 
   // Gets match type with ambiguity expansion
-  static MatchType GetMatchTypeFromInput(absl::string_view input_key,
-                                         absl::string_view key_base,
+  static MatchType GetMatchTypeFromInput(std::string_view input_key,
+                                         std::string_view key_base,
                                          const Trie<std::string> *key_expanded,
-                                         absl::string_view target);
+                                         std::string_view target);
 
   // Uint32 <=> string conversion
   static std::string Uint32ToString(uint32_t fp);
@@ -335,8 +335,8 @@ class UserHistoryPredictor : public PredictorInterface {
   // |prev_entry| is an optional field. If set nullptr, this field is just
   // ignored. This method adds a new result entry with score,
   // pair<score, entry>, to |results|.
-  bool LookupEntry(RequestType request_type, absl::string_view input_key,
-                   absl::string_view key_base,
+  bool LookupEntry(RequestType request_type, std::string_view input_key,
+                   std::string_view key_base,
                    const Trie<std::string> *key_expanded, const Entry *entry,
                    const Entry *prev_entry, EntryPriorityQueue *results) const;
 
@@ -349,7 +349,7 @@ class UserHistoryPredictor : public PredictorInterface {
   // |left_last_access_time| and |left_most_last_access_time| will be updated
   // according to the entry lookup.
   bool GetKeyValueForExactAndRightPrefixMatch(
-      absl::string_view input_key, const Entry *entry,
+      std::string_view input_key, const Entry *entry,
       const Entry **result_last_entry, uint64_t *left_last_access_time,
       uint64_t *left_most_last_access_time, std::string *result_key,
       std::string *result_value) const;
@@ -390,8 +390,8 @@ class UserHistoryPredictor : public PredictorInterface {
   // 'Fuzzy' means that
   // 1) Allows one character deletion in the |prefix|.
   // 2) Allows one character swap in the |prefix|.
-  static bool RomanFuzzyPrefixMatch(absl::string_view str,
-                                    absl::string_view prefix);
+  static bool RomanFuzzyPrefixMatch(std::string_view str,
+                                    std::string_view prefix);
 
   // Returns romanized preedit string if the preedit looks
   // misspelled. It first tries to get the preedit string with
@@ -405,13 +405,13 @@ class UserHistoryPredictor : public PredictorInterface {
   // Currently, this function returns true if
   // 1) key contains only one alphabet.
   // 2) other characters of key are all hiragana.
-  static bool MaybeRomanMisspelledKey(absl::string_view key);
+  static bool MaybeRomanMisspelledKey(std::string_view key);
 
   // If roman_input_key can be a target key of entry->key(), creat a new
   // result and insert it to |results|.
   // This method adds a new result entry with score, pair<score, entry>, to
   // |results|.
-  bool RomanFuzzyLookupEntry(absl::string_view roman_input_key,
+  bool RomanFuzzyLookupEntry(std::string_view roman_input_key,
                              const Entry *entry,
                              EntryPriorityQueue *results) const;
 
@@ -432,14 +432,14 @@ class UserHistoryPredictor : public PredictorInterface {
               uint64_t last_access_time, Segments *segments);
 
   // Called by TryInsert to check the Entry to insert.
-  bool ShouldInsert(RequestType request_type, absl::string_view key,
-                    absl::string_view value,
-                    absl::string_view description) const;
+  bool ShouldInsert(RequestType request_type, std::string_view key,
+                    std::string_view value,
+                    std::string_view description) const;
 
   // Tries to insert entry.
   // Entry's contents and request_type will be checked before insertion.
-  void TryInsert(RequestType request_type, absl::string_view key,
-                 absl::string_view value, absl::string_view description,
+  void TryInsert(RequestType request_type, std::string_view key,
+                 std::string_view value, std::string_view description,
                  bool is_suggestion_selected, uint32_t next_fp,
                  uint64_t last_access_time, Segments *segments);
 
@@ -455,9 +455,9 @@ class UserHistoryPredictor : public PredictorInterface {
   // Recursively removes a chain of Entries in |dic_|. See the comment in
   // implementation for details.
   RemoveNgramChainResult RemoveNgramChain(
-      absl::string_view target_key, absl::string_view target_value,
-      Entry *entry, std::vector<absl::string_view> *key_ngrams,
-      size_t key_ngrams_len, std::vector<absl::string_view> *value_ngrams,
+      std::string_view target_key, std::string_view target_value,
+      Entry *entry, std::vector<std::string_view> *key_ngrams,
+      size_t key_ngrams_len, std::vector<std::string_view> *value_ngrams,
       size_t value_ngrams_len);
 
   // Returns true if the input first candidate seems to be a privacy sensitive

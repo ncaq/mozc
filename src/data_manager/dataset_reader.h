@@ -35,7 +35,7 @@
 #include <utility>
 
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -46,29 +46,29 @@ class DataSetReader {
   // file into memory, and |memblock| must outlive this instance.  Note: this
   // method doesn't verify checksum for performance.  One can separately call
   // VerifyChecksum().
-  bool Init(absl::string_view memblock, absl::string_view magic);
+  bool Init(std::string_view memblock, std::string_view magic);
 
   // Gets the byte data corresponding to |name|.  If the data for |name| doesn't
   // exist, returns false.
-  bool Get(absl::string_view name, absl::string_view *data) const;
+  bool Get(std::string_view name, std::string_view *data) const;
 
   // Gets the byte offset and size of the data corresponding to `name`.
   std::optional<std::pair<size_t, size_t>> GetOffsetAndSize(
-      absl::string_view name) const;
+      std::string_view name) const;
 
   // Verifies the checksum of binary image.
-  static bool VerifyChecksum(absl::string_view memblock);
+  static bool VerifyChecksum(std::string_view memblock);
 
-  const absl::flat_hash_map<std::string, absl::string_view> &name_to_data_map()
+  const absl::flat_hash_map<std::string, std::string_view> &name_to_data_map()
       const {
     return name_to_data_map_;
   }
 
  private:
-  absl::string_view memblock_;
+  std::string_view memblock_;
 
   // The value points to a block of the specified |memblock|.
-  absl::flat_hash_map<std::string, absl::string_view> name_to_data_map_;
+  absl::flat_hash_map<std::string, std::string_view> name_to_data_map_;
 };
 
 }  // namespace mozc

@@ -69,7 +69,7 @@
 #include "absl/random/random.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 
@@ -126,8 +126,8 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     return data_and_predictor_->suppression_dictionary.get();
   }
 
-  bool IsSuggested(UserHistoryPredictor *predictor, const absl::string_view key,
-                   const absl::string_view value) {
+  bool IsSuggested(UserHistoryPredictor *predictor, const std::string_view key,
+                   const std::string_view value) {
     ConversionRequest conversion_request;
     Segments segments;
     MakeSegmentsForSuggestion(key, &segments);
@@ -136,8 +136,8 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
            FindCandidateByValue(value, segments);
   }
 
-  bool IsPredicted(UserHistoryPredictor *predictor, const absl::string_view key,
-                   const absl::string_view value) {
+  bool IsPredicted(UserHistoryPredictor *predictor, const std::string_view key,
+                   const std::string_view value) {
     ConversionRequest conversion_request;
     Segments segments;
     MakeSegmentsForPrediction(key, &segments);
@@ -147,15 +147,15 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
   }
 
   bool IsSuggestedAndPredicted(UserHistoryPredictor *predictor,
-                               const absl::string_view key,
-                               const absl::string_view value) {
+                               const std::string_view key,
+                               const std::string_view value) {
     return IsSuggested(predictor, key, value) &&
            IsPredicted(predictor, key, value);
   }
 
   static UserHistoryPredictor::Entry *InsertEntry(
-      UserHistoryPredictor *predictor, const absl::string_view key,
-      const absl::string_view value) {
+      UserHistoryPredictor *predictor, const std::string_view key,
+      const std::string_view value) {
     UserHistoryPredictor::Entry *e =
         &predictor->dic_->Insert(predictor->Fingerprint(key, value))->value;
     e->set_key(std::string(key));
@@ -165,8 +165,8 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
   }
 
   static UserHistoryPredictor::Entry *AppendEntry(
-      UserHistoryPredictor *predictor, const absl::string_view key,
-      const absl::string_view value, UserHistoryPredictor::Entry *prev) {
+      UserHistoryPredictor *predictor, const std::string_view key,
+      const std::string_view value, UserHistoryPredictor::Entry *prev) {
     prev->add_next_entries()->set_entry_fp(predictor->Fingerprint(key, value));
     UserHistoryPredictor::Entry *e = InsertEntry(predictor, key, value);
     return e;
@@ -248,7 +248,7 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     EXPECT_TRUE(IsSuggestedAndPredicted(predictor, "meth", "Method"));
   }
 
-  void AddSegmentForSuggestion(const absl::string_view key,
+  void AddSegmentForSuggestion(const std::string_view key,
                                Segments *segments) {
     convreq_->set_request_type(ConversionRequest::SUGGESTION);
     Segment *seg = segments->add_segment();
@@ -256,13 +256,13 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     seg->set_segment_type(Segment::FIXED_VALUE);
   }
 
-  void MakeSegmentsForSuggestion(const absl::string_view key,
+  void MakeSegmentsForSuggestion(const std::string_view key,
                                  Segments *segments) {
     segments->Clear();
     AddSegmentForSuggestion(key, segments);
   }
 
-  void SetUpInputForSuggestion(const absl::string_view key,
+  void SetUpInputForSuggestion(const std::string_view key,
                                composer::Composer *composer,
                                Segments *segments) {
     composer->Reset();
@@ -270,8 +270,8 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     MakeSegmentsForSuggestion(key, segments);
   }
 
-  void PrependHistorySegments(const absl::string_view key,
-                              const absl::string_view value,
+  void PrependHistorySegments(const std::string_view key,
+                              const std::string_view value,
                               Segments *segments) {
     Segment *seg = segments->push_front_segment();
     seg->set_segment_type(Segment::HISTORY);
@@ -283,16 +283,16 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     c->content_value = std::string(value);
   }
 
-  void SetUpInputForSuggestionWithHistory(const absl::string_view key,
-                                          const absl::string_view hist_key,
-                                          const absl::string_view hist_value,
+  void SetUpInputForSuggestionWithHistory(const std::string_view key,
+                                          const std::string_view hist_key,
+                                          const std::string_view hist_value,
                                           composer::Composer *composer,
                                           Segments *segments) {
     SetUpInputForSuggestion(key, composer, segments);
     PrependHistorySegments(hist_key, hist_value, segments);
   }
 
-  void AddSegmentForPrediction(const absl::string_view key,
+  void AddSegmentForPrediction(const std::string_view key,
                                Segments *segments) {
     convreq_->set_request_type(ConversionRequest::PREDICTION);
     Segment *seg = segments->add_segment();
@@ -300,13 +300,13 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     seg->set_segment_type(Segment::FIXED_VALUE);
   }
 
-  void MakeSegmentsForPrediction(const absl::string_view key,
+  void MakeSegmentsForPrediction(const std::string_view key,
                                  Segments *segments) {
     segments->Clear();
     AddSegmentForPrediction(key, segments);
   }
 
-  void SetUpInputForPrediction(const absl::string_view key,
+  void SetUpInputForPrediction(const std::string_view key,
                                composer::Composer *composer,
                                Segments *segments) {
     composer->Reset();
@@ -314,16 +314,16 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     MakeSegmentsForPrediction(key, segments);
   }
 
-  void SetUpInputForPredictionWithHistory(const absl::string_view key,
-                                          const absl::string_view hist_key,
-                                          const absl::string_view hist_value,
+  void SetUpInputForPredictionWithHistory(const std::string_view key,
+                                          const std::string_view hist_key,
+                                          const std::string_view hist_value,
                                           composer::Composer *composer,
                                           Segments *segments) {
     SetUpInputForPrediction(key, composer, segments);
     PrependHistorySegments(hist_key, hist_value, segments);
   }
 
-  void AddSegmentForConversion(const absl::string_view key,
+  void AddSegmentForConversion(const std::string_view key,
                                Segments *segments) {
     convreq_->set_request_type(ConversionRequest::CONVERSION);
     Segment *seg = segments->add_segment();
@@ -331,13 +331,13 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     seg->set_segment_type(Segment::FIXED_VALUE);
   }
 
-  void MakeSegmentsForConversion(const absl::string_view key,
+  void MakeSegmentsForConversion(const std::string_view key,
                                  Segments *segments) {
     segments->Clear();
     AddSegmentForConversion(key, segments);
   }
 
-  void SetUpInputForConversion(const absl::string_view key,
+  void SetUpInputForConversion(const std::string_view key,
                                composer::Composer *composer,
                                Segments *segments) {
     composer->Reset();
@@ -345,16 +345,16 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     MakeSegmentsForConversion(key, segments);
   }
 
-  void SetUpInputForConversionWithHistory(const absl::string_view key,
-                                          const absl::string_view hist_key,
-                                          const absl::string_view hist_value,
+  void SetUpInputForConversionWithHistory(const std::string_view key,
+                                          const std::string_view hist_key,
+                                          const std::string_view hist_value,
                                           composer::Composer *composer,
                                           Segments *segments) {
     SetUpInputForConversion(key, composer, segments);
     PrependHistorySegments(hist_key, hist_value, segments);
   }
 
-  void AddCandidate(size_t index, const absl::string_view value,
+  void AddCandidate(size_t index, const std::string_view value,
                     Segments *segments) {
     Segment::Candidate *candidate =
         segments->mutable_segment(index)->add_candidate();
@@ -365,8 +365,8 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     candidate->content_key = segments->segment(index).key();
   }
 
-  void AddCandidateWithDescription(size_t index, const absl::string_view value,
-                                   const absl::string_view desc,
+  void AddCandidateWithDescription(size_t index, const std::string_view value,
+                                   const std::string_view desc,
                                    Segments *segments) {
     Segment::Candidate *candidate =
         segments->mutable_segment(index)->add_candidate();
@@ -378,17 +378,17 @@ class UserHistoryPredictorTest : public testing::TestWithTempUserProfile {
     candidate->description = std::string(desc);
   }
 
-  void AddCandidate(const absl::string_view value, Segments *segments) {
+  void AddCandidate(const std::string_view value, Segments *segments) {
     AddCandidate(0, value, segments);
   }
 
-  void AddCandidateWithDescription(const absl::string_view value,
-                                   const absl::string_view desc,
+  void AddCandidateWithDescription(const std::string_view value,
+                                   const std::string_view desc,
                                    Segments *segments) {
     AddCandidateWithDescription(0, value, desc, segments);
   }
 
-  bool FindCandidateByValue(const absl::string_view value,
+  bool FindCandidateByValue(const std::string_view value,
                             const Segments &segments) {
     for (size_t i = 0; i < segments.conversion_segment(0).candidates_size();
          ++i) {
@@ -1973,7 +1973,7 @@ TEST_F(UserHistoryPredictorTest, EntryPriorityQueueTest) {
 
 namespace {
 
-std::string RemoveLastUcs4Character(const absl::string_view input) {
+std::string RemoveLastUcs4Character(const std::string_view input) {
   const size_t ucs4_count = Util::CharsLen(input);
   if (ucs4_count == 0) {
     return "";
@@ -2428,7 +2428,7 @@ TEST_F(UserHistoryPredictorTest, RomanFuzzyLookupEntry) {
 
 namespace {
 struct LookupTestData {
-  absl::string_view entry_key;
+  std::string_view entry_key;
   bool expect_result;
 };
 }  // namespace
@@ -2541,7 +2541,7 @@ TEST_F(UserHistoryPredictorTest, GetMatchTypeFromInputRoman) {
   // We have to define this here,
   // because UserHistoryPredictor::MatchType is private
   struct MatchTypeTestData {
-    absl::string_view target;
+    std::string_view target;
     UserHistoryPredictor::MatchType expect_type;
   };
 
@@ -2598,7 +2598,7 @@ TEST_F(UserHistoryPredictorTest, GetMatchTypeFromInputKana) {
   // We have to define this here,
   // because UserHistoryPredictor::MatchType is private
   struct MatchTypeTestData {
-    absl::string_view target;
+    std::string_view target;
     UserHistoryPredictor::MatchType expect_type;
   };
 
@@ -2652,7 +2652,7 @@ TEST_F(UserHistoryPredictorTest, GetMatchTypeFromInputKana) {
 }
 
 namespace {
-void InitSegmentsFromInputSequence(const absl::string_view text,
+void InitSegmentsFromInputSequence(const std::string_view text,
                                    composer::Composer *composer,
                                    ConversionRequest *request,
                                    Segments *segments) {
@@ -3044,7 +3044,7 @@ TEST_F(UserHistoryPredictorTest, RemoveNgramChain) {
 
   // The method should return NOT_FOUND for key-value pairs not in the chain.
   for (size_t i = 0; i < entries.size(); ++i) {
-    std::vector<absl::string_view> dummy1, dummy2;
+    std::vector<std::string_view> dummy1, dummy2;
     EXPECT_EQ(predictor->RemoveNgramChain("hoge", "HOGE", entries[i], &dummy1,
                                           0, &dummy2, 0),
               UserHistoryPredictor::NOT_FOUND);
@@ -3059,7 +3059,7 @@ TEST_F(UserHistoryPredictorTest, RemoveNgramChain) {
   {
     // Try deleting the chain for "abc". Only the link from "b" to "c" should be
     // removed.
-    std::vector<absl::string_view> dummy1, dummy2;
+    std::vector<std::string_view> dummy1, dummy2;
     EXPECT_EQ(
         predictor->RemoveNgramChain("abc", "ABC", a, &dummy1, 0, &dummy2, 0),
         UserHistoryPredictor::DONE);
@@ -3072,7 +3072,7 @@ TEST_F(UserHistoryPredictorTest, RemoveNgramChain) {
   {
     // Try deleting the chain for "a". Since this is the head of the chain, the
     // function returns TAIL and nothing should be removed.
-    std::vector<absl::string_view> dummy1, dummy2;
+    std::vector<std::string_view> dummy1, dummy2;
     EXPECT_EQ(predictor->RemoveNgramChain("a", "A", a, &dummy1, 0, &dummy2, 0),
               UserHistoryPredictor::TAIL);
     for (size_t i = 0; i < entries.size(); ++i) {
@@ -3083,7 +3083,7 @@ TEST_F(UserHistoryPredictorTest, RemoveNgramChain) {
   }
   {
     // Further delete the chain for "ab".  Now all the links should be removed.
-    std::vector<absl::string_view> dummy1, dummy2;
+    std::vector<std::string_view> dummy1, dummy2;
     EXPECT_EQ(
         predictor->RemoveNgramChain("ab", "AB", a, &dummy1, 0, &dummy2, 0),
         UserHistoryPredictor::DONE);
@@ -3115,9 +3115,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryUnigram) {
   EXPECT_TRUE(e->removed());
 
   // "Japanese" should be never be suggested nor predicted.
-  constexpr absl::string_view kKey = "japanese";
+  constexpr std::string_view kKey = "japanese";
   for (size_t i = 0; i < kKey.size(); ++i) {
-    const absl::string_view prefix = kKey.substr(0, i);
+    const std::string_view prefix = kKey.substr(0, i);
     EXPECT_FALSE(IsSuggested(predictor, prefix, "Japanese"));
     EXPECT_FALSE(IsPredicted(predictor, prefix, "Japanese"));
   }
@@ -3154,9 +3154,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryBigramDeleteWhole) {
   EXPECT_FALSE(IsConnected(*japanese, *input));
 
   // Now "JapaneseInput" should never be suggested nor predicted.
-  constexpr absl::string_view kKey = "japaneseinput";
+  constexpr std::string_view kKey = "japaneseinput";
   for (size_t i = 0; i < kKey.size(); ++i) {
-    const absl::string_view prefix = kKey.substr(0, i);
+    const std::string_view prefix = kKey.substr(0, i);
     EXPECT_FALSE(IsSuggested(predictor, prefix, "Japaneseinput"));
     EXPECT_FALSE(IsPredicted(predictor, prefix, "Japaneseinput"));
   }
@@ -3195,9 +3195,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryBigramDeleteFirst) {
   EXPECT_TRUE(IsConnected(*japanese, *input));
 
   // Now "Japanese" should never be suggested nor predicted.
-  constexpr absl::string_view kKey = "japaneseinput";
+  constexpr std::string_view kKey = "japaneseinput";
   for (size_t i = 0; i < kKey.size(); ++i) {
-    const absl::string_view prefix = kKey.substr(0, i);
+    const std::string_view prefix = kKey.substr(0, i);
     EXPECT_FALSE(IsSuggested(predictor, prefix, "Japanese"));
     EXPECT_FALSE(IsPredicted(predictor, prefix, "Japanese"));
   }
@@ -3234,9 +3234,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryBigramDeleteSecond) {
   EXPECT_TRUE(IsConnected(*japanese, *input));
 
   // Now "Input" should never be suggested nor predicted.
-  constexpr absl::string_view kKey = "input";
+  constexpr std::string_view kKey = "input";
   for (size_t i = 0; i < kKey.size(); ++i) {
-    const absl::string_view prefix = kKey.substr(0, i);
+    const std::string_view prefix = kKey.substr(0, i);
     EXPECT_FALSE(IsSuggested(predictor, prefix, "Input"));
     EXPECT_FALSE(IsPredicted(predictor, prefix, "Input"));
   }
@@ -3279,9 +3279,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteWhole) {
 
   {
     // Now "JapaneseInputMethod" should never be suggested nor predicted.
-    constexpr absl::string_view kKey = "japaneseinputmethod";
+    constexpr std::string_view kKey = "japaneseinputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "JapaneseInputMethod"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "JapaneseInputMethod"));
     }
@@ -3292,9 +3292,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteWhole) {
     // could before.  However, since "InputMethod" is not the direct input by
     // the user (user's input was "JapaneseInputMethod" in this case), this
     // limitation would be acceptable.
-    constexpr absl::string_view kKey = "inputmethod";
+    constexpr std::string_view kKey = "inputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "InputMethod"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "InputMethod"));
     }
@@ -3343,9 +3343,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteFirst) {
 
   {
     // Now "Japanese" should never be suggested nor predicted.
-    constexpr absl::string_view kKey = "japaneseinputmethod";
+    constexpr std::string_view kKey = "japaneseinputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "Japanese"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "Japanese"));
     }
@@ -3396,9 +3396,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteSecond) {
 
   {
     // Now "Input" should never be suggested nor predicted.
-    constexpr absl::string_view kKey = "inputmethod";
+    constexpr std::string_view kKey = "inputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "Input"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "Input"));
     }
@@ -3449,9 +3449,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteThird) {
 
   {
     // Now "Method" should never be suggested nor predicted.
-    constexpr absl::string_view kKey = "method";
+    constexpr std::string_view kKey = "method";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "Method"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "Method"));
     }
@@ -3503,9 +3503,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteFirstBigram) {
 
   {
     // Now "JapaneseInput" should never be suggested nor predicted.
-    constexpr absl::string_view kKey = "japaneseinputmethod";
+    constexpr std::string_view kKey = "japaneseinputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "JapaneseInput"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "JapaneseInput"));
     }
@@ -3557,9 +3557,9 @@ TEST_F(UserHistoryPredictorTest, ClearHistoryEntryTrigramDeleteSecondBigram) {
 
   {
     // Now "InputMethod" should never be suggested.
-    constexpr absl::string_view kKey = "inputmethod";
+    constexpr std::string_view kKey = "inputmethod";
     for (size_t i = 0; i < kKey.size(); ++i) {
-      const absl::string_view prefix = kKey.substr(0, i);
+      const std::string_view prefix = kKey.substr(0, i);
       EXPECT_FALSE(IsSuggested(predictor, prefix, "InputMethod"));
       EXPECT_FALSE(IsPredicted(predictor, prefix, "InputMethod"));
     }

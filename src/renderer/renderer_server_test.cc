@@ -37,7 +37,7 @@
 #include "protocol/renderer_command.pb.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 #include "renderer/renderer_client.h"
@@ -79,7 +79,7 @@ class TestRendererServer : public RendererServer {
   int StartMessageLoop() override { return 0; }
 
   // Not async for testing
-  bool AsyncExecCommand(absl::string_view proto_message) override {
+  bool AsyncExecCommand(std::string_view proto_message) override {
     commands::RendererCommand command;
     command.ParseFromArray(proto_message.data(), proto_message.size());
     return ExecCommandInternal(command);

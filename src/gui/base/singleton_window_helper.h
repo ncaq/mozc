@@ -47,7 +47,7 @@
 #include <memory>
 
 #include "base/process_mutex.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace gui {
@@ -55,7 +55,7 @@ namespace gui {
 class SingletonWindowHelper final {
  public:
   // name should be unique for the window.
-  explicit SingletonWindowHelper(absl::string_view name);
+  explicit SingletonWindowHelper(std::string_view name);
 
   SingletonWindowHelper(const SingletonWindowHelper&) = delete;
   SingletonWindowHelper& operator=(const SingletonWindowHelper&) = delete;

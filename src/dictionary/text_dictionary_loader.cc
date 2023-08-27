@@ -53,7 +53,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(int32_t, tokens_reserve_size, 1400000,
           "Reserve the specified size of token buffer in advance.");
@@ -62,7 +62,7 @@ namespace mozc {
 namespace dictionary {
 namespace {
 
-using ValueAndKey = std::pair<absl::string_view, absl::string_view>;
+using ValueAndKey = std::pair<std::string_view, std::string_view>;
 
 ValueAndKey ToValueAndKey(const std::unique_ptr<Token> &token) {
   return ValueAndKey(token->value, token->key);
@@ -89,11 +89,11 @@ struct OrderByValueThenByKey {
 // Functor to sort a sequence of Tokens by value.
 struct OrderByValue {
   bool operator()(const std::unique_ptr<Token> &token,
-                  absl::string_view value) const {
+                  std::string_view value) const {
     return token->value < value;
   }
 
-  bool operator()(absl::string_view value,
+  bool operator()(std::string_view value,
                   const std::unique_ptr<Token> &token) const {
     return value < token->value;
   }
@@ -102,9 +102,9 @@ struct OrderByValue {
 // Parses one line of reading correction file.  Since the result is returned as
 // string views, |line| needs to outlive |value_key|.
 ValueAndKey ParseReadingCorrectionTSV(
-    const absl::string_view line ABSL_ATTRIBUTE_LIFETIME_BOUND) {
+    const std::string_view line ABSL_ATTRIBUTE_LIFETIME_BOUND) {
   // Format: value\terror\tcorrect
-  const std::vector<absl::string_view> fields = absl::StrSplit(line, '\t');
+  const std::vector<std::string_view> fields = absl::StrSplit(line, '\t');
   CHECK_GE(fields.size(), 2);
   return {fields[0], fields[1]};
 }
@@ -120,7 +120,7 @@ TextDictionaryLoader::TextDictionaryLoader(uint16_t zipcode_id,
     : zipcode_id_(zipcode_id), isolated_word_id_(isolated_word_id) {}
 
 bool TextDictionaryLoader::RewriteSpecialToken(Token *token,
-                                               absl::string_view label) const {
+                                               std::string_view label) const {
   CHECK(token);
   if (label.empty()) {
     return true;
@@ -145,14 +145,14 @@ bool TextDictionaryLoader::RewriteSpecialToken(Token *token,
 }
 
 void TextDictionaryLoader::Load(
-    const absl::string_view dictionary_filename,
-    const absl::string_view reading_correction_filename) {
+    const std::string_view dictionary_filename,
+    const std::string_view reading_correction_filename) {
   LoadWithLineLimit(dictionary_filename, reading_correction_filename, -1);
 }
 
 void TextDictionaryLoader::LoadWithLineLimit(
-    const absl::string_view dictionary_filename,
-    const absl::string_view reading_correction_filename, int limit) {
+    const std::string_view dictionary_filename,
+    const std::string_view reading_correction_filename, int limit) {
   tokens_.clear();
 
   // Roughly allocate buffers for Token pointers.
@@ -205,7 +205,7 @@ void TextDictionaryLoader::LoadWithLineLimit(
 // caller is responsible to delete them.
 std::vector<std::unique_ptr<Token>>
 TextDictionaryLoader::LoadReadingCorrectionTokens(
-    const absl::string_view reading_correction_filename,
+    const std::string_view reading_correction_filename,
     const std::vector<std::unique_ptr<Token>> &ref_sorted_tokens, int *limit) {
   // Load reading correction entries.
   std::vector<std::unique_ptr<Token>> tokens;
@@ -288,14 +288,14 @@ void TextDictionaryLoader::CollectTokens(std::vector<Token *> *res) const {
 }
 
 std::unique_ptr<Token> TextDictionaryLoader::ParseTSVLine(
-    absl::string_view line) const {
-  const std::vector<absl::string_view> columns =
+    std::string_view line) const {
+  const std::vector<std::string_view> columns =
       absl::StrSplit(line, '\t', absl::SkipEmpty());
   return ParseTSV(columns);
 }
 
 std::unique_ptr<Token> TextDictionaryLoader::ParseTSV(
-    const std::vector<absl::string_view> &columns) const {
+    const std::vector<std::string_view> &columns) const {
   CHECK_LE(5, columns.size()) << "Lack of columns: " << columns.size();
 
   auto token = std::make_unique<Token>();

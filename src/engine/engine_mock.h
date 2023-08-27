@@ -45,7 +45,7 @@ class MockEngine : public EngineInterface {
   MOCK_METHOD(bool, Reload, (), (override));
   MOCK_METHOD(bool, ReloadAndWait, (), (override));
   MOCK_METHOD(UserDataManagerInterface *, GetUserDataManager, (), (override));
-  MOCK_METHOD(absl::string_view, GetDataVersion, (), (const, override));
+  MOCK_METHOD(std::string_view, GetDataVersion, (), (const, override));
   MOCK_METHOD(const DataManagerInterface *, GetDataManager, (),
               (const, override));
   MOCK_METHOD(std::vector<std::string>, GetPosList, (), (const, override));

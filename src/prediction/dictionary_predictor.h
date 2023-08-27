@@ -55,7 +55,7 @@
 #include "absl/base/attributes.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc::prediction {
@@ -63,7 +63,7 @@ namespace dictionary_predictor_internal {
 
 // Views for a key and a value. Pass by value.
 struct KeyValueView {
-  absl::string_view key, value;
+  std::string_view key, value;
 };
 
 }  // namespace dictionary_predictor_internal
@@ -114,7 +114,7 @@ class DictionaryPredictor : public PredictorInterface {
    private:
     static constexpr int kTcMaxCountPerKey = 2;
 
-    bool CheckDupAndReturn(absl::string_view value, const Result &result,
+    bool CheckDupAndReturn(std::string_view value, const Result &result,
                            std::string *log_message);
 
     const std::string input_key_;
@@ -181,8 +181,8 @@ class DictionaryPredictor : public PredictorInterface {
   // key: "ろっぽんぎ"
   // value: "六本木"
   // returns 5 (charslen("ろっぽんぎ"))
-  static size_t GetMissSpelledPosition(absl::string_view key,
-                                       absl::string_view value);
+  static size_t GetMissSpelledPosition(std::string_view key,
+                                       std::string_view value);
 
   // Returns language model cost of |token| given prediction type |type|.
   // |rid| is the right id of previous word (token).
@@ -251,7 +251,7 @@ class DictionaryPredictor : public PredictorInterface {
   // so we want to add the offset based on the other entries.
   int CalculateSingleKanjiCostOffset(
       const ConversionRequest &request, uint16_t rid,
-      absl::string_view input_key, absl::Span<const Result> results,
+      std::string_view input_key, absl::Span<const Result> results,
       absl::flat_hash_map<PrefixPenaltyKey, int> *cache) const;
 
   // Returns true if the suggestion is classified
@@ -272,7 +272,7 @@ class DictionaryPredictor : public PredictorInterface {
   static std::string GetPredictionTypeDebugString(PredictionTypes types);
 
   int CalculatePrefixPenalty(
-      const ConversionRequest &request, absl::string_view input_key,
+      const ConversionRequest &request, std::string_view input_key,
       const Result &result,
       const ImmutableConverterInterface *immutable_converter,
       absl::flat_hash_map<PrefixPenaltyKey, int> *cache) const;

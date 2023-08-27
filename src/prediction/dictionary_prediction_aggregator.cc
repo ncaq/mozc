@@ -64,7 +64,7 @@
 #include "transliteration/transliteration.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 #ifndef NDEBUG
@@ -101,12 +101,12 @@ bool IsEnableSingleKanjiPrediction(const ConversionRequest &request) {
 }
 
 // Returns true if the |target| may be redundant result.
-bool MaybeRedundant(const absl::string_view reference,
-                    const absl::string_view target) {
+bool MaybeRedundant(const std::string_view reference,
+                    const std::string_view target) {
   if (!absl::StartsWith(target, reference)) {
     return false;
   }
-  const absl::string_view suffix = target.substr(reference.size());
+  const std::string_view suffix = target.substr(reference.size());
   if (suffix.empty()) {
     return true;
   }
@@ -249,7 +249,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
                            const std::set<std::string> *subsequent_chars,
                            Segment::Candidate::SourceInfo source_info,
                            int zip_code_id, int unknown_id,
-                           absl::string_view non_expanded_original_key,
+                           std::string_view non_expanded_original_key,
                            const SpatialCostParams &spatial_cost_params,
                            std::vector<Result> *results)
       : penalty_(0),
@@ -268,7 +268,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
   PredictiveLookupCallback &operator=(const PredictiveLookupCallback &) =
       delete;
 
-  ResultType OnKey(absl::string_view key) override {
+  ResultType OnKey(std::string_view key) override {
     if (subsequent_chars_ == nullptr) {
       return TRAVERSE_CONTINUE;
     }
@@ -284,7 +284,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
     // to get more performance but it's overkill here.
     // TODO(noriyukit): std::vector<string> would be better than set<string>.
     // To this end, we need to fix Comopser as well.
-    const absl::string_view rest = absl::ClippedSubstr(key, original_key_len_);
+    const std::string_view rest = absl::ClippedSubstr(key, original_key_len_);
     for (const std::string &chr : *subsequent_chars_) {
       if (absl::StartsWith(rest, chr)) {
         return TRAVERSE_CONTINUE;
@@ -293,7 +293,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
     return TRAVERSE_NEXT_KEY;
   }
 
-  ResultType OnActualKey(absl::string_view key, absl::string_view actual_key,
+  ResultType OnActualKey(std::string_view key, std::string_view actual_key,
                          int num_expanded) override {
     penalty_ = 0;
     if (num_expanded > 0 ||
@@ -305,7 +305,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
     return TRAVERSE_CONTINUE;
   }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     // If the token is from user dictionary and its POS is unknown, it is
     // suggest-only words.  Such words are looked up only when their keys
@@ -344,7 +344,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
   const Segment::Candidate::SourceInfo source_info_;
   const int zip_code_id_;
   const int unknown_id_;
-  absl::string_view non_expanded_original_key_;
+  std::string_view non_expanded_original_key_;
   const SpatialCostParams spatial_cost_params_;
   std::vector<Result> *results_;
 
@@ -353,12 +353,12 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
   // - the key predicts number ("十月[10がつ]" for the key, "1")
   // - the value predicts number ("12時" for the key, "1")
   // - the value contains long suffix ("101匹わんちゃん" for the key, "101")
-  bool IsNoisyNumberToken(absl::string_view key, const Token &token) const {
+  bool IsNoisyNumberToken(std::string_view key, const Token &token) const {
     const auto orig_key = absl::ClippedSubstr(key, 0, original_key_len_);
     if (!NumberUtil::IsArabicNumber(orig_key)) {
       return false;
     }
-    const absl::string_view key_suffix(token.key.data() + orig_key.size(),
+    const std::string_view key_suffix(token.key.data() + orig_key.size(),
                                        token.key.size() - orig_key.size());
     if (key_suffix.empty()) {
       return false;
@@ -373,7 +373,7 @@ class DictionaryPredictionAggregator::PredictiveLookupCallback
       return false;
     }
 
-    const absl::string_view value_suffix(token.value.data() + orig_key.size(),
+    const std::string_view value_suffix(token.value.data() + orig_key.size(),
                                          token.value.size() - orig_key.size());
     if (value_suffix.empty()) {
       return false;
@@ -391,10 +391,10 @@ class DictionaryPredictionAggregator::PredictiveBigramLookupCallback
   PredictiveBigramLookupCallback(PredictionTypes types, size_t limit,
                                  size_t original_key_len,
                                  const std::set<std::string> *subsequent_chars,
-                                 absl::string_view history_value,
+                                 std::string_view history_value,
                                  Segment::Candidate::SourceInfo source_info,
                                  int zip_code_id, int unknown_id,
-                                 absl::string_view non_expanded_original_key,
+                                 std::string_view non_expanded_original_key,
                                  const SpatialCostParams spatial_cost_params,
                                  std::vector<Result> *results)
       : PredictiveLookupCallback(types, limit, original_key_len,
@@ -408,7 +408,7 @@ class DictionaryPredictionAggregator::PredictiveBigramLookupCallback
   PredictiveBigramLookupCallback &operator=(
       const PredictiveBigramLookupCallback &) = delete;
 
-  ResultType OnToken(absl::string_view key, absl::string_view expanded_key,
+  ResultType OnToken(std::string_view key, std::string_view expanded_key,
                      const Token &token) override {
     // Skip the token if its value doesn't start with the previous user input,
     // |history_value_|.
@@ -422,7 +422,7 @@ class DictionaryPredictionAggregator::PredictiveBigramLookupCallback
   }
 
  private:
-  absl::string_view history_value_;
+  std::string_view history_value_;
 };
 
 class DictionaryPredictionAggregator::PrefixLookupCallback
@@ -439,7 +439,7 @@ class DictionaryPredictionAggregator::PrefixLookupCallback
   PrefixLookupCallback(const PrefixLookupCallback &) = delete;
   PrefixLookupCallback &operator=(const PrefixLookupCallback &) = delete;
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     if ((token.attributes & Token::USER_DICTIONARY) != 0 &&
         token.lid == unknown_id_) {
@@ -515,10 +515,10 @@ DictionaryPredictionAggregator::DictionaryPredictionAggregator(
       unknown_id_(pos_matcher->GetUnknownId()),
       single_kanji_prediction_aggregator_(
           std::move(single_kanji_prediction_aggregator)) {
-  absl::string_view zero_query_token_array_data;
-  absl::string_view zero_query_string_array_data;
-  absl::string_view zero_query_number_token_array_data;
-  absl::string_view zero_query_number_string_array_data;
+  std::string_view zero_query_token_array_data;
+  std::string_view zero_query_string_array_data;
+  std::string_view zero_query_number_token_array_data;
+  std::string_view zero_query_number_string_array_data;
   data_manager.GetZeroQueryData(&zero_query_token_array_data,
                                 &zero_query_string_array_data,
                                 &zero_query_number_token_array_data,
@@ -720,11 +720,11 @@ class FindValueCallback : public DictionaryInterface::Callback {
  public:
   FindValueCallback(const FindValueCallback &) = delete;
   FindValueCallback &operator=(const FindValueCallback &) = delete;
-  explicit FindValueCallback(absl::string_view target_value)
+  explicit FindValueCallback(std::string_view target_value)
       : target_value_(target_value), found_(false) {}
 
-  ResultType OnToken(absl::string_view,  // key
-                     absl::string_view,  // actual_key
+  ResultType OnToken(std::string_view,  // key
+                     std::string_view,  // actual_key
                      const Token &token) override {
     if (token.value != target_value_) {
       return TRAVERSE_CONTINUE;
@@ -739,7 +739,7 @@ class FindValueCallback : public DictionaryInterface::Callback {
   const Token &token() const { return token_; }
 
  private:
-  absl::string_view target_value_;
+  std::string_view target_value_;
   bool found_;
   Token token_;
 };
@@ -1045,7 +1045,7 @@ void DictionaryPredictionAggregator::AggregateBigramPrediction(
 }
 
 void DictionaryPredictionAggregator::AddBigramResultsFromHistory(
-    const absl::string_view history_key, const absl::string_view history_value,
+    const std::string_view history_key, const std::string_view history_value,
     const ConversionRequest &request, const Segments &segments,
     Segment::Candidate::SourceInfo source_info,
     std::vector<Result> *results) const {
@@ -1185,7 +1185,7 @@ void DictionaryPredictionAggregator::CheckBigramResult(
 }
 
 void DictionaryPredictionAggregator::GetPredictiveResults(
-    const DictionaryInterface &dictionary, const absl::string_view history_key,
+    const DictionaryInterface &dictionary, const std::string_view history_key,
     const ConversionRequest &request, const Segments &segments,
     PredictionTypes types, size_t lookup_limit,
     Segment::Candidate::SourceInfo source_info, int zip_code_id, int unknown_id,
@@ -1238,8 +1238,8 @@ void DictionaryPredictionAggregator::GetPredictiveResults(
 }
 
 void DictionaryPredictionAggregator::GetPredictiveResultsForBigram(
-    const DictionaryInterface &dictionary, const absl::string_view history_key,
-    const absl::string_view history_value, const ConversionRequest &request,
+    const DictionaryInterface &dictionary, const std::string_view history_key,
+    const std::string_view history_value, const ConversionRequest &request,
     const Segments &segments, PredictionTypes types, size_t lookup_limit,
     Segment::Candidate::SourceInfo source_info, int unknown_id_,
     std::vector<Result> *results) const {
@@ -1276,7 +1276,7 @@ void DictionaryPredictionAggregator::GetPredictiveResultsForBigram(
 
 void DictionaryPredictionAggregator::GetPredictiveResultsForEnglishKey(
     const DictionaryInterface &dictionary, const ConversionRequest &request,
-    const absl::string_view input_key, PredictionTypes types,
+    const std::string_view input_key, PredictionTypes types,
     size_t lookup_limit, std::vector<Result> *results) const {
   const size_t prev_results_size = results->size();
   if (Util::IsUpperAscii(input_key)) {
@@ -1347,7 +1347,7 @@ void DictionaryPredictionAggregator::
     // spellchecker is designed to predict the word from incomplete composition
     // string, e.g. おk. -> おか
     // TODO(taku): Revisits this design once QWERTY model gets ready.
-    absl::string_view key = query.asis;
+    std::string_view key = query.asis;
     const size_t key_len = Util::CharsLen(key);
 
     // Makes dummy segments with corrected query.
@@ -1424,7 +1424,7 @@ void DictionaryPredictionAggregator::GetPredictiveResultsUsingTypingCorrection(
 
 // static
 bool DictionaryPredictionAggregator::GetZeroQueryCandidatesForKey(
-    const ConversionRequest &request, const absl::string_view key,
+    const ConversionRequest &request, const std::string_view key,
     const ZeroQueryDict &dict, std::vector<ZeroQueryResult> *results) {
   DCHECK(results);
   results->clear();
@@ -1763,7 +1763,7 @@ bool DictionaryPredictionAggregator::ShouldAggregateRealTimeConversionResults(
 }
 
 bool DictionaryPredictionAggregator::IsZipCodeRequest(
-    const absl::string_view key) {
+    const std::string_view key) {
   if (key.empty()) {
     return false;
   }

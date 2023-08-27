@@ -41,7 +41,7 @@
 #include "composer/table.h"
 #include "testing/gmock.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -59,7 +59,7 @@ TEST(CharChunkTest, AddInput_CharByChar) {
   table.AddRule("ta", "た", "");
 
   CharChunk chunk1(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result = chunk1.AddInputInternal("i");
+  std::pair<bool, std::string_view> result = chunk1.AddInputInternal("i");
   EXPECT_THAT(result, NoLoop());
   EXPECT_TRUE(chunk1.IsFixed());
   EXPECT_EQ(chunk1.raw(), "i");
@@ -100,7 +100,7 @@ TEST(CharChunkTest, AddInput_NoEffectInput) {
   table.AddRule("*", "", "");
 
   CharChunk chunk1(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result = chunk1.AddInputInternal("2");
+  std::pair<bool, std::string_view> result = chunk1.AddInputInternal("2");
   EXPECT_THAT(result, NoLoop());
   EXPECT_FALSE(chunk1.IsFixed());
   EXPECT_EQ(chunk1.raw(), "2");
@@ -130,7 +130,7 @@ TEST(CharChunkTest, AddInput_ForN) {
   table.AddRule("ka", "[KA]", "");
 
   CharChunk chunk1(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result = chunk1.AddInputInternal("n");
+  std::pair<bool, std::string_view> result = chunk1.AddInputInternal("n");
   EXPECT_THAT(result, NoLoop());
   EXPECT_FALSE(chunk1.IsFixed());
   EXPECT_EQ(chunk1.raw(), "n");
@@ -171,7 +171,7 @@ TEST(CharChunkTest, AddInput_WithString) {
   table.AddRule("ta", "た", "");
 
   CharChunk chunk1(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result = chunk1.AddInputInternal("itta");
+  std::pair<bool, std::string_view> result = chunk1.AddInputInternal("itta");
   EXPECT_THAT(result, NoLoop());
   EXPECT_TRUE(chunk1.IsFixed());
   EXPECT_EQ(chunk1.raw(), "i");
@@ -205,17 +205,17 @@ TEST(CharChunkTest, AddInput_EmptyOutput) {
   table.AddRuleWithAttributes("c", "", "", NEW_CHUNK | NO_TRANSLITERATION);
 
   CharChunk chunk_a(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result_a = chunk_a.AddInputInternal("a");
+  std::pair<bool, std::string_view> result_a = chunk_a.AddInputInternal("a");
   EXPECT_TRUE(result_a.second.empty());
   EXPECT_EQ(chunk_a.raw(), "a");
 
   CharChunk chunk_b(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result_b = chunk_b.AddInputInternal("b");
+  std::pair<bool, std::string_view> result_b = chunk_b.AddInputInternal("b");
   EXPECT_TRUE(result_b.second.empty());
   EXPECT_TRUE(chunk_b.raw().empty());
 
   CharChunk chunk_c(Transliterators::CONVERSION_STRING, &table);
-  std::pair<bool, absl::string_view> result_c = chunk_c.AddInputInternal("c");
+  std::pair<bool, std::string_view> result_c = chunk_c.AddInputInternal("c");
   EXPECT_TRUE(result_c.second.empty());
   EXPECT_TRUE(chunk_c.raw().empty());
 }

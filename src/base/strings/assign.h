@@ -36,22 +36,22 @@
 #include <type_traits>
 #include <utility>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::strings {
 
 // Assigns the value to std::string and return the reference to the string. This
-// is a workaround for environments where absl::string_view is not an alias of
+// is a workaround for environments where std::string_view is not an alias of
 // std::string_view and cannot be directly assigned to std::string. std::string
 // has a operator= for types convertible to std::string_view, but
-// absl::string_view is not.
+// std::string_view is not.
 //
 // This is more efficient than assigning by `s = std::string(sv)` because it can
 // reuse the existing string buffer while cleaner than writing
 // `s.assign(sv.data(), sv.size())` every time. It's also easier to refactor
-// later once we migrate from absl::string_view to std::string_view.
+// later once we migrate from std::string_view to std::string_view.
 //
-// Use this function when assigning from absl::string_view or using template.
+// Use this function when assigning from std::string_view or using template.
 // Continue to use std::string::operator= if the operand is known to work.
 template <typename T>
 std::string &Assign(std::string &to,
@@ -62,7 +62,7 @@ std::string &Assign(std::string &to,
   return to;
 }
 
-inline std::string &Assign(std::string &to, const absl::string_view value) {
+inline std::string &Assign(std::string &to, const std::string_view value) {
   to.assign(value.data(), value.size());
   return to;
 }

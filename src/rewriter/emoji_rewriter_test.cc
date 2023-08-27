@@ -51,7 +51,7 @@
 #include "usage_stats/usage_stats.h"
 #include "usage_stats/usage_stats_testing_util.h"
 #include "absl/container/btree_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -61,7 +61,7 @@ using mozc::commands::Request;
 constexpr char kEmoji[] = "えもじ";
 
 // Makes |segments| to have only a segment with a key-value paired candidate.
-void SetSegment(const absl::string_view key, const absl::string_view value,
+void SetSegment(const std::string_view key, const std::string_view value,
                 Segments *segments) {
   segments->Clear();
   Segment *seg = segments->push_back_segment();
@@ -88,7 +88,7 @@ int CountEmojiCandidates(const Segments &segments) {
 
 // Checks if the first segment has a specific candidate.
 bool HasExpectedCandidate(const Segments &segments,
-                          const absl::string_view expect_value) {
+                          const std::string_view expect_value) {
   CHECK_LE(1, segments.segments_size());
   const Segment &segment = segments.segment(0);
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
@@ -157,7 +157,7 @@ class TestDataManager : public testing::MockDataManager {
     }
 
     // Set index.
-    std::vector<absl::string_view> strings;
+    std::vector<std::string_view> strings;
     size_t index = 0;
     for (auto &iter : string_index) {
       strings.push_back(iter.first);
@@ -181,17 +181,17 @@ class TestDataManager : public testing::MockDataManager {
   }
 
   void GetEmojiRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const override {
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const override {
     *token_array_data =
-        absl::string_view(reinterpret_cast<const char *>(token_array_.data()),
+        std::string_view(reinterpret_cast<const char *>(token_array_.data()),
                           token_array_.size() * sizeof(uint32_t));
     *string_array_data = string_array_data_;
   }
 
  private:
   std::vector<uint32_t> token_array_;
-  absl::string_view string_array_data_;
+  std::string_view string_array_data_;
   std::unique_ptr<uint32_t[]> string_array_buf_;
 };
 

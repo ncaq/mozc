@@ -37,7 +37,7 @@
 #include "rewriter/rewriter_interface.h"
 // for FRIEND_TEST()
 #include "testing/gunit_prod.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -67,12 +67,12 @@ class SymbolRewriter : public RewriterInterface {
 
   // Some characters may have different description for full/half width forms.
   // Here we just change the description in this function.
-  static std::string GetDescription(absl::string_view value,
-                                    absl::string_view description,
-                                    absl::string_view additional_description);
+  static std::string GetDescription(std::string_view value,
+                                    std::string_view description,
+                                    std::string_view additional_description);
 
   // return true key has no-hiragana
-  static bool IsSymbol(absl::string_view key);
+  static bool IsSymbol(std::string_view key);
 
   // Insert alternative form of space.
   static void ExpandSpace(Segment *segment);
@@ -91,7 +91,7 @@ class SymbolRewriter : public RewriterInterface {
       const SerializedDictionary::IterRange &range, Segment *segment);
 
   static size_t GetOffset(const ConversionRequest &request,
-                          absl::string_view key);
+                          std::string_view key);
 
   // Insert symbols using connected all segments.
   bool RewriteEntireCandidate(const ConversionRequest &request,

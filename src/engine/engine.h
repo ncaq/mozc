@@ -52,7 +52,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -108,7 +108,7 @@ class Engine : public EngineInterface {
     return user_data_manager_.get();
   }
 
-  absl::string_view GetDataVersion() const override {
+  std::string_view GetDataVersion() const override {
     return data_manager_->GetDataVersion();
   }
 

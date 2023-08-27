@@ -37,7 +37,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "absl/algorithm/container.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::strings {
 namespace {
@@ -47,14 +47,14 @@ using ::testing::Pair;
 TEST(UnicodeTest, OneCharLen) {
   // Here, we're testing the additional overload.
   // See internal/utf8_internal_test.cc for other tests.
-  constexpr absl::string_view kText = "Mozc";
+  constexpr std::string_view kText = "Mozc";
   EXPECT_EQ(OneCharLen(kText.begin()), 1);
 }
 
 TEST(UnicodeTest, CharsLen) {
   EXPECT_EQ(CharsLen(""), 0);
 
-  constexpr absl::string_view kText = "私の名前は中野です";
+  constexpr std::string_view kText = "私の名前は中野です";
   EXPECT_EQ(CharsLen(kText), 9);
   EXPECT_EQ(CharsLen(kText.begin(), kText.end()), 9);
   EXPECT_EQ(CharsLen(kText.end(), kText.end()), 0);
@@ -90,7 +90,7 @@ TEST(UnicodeTest, Utf8ToUtf32) {
   // Single codepoint characters.
   EXPECT_EQ(Utf8ToUtf32("aあ亜\na"), U"aあ亜\na");
   // Multiple codepoint characters
-  constexpr absl::string_view kStr =
+  constexpr std::string_view kStr =
       ("神"  // U+795E
        "神󠄀"  // U+795E,U+E0100 - 2 codepoints [IVS]
        "あ゙"  // U+3042,U+3099  - 2 codepoints [Dakuten]
@@ -103,7 +103,7 @@ TEST(UnicodeTest, Utf32ToUtf8) {
   // Single codepoint characters.
   EXPECT_EQ(Utf32ToUtf8(U"aあ亜\na"), "aあ亜\na");
   // Multiple codepoint characters
-  constexpr absl::string_view kExpected =
+  constexpr std::string_view kExpected =
       ("神"  // U+795E
        "神󠄀"  // U+795E,U+E0100 - 2 codepoints [IVS]
        "あ゙"  // U+3042,U+3099  - 2 codepoints [Dakuten]
@@ -129,7 +129,7 @@ TEST(UnicodeTest, IsValidUtf8) {
   EXPECT_FALSE(IsValidUtf8("\xC2"));
   constexpr char kNotNullTerminated[] = {0xf0, 0x90};
   EXPECT_FALSE(IsValidUtf8(
-      absl::string_view(kNotNullTerminated, std::size(kNotNullTerminated))));
+      std::string_view(kNotNullTerminated, std::size(kNotNullTerminated))));
 
   // BOM should be treated as invalid byte.
   EXPECT_FALSE(IsValidUtf8("\xFF "));
@@ -165,9 +165,9 @@ struct Utf8AsCharsTestParam {
     sink.Append(::testing::PrintToString(param.input));
   }
 
-  absl::string_view input;
+  std::string_view input;
   std::u32string_view chars32;
-  std::vector<absl::string_view> u8_strings;
+  std::vector<std::string_view> u8_strings;
 };
 
 class Utf8AsCharsTest : public ::testing::TestWithParam<Utf8AsCharsTestParam> {
@@ -240,9 +240,9 @@ INSTANTIATE_TEST_SUITE_P(
     BoundChecks, Utf8AsCharsTest,
     ::testing::Values(
         // 1 byte
-        Utf8AsCharsTestParam{absl::string_view("\x00", 1),
+        Utf8AsCharsTestParam{std::string_view("\x00", 1),
                              std::u32string_view(U"\x00", 1),
-                             {absl::string_view("\x00", 1)}},
+                             {std::string_view("\x00", 1)}},
         Utf8AsCharsTestParam{"\x01", U"\x01", {"\x01"}},
         Utf8AsCharsTestParam{"\x7F", U"\x7F", {"\x7F"}},
         // 2 bytes
@@ -299,8 +299,8 @@ TEST_P(Utf8AsCharsTest, AsChars32) {
 
 TEST_P(Utf8AsCharsTest, AsString) {
   const Utf8AsChars s(GetParam().input);
-  std::vector<absl::string_view> actual;
-  for (const absl::string_view c : s) {
+  std::vector<std::string_view> actual;
+  for (const std::string_view c : s) {
     actual.push_back(c);
   }
   EXPECT_EQ(actual, GetParam().u8_strings);
@@ -316,7 +316,7 @@ TEST_P(Utf8AsCharsTest, AsString) {
 
 TEST_P(Utf8AsCharsTest, Properties) {
   const Utf8AsChars32 s(GetParam().input);
-  const absl::string_view input = GetParam().input;
+  const std::string_view input = GetParam().input;
   EXPECT_EQ(s.empty(), input.empty());
   EXPECT_EQ(s.begin(), s.cbegin());
   EXPECT_EQ(s.end(), s.cend());
@@ -353,7 +353,7 @@ TEST_P(Utf8AsCharsTest, Substring) {
     ++last;
   }
   const Utf8AsChars substr(first, last);
-  for (const absl::string_view s : substr) {
+  for (const std::string_view s : substr) {
     EXPECT_EQ(s, *expected++);
   }
 

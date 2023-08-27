@@ -46,7 +46,7 @@
 #include "absl/random/random.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -72,7 +72,7 @@ TEST(MmapTest, DefaultCtor) {
 }
 
 TEST(MmapTest, MoveCtor) {
-  constexpr absl::string_view kTestContents = "mmap test";
+  constexpr std::string_view kTestContents = "mmap test";
 
   const std::string &filename = GetRandomFilename();
   ASSERT_OK(FileUtil::SetContents(filename, kTestContents));
@@ -87,7 +87,7 @@ TEST(MmapTest, MoveCtor) {
 }
 
 TEST(MmapTest, MoveAssign) {
-  constexpr absl::string_view kTestContents[2] = {"mmap test 1", "mmap test 2"};
+  constexpr std::string_view kTestContents[2] = {"mmap test 1", "mmap test 2"};
 
   const std::string filename[2] = {GetRandomFilename(), GetRandomFilename()};
   for (size_t i = 0; i < 2; ++i)
@@ -151,7 +151,7 @@ TEST_P(MmapEntireFileTest, Read) {
   const std::vector<char> &data = GetRandomContents(filesize);
   const std::string &filename = GetRandomFilename();
   ASSERT_OK(FileUtil::SetContents(filename,
-                                  absl::string_view(data.data(), data.size())));
+                                  std::string_view(data.data(), data.size())));
 
   // Mmap the file and check its contents.
   const absl::StatusOr<Mmap> mmap = Mmap::Map(filename, Mmap::READ_ONLY);
@@ -177,7 +177,7 @@ TEST_P(MmapEntireFileTest, Write) {
   // Read the file and check its contents.
   absl::StatusOr<std::string> contents = FileUtil::GetContents(filename);
   ASSERT_OK(contents);
-  EXPECT_EQ(*contents, absl::string_view(data.data(), data.size()));
+  EXPECT_EQ(*contents, std::string_view(data.data(), data.size()));
 }
 
 INSTANTIATE_TEST_SUITE_P(MmapTestSuite, MmapEntireFileTest,
@@ -194,9 +194,9 @@ TEST_P(MmapPartialFileTest, Read) {
   const std::vector<char> &data = GetRandomContents(filesize);
   const std::string &filename = GetRandomFilename();
   ASSERT_OK(FileUtil::SetContents(filename,
-                                  absl::string_view(data.data(), data.size())));
+                                  std::string_view(data.data(), data.size())));
 
-  const absl::string_view expected(data.data() + offset,
+  const std::string_view expected(data.data() + offset,
                                    size.value_or(filesize - offset));
   absl::StatusOr<Mmap> mmap =
       Mmap::Map(filename, offset, size, Mmap::READ_ONLY);
@@ -232,7 +232,7 @@ TEST_P(MmapPartialFileTest, Write) {
   ASSERT_OK(contents);
   EXPECT_EQ(contents->substr(0, offset), std::string(offset, 'a'));
   EXPECT_EQ(contents->substr(offset, map_size),
-            absl::string_view(data.data(), data.size()));
+            std::string_view(data.data(), data.size()));
   EXPECT_EQ(contents->substr(offset + map_size),
             std::string(filesize - offset - map_size, 'a'));
 }

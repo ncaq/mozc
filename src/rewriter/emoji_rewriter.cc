@@ -48,7 +48,7 @@
 #include "usage_stats/usage_stats.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 // EmojiRewriter:
 // Converts HIRAGANA strings to emoji characters, if they are names of emojis.
@@ -56,18 +56,18 @@
 namespace mozc {
 namespace {
 
-constexpr absl::string_view kEmoji = "絵文字";
-constexpr absl::string_view kEmojiKey = "えもじ";
+constexpr std::string_view kEmoji = "絵文字";
+constexpr std::string_view kEmojiKey = "えもじ";
 // Where to insert emoji candidate by default.
 constexpr size_t kDefaultInsertPos = 6;
 
 // List of <emoji value, emoji description>.
 using EmojiEntryList =
-    std::vector<std::pair<absl::string_view, absl::string_view>>;
+    std::vector<std::pair<std::string_view, std::string_view>>;
 
 std::unique_ptr<Segment::Candidate> CreateCandidate(
-    absl::string_view key, absl::string_view value,
-    absl::string_view description, int cost) {
+    std::string_view key, std::string_view value,
+    std::string_view description, int cost) {
   auto candidate = std::make_unique<Segment::Candidate>();
   // Fill 0 (BOS/EOS) pos code intentionally.
   candidate->lid = 0;
@@ -97,7 +97,7 @@ void GatherAllEmojiData(EmojiDataIterator begin, EmojiDataIterator end,
                         const SerializedStringArray &string_array,
                         EmojiEntryList *utf8_emoji_list) {
   for (; begin != end; ++begin) {
-    absl::string_view utf8_emoji = string_array[begin.emoji_index()];
+    std::string_view utf8_emoji = string_array[begin.emoji_index()];
     if (utf8_emoji.empty()) {
       continue;
     }
@@ -109,7 +109,7 @@ void GatherAllEmojiData(EmojiDataIterator begin, EmojiDataIterator end,
 }
 
 std::vector<std::unique_ptr<Segment::Candidate>> CreateAllEmojiData(
-    absl::string_view key, const int cost, EmojiEntryList utf8_emoji_list) {
+    std::string_view key, const int cost, EmojiEntryList utf8_emoji_list) {
   std::vector<std::unique_ptr<Segment::Candidate>> candidates;
   candidates.reserve(utf8_emoji_list.size());
   for (const auto &emoji_entry : utf8_emoji_list) {
@@ -120,12 +120,12 @@ std::vector<std::unique_ptr<Segment::Candidate>> CreateAllEmojiData(
 }
 
 std::vector<std::unique_ptr<Segment::Candidate>> CreateEmojiData(
-    absl::string_view key, const int cost, EmojiRewriter::IteratorRange range,
+    std::string_view key, const int cost, EmojiRewriter::IteratorRange range,
     const SerializedStringArray &string_array) {
   std::vector<std::unique_ptr<Segment::Candidate>> candidates;
   candidates.reserve(range.second - range.first);
   for (auto iter = range.first; iter != range.second; ++iter) {
-    absl::string_view utf8_emoji = string_array[iter.emoji_index()];
+    std::string_view utf8_emoji = string_array[iter.emoji_index()];
     if (utf8_emoji.empty()) {
       continue;
     }
@@ -137,7 +137,7 @@ std::vector<std::unique_ptr<Segment::Candidate>> CreateEmojiData(
 }  // namespace
 
 EmojiRewriter::EmojiRewriter(const DataManagerInterface &data_manager) {
-  absl::string_view string_array_data;
+  std::string_view string_array_data;
   data_manager.GetEmojiRewriterData(&token_array_data_, &string_array_data);
   DCHECK(SerializedStringArray::VerifyData(string_array_data));
   string_array_.Set(string_array_data);
@@ -190,7 +190,7 @@ bool EmojiRewriter::IsEmojiCandidate(const Segment::Candidate &candidate) {
 }
 
 std::pair<EmojiDataIterator, EmojiDataIterator> EmojiRewriter::LookUpToken(
-    absl::string_view key) const {
+    std::string_view key) const {
   // Search string array for key.
   auto iter = std::lower_bound(string_array_.begin(), string_array_.end(), key);
   if (iter == string_array_.end() || *iter != key) {

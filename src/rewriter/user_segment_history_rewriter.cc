@@ -58,7 +58,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -96,7 +96,7 @@ class FeatureValue {
   [[maybe_unused]] uint32_t reserved_ : 31;  // this area is reserved for future
 };
 
-bool IsPunctuationInternal(absl::string_view str) {
+bool IsPunctuationInternal(std::string_view str) {
   return (str == "。" || str == "｡" || str == "、" || str == "､" ||
           str == "，" || str == "," || str == "．" || str == ".");
 }
@@ -139,7 +139,7 @@ inline int GetDefaultCandidateIndex(const Segment &segment) {
 template <typename... Strings>
 std::string StrJoinWithTabs(const Strings &...strings) {
   // Make sure we use the string_view overload so the buffer is preallocated.
-  return absl::StrJoin({static_cast<absl::string_view>(strings)...}, "\t");
+  return absl::StrJoin({static_cast<std::string_view>(strings)...}, "\t");
 }
 
 class FeatureKey {
@@ -148,24 +148,24 @@ class FeatureKey {
              size_t index)
       : segments_(segments), pos_matcher_(pos_matcher), index_(index) {}
 
-  std::string LeftRight(absl::string_view base_key,
-                        absl::string_view base_value) const;
-  std::string LeftLeft(absl::string_view base_key,
-                       absl::string_view base_value) const;
-  std::string RightRight(absl::string_view base_key,
-                         absl::string_view base_value) const;
-  std::string Left(absl::string_view base_key,
-                   absl::string_view base_value) const;
-  std::string Right(absl::string_view base_key,
-                    absl::string_view base_value) const;
-  std::string Current(absl::string_view base_key,
-                      absl::string_view base_value) const;
-  std::string Single(absl::string_view base_key,
-                     absl::string_view base_value) const;
-  std::string LeftNumber(absl::string_view base_key,
-                         absl::string_view base_value) const;
-  std::string RightNumber(absl::string_view base_key,
-                          absl::string_view base_value) const;
+  std::string LeftRight(std::string_view base_key,
+                        std::string_view base_value) const;
+  std::string LeftLeft(std::string_view base_key,
+                       std::string_view base_value) const;
+  std::string RightRight(std::string_view base_key,
+                         std::string_view base_value) const;
+  std::string Left(std::string_view base_key,
+                   std::string_view base_value) const;
+  std::string Right(std::string_view base_key,
+                    std::string_view base_value) const;
+  std::string Current(std::string_view base_key,
+                      std::string_view base_value) const;
+  std::string Single(std::string_view base_key,
+                     std::string_view base_value) const;
+  std::string LeftNumber(std::string_view base_key,
+                         std::string_view base_value) const;
+  std::string RightNumber(std::string_view base_key,
+                          std::string_view base_value) const;
 
   static std::string Number(uint16_t type);
 
@@ -176,8 +176,8 @@ class FeatureKey {
 };
 
 // Feature "Left Right"
-std::string FeatureKey::LeftRight(absl::string_view base_key,
-                                  absl::string_view base_value) const {
+std::string FeatureKey::LeftRight(std::string_view base_key,
+                                  std::string_view base_value) const {
   if (index_ + 1 >= segments_.segments_size() || index_ <= 0) {
     return "";
   }
@@ -189,8 +189,8 @@ std::string FeatureKey::LeftRight(absl::string_view base_key,
 }
 
 // Feature "Left Left"
-std::string FeatureKey::LeftLeft(absl::string_view base_key,
-                                 absl::string_view base_value) const {
+std::string FeatureKey::LeftLeft(std::string_view base_key,
+                                 std::string_view base_value) const {
   if (index_ < 2) {
     return "";
   }
@@ -202,8 +202,8 @@ std::string FeatureKey::LeftLeft(absl::string_view base_key,
 }
 
 // Feature "Right Right"
-std::string FeatureKey::RightRight(absl::string_view base_key,
-                                   absl::string_view base_value) const {
+std::string FeatureKey::RightRight(std::string_view base_key,
+                                   std::string_view base_value) const {
   if (index_ + 2 >= segments_.segments_size()) {
     return "";
   }
@@ -215,8 +215,8 @@ std::string FeatureKey::RightRight(absl::string_view base_key,
 }
 
 // Feature "Left"
-std::string FeatureKey::Left(absl::string_view base_key,
-                             absl::string_view base_value) const {
+std::string FeatureKey::Left(std::string_view base_key,
+                             std::string_view base_value) const {
   if (index_ < 1) {
     return "";
   }
@@ -227,8 +227,8 @@ std::string FeatureKey::Left(absl::string_view base_key,
 }
 
 // Feature "Right"
-std::string FeatureKey::Right(absl::string_view base_key,
-                              absl::string_view base_value) const {
+std::string FeatureKey::Right(std::string_view base_key,
+                              std::string_view base_value) const {
   if (index_ + 1 >= segments_.segments_size()) {
     return "";
   }
@@ -238,14 +238,14 @@ std::string FeatureKey::Right(absl::string_view base_key,
 }
 
 // Feature "Current"
-std::string FeatureKey::Current(absl::string_view base_key,
-                                absl::string_view base_value) const {
+std::string FeatureKey::Current(std::string_view base_key,
+                                std::string_view base_value) const {
   return StrJoinWithTabs("C", base_key, base_value);
 }
 
 // Feature "Single"
-std::string FeatureKey::Single(absl::string_view base_key,
-                               absl::string_view base_value) const {
+std::string FeatureKey::Single(std::string_view base_key,
+                               std::string_view base_value) const {
   if (segments_.segments_size() - segments_.history_segments_size() != 1) {
     return "";
   }
@@ -253,8 +253,8 @@ std::string FeatureKey::Single(absl::string_view base_key,
 }
 
 // Feature "Left Number"
-std::string FeatureKey::LeftNumber(absl::string_view base_key,
-                                   absl::string_view base_value) const {
+std::string FeatureKey::LeftNumber(std::string_view base_key,
+                                   std::string_view base_value) const {
   if (index_ < 1) {
     return "";
   }
@@ -270,8 +270,8 @@ std::string FeatureKey::LeftNumber(absl::string_view base_key,
 }
 
 // Feature "Right Number"
-std::string FeatureKey::RightNumber(absl::string_view base_key,
-                                    absl::string_view base_value) const {
+std::string FeatureKey::RightNumber(std::string_view base_key,
+                                    std::string_view base_value) const {
   if (index_ + 1 >= segments_.segments_size()) {
     return "";
   }
@@ -657,8 +657,8 @@ void UserSegmentHistoryRewriter::RememberFirstCandidate(
   }
 
   // learn CloseBracket when OpenBracket is fixed.
-  absl::string_view close_bracket_key;
-  absl::string_view close_bracket_value;
+  std::string_view close_bracket_key;
+  std::string_view close_bracket_value;
   if (Util::IsOpenBracket(content_key, &close_bracket_key) &&
       Util::IsOpenBracket(content_value, &close_bracket_value)) {
     Insert(fkey.Single(close_bracket_key, close_bracket_value), force_insert);
@@ -812,7 +812,7 @@ void UserSegmentHistoryRewriter::InsertTriggerKey(const Segment &segment) {
                      reinterpret_cast<const char *>(&v));
   }
 
-  absl::string_view close_bracket_key;
+  std::string_view close_bracket_key;
   if (Util::IsOpenBracket(segment.key(), &close_bracket_key)) {
     const std::string key{close_bracket_key.data(), close_bracket_key.size()};
     storage_->Insert(key, reinterpret_cast<const char *>(&v));
@@ -950,7 +950,7 @@ bool UserSegmentHistoryRewriter::IsPunctuation(
 }
 
 UserSegmentHistoryRewriter::Score UserSegmentHistoryRewriter::Fetch(
-    const absl::string_view key, const uint32_t weight) const {
+    const std::string_view key, const uint32_t weight) const {
   if (!key.empty()) {
     uint32_t atime;
     const FeatureValue *v = std::launder(
@@ -962,7 +962,7 @@ UserSegmentHistoryRewriter::Score UserSegmentHistoryRewriter::Fetch(
   return {0, 0};
 }
 
-void UserSegmentHistoryRewriter::Insert(absl::string_view key, bool force) {
+void UserSegmentHistoryRewriter::Insert(std::string_view key, bool force) {
   if (!key.empty()) {
     FeatureValue v;
     DCHECK(v.IsValid());

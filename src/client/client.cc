@@ -55,7 +55,7 @@
 #include "session/key_info_util.h"
 #include "absl/base/attributes.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 #ifdef _WIN32
@@ -225,8 +225,8 @@ void Client::DumpQueryOfDeath() {
   ResetHistory();
 }
 
-void Client::DumpHistorySnapshot(const absl::string_view filename,
-                                 const absl::string_view label) const {
+void Client::DumpHistorySnapshot(const std::string_view filename,
+                                 const std::string_view label) const {
   const std::string snapshot_file =
       FileUtil::JoinPath(SystemUtil::GetUserProfileDirectory(), filename);
   // open with append mode
@@ -438,7 +438,7 @@ void Client::set_restricted(bool restricted) {
   server_launcher_->set_restricted(restricted);
 }
 
-void Client::set_server_program(const absl::string_view program_path) {
+void Client::set_server_program(const std::string_view program_path) {
   server_launcher_->set_server_program(program_path);
 }
 
@@ -862,7 +862,7 @@ bool Client::LaunchToolWithProtoBuf(const commands::Output &output) {
 }
 
 bool Client::LaunchTool(const std::string &mode,
-                        const absl::string_view extra_arg) {
+                        const std::string_view extra_arg) {
   // Don't execute any child process if the parent process is not
   // in proper runlevel.
   if (!IsValidRunLevel()) {

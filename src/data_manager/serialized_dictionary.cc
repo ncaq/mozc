@@ -49,7 +49,7 @@
 #include "absl/base/config.h"
 #include "absl/container/btree_map.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -89,21 +89,21 @@ void LoadTokens(std::istream *ifs, std::map<std::string, TokenList> *dic) {
 
 }  // namespace
 
-SerializedDictionary::SerializedDictionary(absl::string_view token_array,
-                                           absl::string_view string_array_data)
+SerializedDictionary::SerializedDictionary(std::string_view token_array,
+                                           std::string_view string_array_data)
     : token_array_(token_array) {
   DCHECK(VerifyData(token_array, string_array_data));
   string_array_.Set(string_array_data);
 }
 
 SerializedDictionary::IterRange SerializedDictionary::equal_range(
-    absl::string_view key) const {
+    std::string_view key) const {
   // TODO(noriyukit): Instead of comparing key as string, we can do binary
   // search using key index to minimize string comparison cost.
   return std::equal_range(begin(), end(), key);
 }
 
-std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
+std::pair<std::string_view, std::string_view> SerializedDictionary::Compile(
     std::istream *input, std::unique_ptr<uint32_t[]> *output_token_array_buf,
     std::unique_ptr<uint32_t[]> *output_string_array_buf) {
   std::map<std::string, TokenList> dic;
@@ -111,7 +111,7 @@ std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
   return Compile(dic, output_token_array_buf, output_string_array_buf);
 }
 
-std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
+std::pair<std::string_view, std::string_view> SerializedDictionary::Compile(
     const std::map<std::string, TokenList> &dic,
     std::unique_ptr<uint32_t[]> *output_token_array_buf,
     std::unique_ptr<uint32_t[]> *output_string_array_buf) {
@@ -140,7 +140,7 @@ std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
   }
 
   // Build a token array binary data.
-  absl::string_view token_array;
+  std::string_view token_array;
   {
     std::string buf;
     for (const auto &kv : dic) {
@@ -166,17 +166,17 @@ std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
     *output_token_array_buf =
         std::make_unique<uint32_t[]>((buf.size() + 3) / 4);
     memcpy(output_token_array_buf->get(), buf.data(), buf.size());
-    token_array = absl::string_view(
+    token_array = std::string_view(
         reinterpret_cast<const char *>(output_token_array_buf->get()),
         buf.size());
   }
 
   // Build a string array.
-  absl::string_view string_array;
+  std::string_view string_array;
   {
     // Copy the map keys to vector.  Note: since map's iteration is ordered,
     // each string is placed at the desired index.
-    std::vector<absl::string_view> strings;
+    std::vector<std::string_view> strings;
     for (const auto &kv : string_index) {
       // Guarantee that the string is inserted at its indexed position.
       CHECK_EQ(strings.size(), kv.second);
@@ -186,7 +186,7 @@ std::pair<absl::string_view, absl::string_view> SerializedDictionary::Compile(
         strings, output_string_array_buf);
   }
 
-  return std::pair<absl::string_view, absl::string_view>(token_array,
+  return std::pair<std::string_view, std::string_view>(token_array,
                                                          string_array);
 }
 
@@ -205,15 +205,15 @@ void SerializedDictionary::CompileToFiles(
     const std::string &output_token_array,
     const std::string &output_string_array) {
   std::unique_ptr<uint32_t[]> buf1, buf2;
-  const std::pair<absl::string_view, absl::string_view> data =
+  const std::pair<std::string_view, std::string_view> data =
       Compile(dic, &buf1, &buf2);
   CHECK(VerifyData(data.first, data.second));
   CHECK_OK(FileUtil::SetContents(output_token_array, data.first));
   CHECK_OK(FileUtil::SetContents(output_string_array, data.second));
 }
 
-bool SerializedDictionary::VerifyData(absl::string_view token_array_data,
-                                      absl::string_view string_array_data) {
+bool SerializedDictionary::VerifyData(std::string_view token_array_data,
+                                      std::string_view string_array_data) {
   if (token_array_data.size() % kTokenByteLength != 0) {
     return false;
   }

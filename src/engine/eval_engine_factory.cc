@@ -41,9 +41,9 @@
 namespace mozc {
 
 absl::StatusOr<std::unique_ptr<Engine>> CreateEvalEngine(
-    absl::string_view data_file_path, absl::string_view data_type,
-    absl::string_view engine_type) {
-  const absl::string_view magic_number =
+    std::string_view data_file_path, std::string_view data_type,
+    std::string_view engine_type) {
+  const std::string_view magic_number =
       DataManager::GetDataSetMagicNumber(data_type);
   absl::StatusOr<std::unique_ptr<DataManager>> data_manager =
       DataManager::CreateFromFile(std::string(data_file_path), magic_number);

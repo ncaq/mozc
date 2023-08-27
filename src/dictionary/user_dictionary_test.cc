@@ -65,7 +65,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -108,7 +108,7 @@ constexpr char kUserDictionary0[] =
 
 constexpr char kUserDictionary1[] = "end\tend\tverb\n";
 
-void PushBackToken(absl::string_view key, absl::string_view value, uint16_t id,
+void PushBackToken(std::string_view key, std::string_view value, uint16_t id,
                    std::vector<UserPos::Token> *tokens) {
   tokens->resize(tokens->size() + 1);
   UserPos::Token *t = &tokens->back();
@@ -131,10 +131,10 @@ class UserPosMock : public UserPosInterface {
   ~UserPosMock() override = default;
 
   // This method returns true if the given pos is "noun" or "verb".
-  bool IsValidPos(absl::string_view pos) const override { return true; }
+  bool IsValidPos(std::string_view pos) const override { return true; }
 
-  static constexpr absl::string_view kNoun = "名詞";
-  static constexpr absl::string_view kVerb = "動詞ワ行五段";
+  static constexpr std::string_view kNoun = "名詞";
+  static constexpr std::string_view kVerb = "動詞ワ行五段";
 
   // Given a verb, this method expands it to three different forms,
   // i.e. base form (the word itself), "-ed" form and "-ing" form. For
@@ -148,8 +148,8 @@ class UserPosMock : public UserPosInterface {
   //  verb (base form) | 200 | 200
   //  verb (-ed form)  | 210 | 210
   //  verb (-ing form) | 220 | 220
-  bool GetTokens(absl::string_view key, absl::string_view value,
-                 absl::string_view pos, absl::string_view locale,
+  bool GetTokens(std::string_view key, std::string_view value,
+                 std::string_view pos, std::string_view locale,
                  std::vector<UserPos::Token> *tokens) const override {
     if (key.empty() || value.empty() || pos.empty() || tokens == nullptr) {
       return false;
@@ -173,7 +173,7 @@ class UserPosMock : public UserPosInterface {
 
   void GetPosList(std::vector<std::string> *pos_list) const override {}
 
-  bool GetPosIds(absl::string_view pos, uint16_t *id) const override {
+  bool GetPosIds(std::string_view pos, uint16_t *id) const override {
     return false;
   }
 };
@@ -225,8 +225,8 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
 
   class EntryCollector : public DictionaryInterface::Callback {
    public:
-    ResultType OnToken(absl::string_view,  // key
-                       absl::string_view,  // actual_key
+    ResultType OnToken(std::string_view,  // key
+                       std::string_view,  // actual_key
                        const Token &token) override {
       // Collect only user dictionary entries.
       if (token.attributes & Token::USER_DICTIONARY) {
@@ -246,7 +246,7 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
   };
 
   bool TestLookupPredictiveHelper(const Entry *expected, size_t expected_size,
-                                  absl::string_view key,
+                                  std::string_view key,
                                   const UserDictionary &dic) {
     EntryCollector collector;
     dic.LookupPredictive(key, convreq_, &collector);
@@ -262,7 +262,7 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
                               const char *key, size_t key_size,
                               const UserDictionary &dic) {
     EntryCollector collector;
-    dic.LookupPrefix(absl::string_view(key, key_size), convreq_, &collector);
+    dic.LookupPrefix(std::string_view(key, key_size), convreq_, &collector);
 
     if (expected == nullptr || expected_size == 0) {
       EXPECT_TRUE(collector.entries().empty());
@@ -276,7 +276,7 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
                              const char *key, size_t key_size,
                              const UserDictionary &dic) {
     EntryCollector collector;
-    dic.LookupExact(absl::string_view(key, key_size), convreq_, &collector);
+    dic.LookupExact(std::string_view(key, key_size), convreq_, &collector);
 
     if (expected == nullptr || expected_size == 0) {
       EXPECT_TRUE(collector.entries().empty());
@@ -322,7 +322,7 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
       if (line.empty() || line[0] == '#') {
         continue;
       }
-      std::vector<absl::string_view> fields =
+      std::vector<std::string_view> fields =
           absl::StrSplit(line, '\t', absl::AllowEmpty());
       EXPECT_GE(fields.size(), 3) << line;
       UserDictionaryStorage::UserDictionaryEntry *entry = dic->add_entries();
@@ -341,8 +341,8 @@ class UserDictionaryTest : public testing::TestWithTempUserProfile {
   }
 
   // Helper function to lookup comment string from |dic|.
-  std::string LookupComment(const UserDictionary &dic, absl::string_view key,
-                            absl::string_view value) {
+  std::string LookupComment(const UserDictionary &dic, std::string_view key,
+                            std::string_view value) {
     std::string comment;
     dic.LookupComment(key, value, convreq_, &comment);
     return comment;

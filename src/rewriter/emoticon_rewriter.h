@@ -38,7 +38,7 @@
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
 #include "absl/random/random.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -47,8 +47,8 @@ class EmoticonRewriter : public RewriterInterface {
   static std::unique_ptr<EmoticonRewriter> CreateFromDataManager(
       const DataManagerInterface &data_manager);
 
-  EmoticonRewriter(absl::string_view token_array_data,
-                   absl::string_view string_array_data);
+  EmoticonRewriter(std::string_view token_array_data,
+                   std::string_view string_array_data);
 
   int capability(const ConversionRequest &request) const override;
 

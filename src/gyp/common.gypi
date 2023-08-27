@@ -101,7 +101,6 @@
     ],
     # Libraries for GNU/Linux environment.
     'linux_ldflags': [
-      '-lc++',
       '-pthread',
     ],
 
@@ -186,7 +185,6 @@
               '-Wtype-limits',
             ],
             'cflags_cc': [
-              '-stdlib=libc++',
               '-Wno-covered-switch-default',
               '-Wno-unnamed-type-template-args',
               '-Wno-c++11-narrowing',
@@ -206,7 +204,6 @@
               '-Wtype-limits',
             ],
             'cflags_cc': [
-              '-stdlib=libc++',
               '-Wno-covered-switch-default',
               '-Wno-unnamed-type-template-args',
               '-Wno-c++11-narrowing',

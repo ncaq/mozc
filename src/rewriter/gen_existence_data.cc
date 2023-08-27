@@ -40,7 +40,7 @@
 #include "base/hash.h"
 #include "base/logging.h"
 #include "storage/existence_filter.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -67,7 +67,7 @@ std::string GenExistenceData(const absl::Span<const std::string> entries,
 }  // namespace
 
 void OutputExistenceHeader(const absl::Span<const std::string> entries,
-                           const absl::string_view data_namespace,
+                           const std::string_view data_namespace,
                            std::ostream *ofs, double error_rate) {
   const std::string existence_data = GenExistenceData(entries, error_rate);
 

@@ -44,7 +44,7 @@
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(std::string, input, "", "Emoticon dictionary file");
 ABSL_FLAG(std::string, output_token_array, "", "Output token array");
@@ -58,7 +58,7 @@ using CompilerToken = SerializedDictionary::CompilerToken;
 using TokenList = SerializedDictionary::TokenList;
 
 int LookupCount(const absl::flat_hash_map<std::string, int> &key_count,
-                const absl::string_view key) {
+                const std::string_view key) {
   const auto iter = key_count.find(key);
   return (iter == key_count.end()) ? 0 : iter->second;
 }
@@ -71,7 +71,7 @@ std::string GetDescription(
   }
   KeyList sorted_key_list(key_list);
   std::sort(sorted_key_list.begin(), sorted_key_list.end(),
-            [&key_count](const absl::string_view x, const absl::string_view y) {
+            [&key_count](const std::string_view x, const std::string_view y) {
               const int x_count = LookupCount(key_count, x);
               const int y_count = LookupCount(key_count, y);
               if (x_count == y_count) {
@@ -92,7 +92,7 @@ std::map<std::string, TokenList> ReadEmoticonTsv(const std::string &path) {
   std::vector<std::pair<std::string, KeyList>> data;
   absl::flat_hash_map<std::string, int> key_count;
   while (std::getline(ifs, line)) {
-    const std::vector<absl::string_view> field_list =
+    const std::vector<std::string_view> field_list =
         absl::StrSplit(line, '\t', absl::SkipEmpty());
     CHECK_GE(field_list.size(), 2) << "Format error: " << line;
     LOG_IF(WARNING, field_list.size() > 3) << "Ignore extra columns: " << line;

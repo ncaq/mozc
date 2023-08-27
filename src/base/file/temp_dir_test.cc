@@ -40,7 +40,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -87,7 +87,7 @@ TEST_F(TempDirectoryTest, Default) {
   EXPECT_THAT(temp_dir.path(), Not(IsEmpty()));
 
   // Try to write something to a temporary file.
-  constexpr absl::string_view kTestContent = "testing temp dir";
+  constexpr std::string_view kTestContent = "testing temp dir";
   TempFile temp_file = CreateFile(temp_dir);
   EXPECT_OK(FileUtil::SetContents(temp_file.path(), kTestContent));
   std::string content;

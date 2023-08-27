@@ -58,7 +58,7 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 // TODO(komatsu): internal files should not be used from external modules.
 
 #if defined(__ANDROID__) || defined(__wasm__)
@@ -75,7 +75,7 @@ config::Config::SessionKeymap kKeyMaps[] = {
     config::Config::KOTOERI,
 };
 
-constexpr absl::string_view kKeyMapStatus[] = {
+constexpr std::string_view kKeyMapStatus[] = {
     "DirectInput", "Precomposition", "Composition",
     "Conversion",  "Suggestion",     "Prediction",
 };
@@ -124,7 +124,7 @@ class KeyMapValidator {
     invisible_key_events_.insert(mozc::commands::KeyEvent::TEXT_INPUT);
   }
 
-  bool IsVisibleKey(const absl::string_view key) {
+  bool IsVisibleKey(const std::string_view key) {
     mozc::commands::KeyEvent key_event;
     const bool parse_success = mozc::KeyParser::ParseKey(key, &key_event);
     if (!parse_success) {
@@ -147,12 +147,12 @@ class KeyMapValidator {
     return true;
   }
 
-  bool IsVisibleStatus(const absl::string_view status) {
+  bool IsVisibleStatus(const std::string_view status) {
     // no validation for now.
     return true;
   }
 
-  bool IsVisibleCommand(const absl::string_view command) {
+  bool IsVisibleCommand(const std::string_view command) {
     if (invisible_commands_.contains(command)) {
       VLOG(3) << "invisible command: " << command;
       return false;
@@ -225,7 +225,7 @@ class KeyMapTableLoader {
       commands_ << QString::fromUtf8(command.data(), command.size());
     }
 
-    for (const absl::string_view status : kKeyMapStatus) {
+    for (const std::string_view status : kKeyMapStatus) {
       status_ << QString::fromUtf8(status.data(), status.size());
     }
   }

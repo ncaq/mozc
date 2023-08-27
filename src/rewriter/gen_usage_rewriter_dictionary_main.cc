@@ -111,7 +111,7 @@
 #include "absl/flags/flag.h"
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(std::string, usage_data_file, "", "usage data file");
 ABSL_FLAG(std::string, cforms_file, "", "cforms file");
@@ -251,7 +251,7 @@ void RemoveBaseformConjugationSuffix(
 }
 
 uint32_t Lookup(const absl::btree_map<std::string, uint32_t> &m,
-                const absl::string_view key) {
+                const std::string_view key) {
   const auto iter = m.find(key);
   CHECK(iter != m.end()) << "Cannot find key=" << key;
   return iter->second;
@@ -379,7 +379,7 @@ void Convert() {
 
   // Output string array.
   {
-    std::vector<absl::string_view> strs;
+    std::vector<std::string_view> strs;
     for (const auto &kv : string_index) {
       // Check if the string is placed at its index in the string array.
       CHECK_EQ(strs.size(), kv.second);

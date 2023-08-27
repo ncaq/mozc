@@ -44,7 +44,7 @@
 #include "composer/table.h"
 #include "absl/container/btree_set.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -74,7 +74,7 @@ constexpr int kMaxRecursion = 4;
 // '{*}ぃ' -> '', '{*}い'
 // '{*}い' -> '', '{*}ぃ'
 // Here, we want to get '{*}あ' <-> '{*}ぁ' loop from the input, 'あ'
-bool GetFromPending(const Table *table, const absl::string_view key,
+bool GetFromPending(const Table *table, const std::string_view key,
                     int recursion_count, absl::btree_set<std::string> *result) {
   DCHECK(result);
   if (recursion_count == 0) {
@@ -262,7 +262,7 @@ bool CharChunk::IsAppendable(Transliterators::Transliterator t12r,
 
 bool CharChunk::IsConvertible(Transliterators::Transliterator t12r,
                               const Table *table,
-                              const absl::string_view input) const {
+                              const std::string_view input) const {
   if (!IsAppendable(t12r, table)) {
     return false;
   }
@@ -293,8 +293,8 @@ void CharChunk::Combine(const CharChunk &left_chunk) {
   pending_ = left_chunk.pending_ + pending_;
 }
 
-std::pair<bool, absl::string_view> CharChunk::AddInputInternal(
-    absl::string_view input) {
+std::pair<bool, std::string_view> CharChunk::AddInputInternal(
+    std::string_view input) {
   constexpr bool kLoop = true;
   constexpr bool kNoLoop = false;
 
@@ -308,7 +308,7 @@ std::pair<bool, absl::string_view> CharChunk::AddInputInternal(
     if (used_key_length == 0) {
       // If `input` starts with a special key, erases it and keeps the loop.
       // For example, if `input` is "{!}ab{?}", `input` becomes "ab{?}".
-      const absl::string_view trimmed = TrimLeadingSpecialKey(input);
+      const std::string_view trimmed = TrimLeadingSpecialKey(input);
       if (trimmed.size() < input.size()) {
         return {kLoop, trimmed};
       }
@@ -334,7 +334,7 @@ std::pair<bool, absl::string_view> CharChunk::AddInputInternal(
       const Entry *next_entry =
           table_->LookUpPrefix(input, &used_length, &next_fixed);
       const bool no_entry = (next_entry == nullptr && used_length == 0);
-      const absl::string_view trimmed = TrimLeadingSpecialKey(input);
+      const std::string_view trimmed = TrimLeadingSpecialKey(input);
       if (no_entry && trimmed.size() < input.size()) {
         return {kLoop, trimmed};
       }
@@ -354,7 +354,7 @@ std::pair<bool, absl::string_view> CharChunk::AddInputInternal(
     // Move used input characters to CharChunk data.
     DCHECK_GT(used_key_length, pending_.size());
     const size_t used_input_length = used_key_length - pending_.size();
-    const absl::string_view used_input_chars =
+    const std::string_view used_input_chars =
         input.substr(0, used_input_length);
     absl::StrAppend(&raw_, used_input_chars);
     absl::StrAppend(&pending_, used_input_chars);
@@ -412,7 +412,7 @@ std::pair<bool, absl::string_view> CharChunk::AddInputInternal(
 }
 
 void CharChunk::AddInput(std::string *input) {
-  absl::string_view tmp = *input;
+  std::string_view tmp = *input;
   bool loop = true;
   while (loop) {
     std::tie(loop, tmp) = AddInputInternal(tmp);
@@ -602,8 +602,8 @@ Transliterators::Transliterator CharChunk::GetTransliterator(
 }
 
 std::string CharChunk::Transliterate(
-    Transliterators::Transliterator transliterator, const absl::string_view raw,
-    const absl::string_view converted) const {
+    Transliterators::Transliterator transliterator, const std::string_view raw,
+    const std::string_view converted) const {
   return Transliterators::GetTransliterator(GetTransliterator(transliterator))
       ->Transliterate(raw, converted);
 }

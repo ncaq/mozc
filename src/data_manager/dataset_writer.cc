@@ -38,7 +38,7 @@
 #include "base/unverified_sha1.h"
 #include "base/util.h"
 #include "absl/numeric/bits.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -51,7 +51,7 @@ bool IsValidAlignment(int a) {
 }  // namespace
 
 void DataSetWriter::Add(const std::string &name, int alignment,
-                        absl::string_view data) {
+                        std::string_view data) {
   CHECK(seen_names_.insert(name).second) << name << " was already added";
   AppendPadding(alignment);
   DataSetMetadata::Entry *entry = metadata_.add_entries();

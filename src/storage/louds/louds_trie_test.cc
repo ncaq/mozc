@@ -34,7 +34,7 @@
 
 #include "storage/louds/louds_trie_builder.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -44,7 +44,7 @@ namespace {
 class RecordCallbackArgs {
  public:
   struct CallbackArgs {
-    absl::string_view key;
+    std::string_view key;
     size_t prefix_len;
     const LoudsTrie *trie;
     LoudsTrie::Node node;
@@ -53,7 +53,7 @@ class RecordCallbackArgs {
   explicit RecordCallbackArgs(std::vector<CallbackArgs> *output)
       : output_(output) {}
 
-  void operator()(absl::string_view key, size_t prefix_len,
+  void operator()(std::string_view key, size_t prefix_len,
                   const LoudsTrie &trie, LoudsTrie::Node node) {
     CallbackArgs args;
     args.key = key;
@@ -67,7 +67,7 @@ class RecordCallbackArgs {
   std::vector<CallbackArgs> *output_;
 };
 
-LoudsTrie::Node Traverse(const LoudsTrie &trie, absl::string_view key) {
+LoudsTrie::Node Traverse(const LoudsTrie &trie, std::string_view key) {
   LoudsTrie::Node node;
   trie.Traverse(key, &node);
   return node;
@@ -432,7 +432,7 @@ TEST_P(LoudsTrieTest, PrefixSearch) {
             param.louds_select0_cache_size, param.louds_select1_cache_size,
             param.termvec_lb1_cache_size);
   {
-    const absl::string_view kKey = "abc";
+    const std::string_view kKey = "abc";
     std::vector<RecordCallbackArgs::CallbackArgs> actual;
     trie.PrefixSearch(kKey, RecordCallbackArgs(&actual));
 
@@ -451,7 +451,7 @@ TEST_P(LoudsTrieTest, PrefixSearch) {
     EXPECT_EQ(actual[1].node, Traverse(trie, "abc"));
   }
   {
-    const absl::string_view kKey = "abxxxxxxx";
+    const std::string_view kKey = "abxxxxxxx";
     std::vector<RecordCallbackArgs::CallbackArgs> actual;
     trie.PrefixSearch(kKey, RecordCallbackArgs(&actual));
 
@@ -465,7 +465,7 @@ TEST_P(LoudsTrieTest, PrefixSearch) {
   }
   {
     // Make sure that it works for non-ascii characters too.
-    const absl::string_view kKey = "\x01\xFF\xFF";
+    const std::string_view kKey = "\x01\xFF\xFF";
     std::vector<RecordCallbackArgs::CallbackArgs> actual;
     trie.PrefixSearch(kKey, RecordCallbackArgs(&actual));
 

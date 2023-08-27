@@ -37,7 +37,7 @@
 #include "base/system_util.h"
 #include "config/config_handler.h"
 #include "ipc/ipc.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
@@ -63,7 +63,7 @@ QtIpcServer::QtIpcServer()
     : IPCServer(GetServiceName(), kNumConnections, kIPCServerTimeOut) {}
 QtIpcServer::~QtIpcServer() {}
 
-bool QtIpcServer::Process(absl::string_view request, std::string *response) {
+bool QtIpcServer::Process(std::string_view request, std::string *response) {
   // no need to set the result code.
   response->clear();
 

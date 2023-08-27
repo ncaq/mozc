@@ -37,7 +37,7 @@
 #include "absl/base/thread_annotations.h"
 #include "absl/container/flat_hash_set.h"
 #include "absl/hash/hash.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -85,11 +85,11 @@ class ABSL_LOCKABLE SuppressionDictionary final {
 
   // Returns true if a word having `key` and `value` should be suppressed.
   // Returns false if the dictionary is locked.
-  bool SuppressEntry(absl::string_view key, absl::string_view value) const;
+  bool SuppressEntry(std::string_view key, std::string_view value) const;
 
  private:
   using KeyValue = std::pair<std::string, std::string>;
-  using KeyValueView = std::pair<absl::string_view, absl::string_view>;
+  using KeyValueView = std::pair<std::string_view, std::string_view>;
   struct KeyValueHash : public absl::Hash<KeyValueView> {
     using is_transparent = void;
   };

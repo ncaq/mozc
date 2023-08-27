@@ -51,23 +51,23 @@
 #include "testing/mozctest.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
 using ::mozc::dictionary::PosMatcher;
 
-constexpr absl::string_view kKanjiDescription = "漢数字";
-constexpr absl::string_view kArabicDescription = "数字";
-constexpr absl::string_view kOldKanjiDescription = "大字";
-constexpr absl::string_view kMaruNumberDescription = "丸数字";
-constexpr absl::string_view kRomanCapitalDescription = "ローマ数字(大文字)";
-constexpr absl::string_view kRomanNoCapitalDescription = "ローマ数字(小文字)";
-constexpr absl::string_view kSuperscriptDescription = "上付き文字";
-constexpr absl::string_view kSubscriptDescription = "下付き文字";
+constexpr std::string_view kKanjiDescription = "漢数字";
+constexpr std::string_view kArabicDescription = "数字";
+constexpr std::string_view kOldKanjiDescription = "大字";
+constexpr std::string_view kMaruNumberDescription = "丸数字";
+constexpr std::string_view kRomanCapitalDescription = "ローマ数字(大文字)";
+constexpr std::string_view kRomanNoCapitalDescription = "ローマ数字(小文字)";
+constexpr std::string_view kSuperscriptDescription = "上付き文字";
+constexpr std::string_view kSubscriptDescription = "下付き文字";
 
-bool FindValue(const Segment &segment, const absl::string_view value) {
+bool FindValue(const Segment &segment, const std::string_view value) {
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     if (segment.candidate(i).value == value) {
       return true;
@@ -77,7 +77,7 @@ bool FindValue(const Segment &segment, const absl::string_view value) {
 }
 
 Segment *SetupSegments(const PosMatcher &pos_matcher,
-                       const absl::string_view candidate_value,
+                       const std::string_view candidate_value,
                        Segments *segments) {
   segments->Clear();
   Segment *segment = segments->push_back_segment();
@@ -90,7 +90,7 @@ Segment *SetupSegments(const PosMatcher &pos_matcher,
 }
 
 bool HasDescription(const Segment &segment,
-                    const absl::string_view description) {
+                    const std::string_view description) {
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     if (segment.candidate(i).description == description) {
       return true;
@@ -100,7 +100,7 @@ bool HasDescription(const Segment &segment,
 }
 
 // Find candidate id
-bool FindCandidateId(const Segment &segment, const absl::string_view value,
+bool FindCandidateId(const Segment &segment, const std::string_view value,
                      int *id) {
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     if (segment.candidate(i).value == value) {
@@ -134,9 +134,9 @@ class NumberRewriterTest : public testing::TestWithTempUserProfile {
 
 namespace {
 struct ExpectResult {
-  absl::string_view value;
-  absl::string_view content_value;
-  absl::string_view description;
+  std::string_view value;
+  std::string_view content_value;
+  std::string_view description;
 };
 }  // namespace
 
@@ -1050,8 +1050,8 @@ TEST_F(NumberRewriterTest, RewritePhonePrefix_b16668386) {
 
 // Creates Segments which have one conversion segment.
 // The number candidate will be inserted at the `base_pos`.
-Segments PrepareNumberSegments(absl::string_view segment_key,
-                               absl::string_view number_value, int base_pos,
+Segments PrepareNumberSegments(std::string_view segment_key,
+                               std::string_view number_value, int base_pos,
                                const PosMatcher &pos_matcher) {
   Segments segments;
   {

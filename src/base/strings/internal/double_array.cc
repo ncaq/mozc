@@ -35,7 +35,7 @@
 
 #include "base/strings/unicode.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::japanese::internal {
 namespace {
@@ -48,7 +48,7 @@ struct LookupResult {
 };
 
 LookupResult LookupDoubleArray(const DoubleArray *array,
-                               const absl::string_view key) {
+                               const std::string_view key) {
   int n = 0;
   int b = array[0].base;
   uint32_t p = 0;
@@ -88,7 +88,7 @@ inline int AdvanceInputBy(const char *ctable, const LookupResult result,
 }  // namespace
 
 std::string ConvertUsingDoubleArray(const DoubleArray *da, const char *ctable,
-                                    const absl::string_view input) {
+                                    const std::string_view input) {
   int mblen = 0;
   std::string output;
   for (size_t i = 0; i < input.size(); i += mblen) {
@@ -97,7 +97,7 @@ std::string ConvertUsingDoubleArray(const DoubleArray *da, const char *ctable,
       // Each entry in ctable consists of:
       // - null-terminated string
       // - one byte offset to rewind the input
-      const absl::string_view s(ctable + result.index);
+      const std::string_view s(ctable + result.index);
       absl::StrAppend(&output, s);
       mblen = AdvanceInputBy(ctable, result, s.size());
     } else {
@@ -109,10 +109,10 @@ std::string ConvertUsingDoubleArray(const DoubleArray *da, const char *ctable,
   return output;
 }
 
-std::vector<std::pair<absl::string_view, absl::string_view>>
+std::vector<std::pair<std::string_view, std::string_view>>
 AlignUsingDoubleArray(const DoubleArray *da, const char *ctable,
-                      absl::string_view input) {
-  std::vector<std::pair<absl::string_view, absl::string_view>> output;
+                      std::string_view input) {
+  std::vector<std::pair<std::string_view, std::string_view>> output;
   int mblen = 0;
   for (size_t i = 0; i < input.size(); i += mblen) {
     const LookupResult result = LookupDoubleArray(da, input.substr(i));
@@ -120,7 +120,7 @@ AlignUsingDoubleArray(const DoubleArray *da, const char *ctable,
       // Each entry in ctable consists of:
       // - null-terminated string
       // - one byte offset to rewind the input
-      const absl::string_view s(ctable + result.index);
+      const std::string_view s(ctable + result.index);
       mblen = AdvanceInputBy(ctable, result, s.size());
       output.emplace_back(input.substr(i, mblen), s);
     } else {

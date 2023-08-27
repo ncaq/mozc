@@ -57,7 +57,7 @@
 #include "absl/flags/flag.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(bool, use_actual_converter_for_realtime_conversion, true,
           "If true, use the actual (non-immutable) converter for real "
@@ -73,14 +73,14 @@ using ::mozc::usage_stats::UsageStats;
 
 constexpr size_t kDefaultMaxHistorySize = 3;
 
-absl::string_view GetCandidateShortcuts(
+std::string_view GetCandidateShortcuts(
     config::Config::SelectionShortcut selection_shortcut) {
   // Keyboard shortcut for candidates.
-  constexpr absl::string_view kShortcut123456789 = "123456789";
-  constexpr absl::string_view kShortcutASDFGHJKL = "asdfghjkl";
-  constexpr absl::string_view kNoShortcut = "";
+  constexpr std::string_view kShortcut123456789 = "123456789";
+  constexpr std::string_view kShortcutASDFGHJKL = "asdfghjkl";
+  constexpr std::string_view kNoShortcut = "";
 
-  absl::string_view shortcut = kNoShortcut;
+  std::string_view shortcut = kNoShortcut;
   switch (selection_shortcut) {
     case config::Config::SHORTCUT_123456789:
       shortcut = kShortcut123456789;
@@ -106,7 +106,7 @@ ConversionRequest CreateIncognitoConversionRequest(
 }
 
 // Calculate cursor offset for committed text.
-int32_t CalculateCursorOffset(absl::string_view committed_text) {
+int32_t CalculateCursorOffset(std::string_view committed_text) {
   // If committed_text is a bracket pair, set the cursor in the middle.
   return Util::IsBracketPairText(committed_text) ? -1 : 0;
 }
@@ -198,7 +198,7 @@ bool SessionConverter::ConvertWithPreferences(
   return true;
 }
 
-bool SessionConverter::GetReadingText(absl::string_view source_text,
+bool SessionConverter::GetReadingText(std::string_view source_text,
                                       std::string *reading) {
   DCHECK(reading);
   reading->clear();
@@ -1047,7 +1047,7 @@ bool SessionConverter::CandidateMoveToShortcut(const char shortcut) {
     return false;
   }
 
-  const absl::string_view shortcuts(GetCandidateShortcuts(selection_shortcut_));
+  const std::string_view shortcuts(GetCandidateShortcuts(selection_shortcut_));
   if (shortcuts.empty()) {
     VLOG(1) << "No shortcuts";
     return false;
@@ -1056,8 +1056,8 @@ bool SessionConverter::CandidateMoveToShortcut(const char shortcut) {
   // Check if the input character is in the shortcut.
   // TODO(komatsu): Support non ASCII characters such as Unicode and
   // special keys.
-  const absl::string_view::size_type index = shortcuts.find(shortcut);
-  if (index == absl::string_view::npos) {
+  const std::string_view::size_type index = shortcuts.find(shortcut);
+  if (index == std::string_view::npos) {
     VLOG(1) << "shortcut is not a member of shortcuts.";
     return false;
   }
@@ -1277,10 +1277,10 @@ void SessionConverter::UpdateResultTokens(const size_t index,
   DCHECK(CheckState(SUGGESTION | PREDICTION | CONVERSION));
   DCHECK(index + size <= segments_->conversion_segments_size());
 
-  auto add_tokens = [this](absl::string_view content_key,
-                           absl::string_view content_value,
-                           absl::string_view functional_key,
-                           absl::string_view functional_value) {
+  auto add_tokens = [this](std::string_view content_key,
+                           std::string_view content_value,
+                           std::string_view functional_key,
+                           std::string_view functional_value) {
     commands::ResultToken *token1 = result_->add_tokens();
     token1->set_key(content_key);
     token1->set_value(content_value);
@@ -1753,7 +1753,7 @@ void SessionConverter::InitializeSelectedCandidateIndices() {
   selected_candidate_indices_.resize(segments_->conversion_segments_size());
 }
 
-void SessionConverter::UpdateCandidateStats(absl::string_view base_name,
+void SessionConverter::UpdateCandidateStats(std::string_view base_name,
                                             int32_t index) {
   std::string name;
   if (index < 0) {

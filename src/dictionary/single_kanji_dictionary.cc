@@ -42,7 +42,7 @@
 #include "data_manager/data_manager_interface.h"
 #include "data_manager/serialized_dictionary.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -155,11 +155,11 @@ class Uint32ArrayIterator
 
 SingleKanjiDictionary::SingleKanjiDictionary(
     const DataManagerInterface &data_manager) {
-  absl::string_view string_array_data;
-  absl::string_view variant_type_array_data;
-  absl::string_view variant_string_array_data;
-  absl::string_view noun_prefix_token_array_data;
-  absl::string_view noun_prefix_string_array_data;
+  std::string_view string_array_data;
+  std::string_view variant_type_array_data;
+  std::string_view variant_string_array_data;
+  std::string_view noun_prefix_token_array_data;
+  std::string_view noun_prefix_string_array_data;
   data_manager.GetSingleKanjiRewriterData(
       &single_kanji_token_array_, &string_array_data, &variant_type_array_data,
       &variant_token_array_, &variant_string_array_data,
@@ -203,7 +203,7 @@ SingleKanjiDictionary::SingleKanjiDictionary(
 // Here, each element is of uint32_t type.  Each of actual string values are
 // stored in |single_kanji_string_array_| at its index.
 bool SingleKanjiDictionary::LookupKanjiEntries(
-    absl::string_view key, bool use_svs,
+    std::string_view key, bool use_svs,
     std::vector<std::string> *kanji_list) const {
   DCHECK(kanji_list);
   const uint32_t *token_array =
@@ -214,13 +214,13 @@ bool SingleKanjiDictionary::LookupKanjiEntries(
   const Uint32ArrayIterator<2> end(token_array + token_array_size);
   const auto iter = std::lower_bound(
       Uint32ArrayIterator<2>(token_array), end, key,
-      [this](uint32_t index, const absl::string_view target_key) {
+      [this](uint32_t index, const std::string_view target_key) {
         return this->single_kanji_string_array_[index] < target_key;
       });
   if (iter == end || single_kanji_string_array_[iter[0]] != key) {
     return false;
   }
-  const absl::string_view values = single_kanji_string_array_[iter[1]];
+  const std::string_view values = single_kanji_string_array_[iter[1]];
   if (use_svs) {
     std::string svs_values;
     if (TextNormalizer::NormalizeTextToSvs(values, &svs_values)) {
@@ -254,7 +254,7 @@ bool SingleKanjiDictionary::LookupKanjiEntries(
 // Here, each element is of uint32_t type.  Actual strings of target and
 // original are stored in |variant_string_array_|, while strings of variant type
 // are stored in |variant_type_array_|.
-bool SingleKanjiDictionary::GenerateDescription(absl::string_view kanji_surface,
+bool SingleKanjiDictionary::GenerateDescription(std::string_view kanji_surface,
                                                 std::string *desc) const {
   DCHECK(desc);
   const uint32_t *token_array =
@@ -265,13 +265,13 @@ bool SingleKanjiDictionary::GenerateDescription(absl::string_view kanji_surface,
   const Uint32ArrayIterator<3> end(token_array + token_array_size);
   const auto iter = std::lower_bound(
       Uint32ArrayIterator<3>(token_array), end, kanji_surface,
-      [this](uint32_t index, const absl::string_view target_key) {
+      [this](uint32_t index, const std::string_view target_key) {
         return this->variant_string_array_[index] < target_key;
       });
   if (iter == end || variant_string_array_[iter[0]] != kanji_surface) {
     return false;
   }
-  const absl::string_view original = variant_string_array_[iter[1]];
+  const std::string_view original = variant_string_array_[iter[1]];
   const uint32_t type_id = iter[2];
   DCHECK_LT(type_id, variant_type_array_.size());
   // Format like "XXXのYYY"

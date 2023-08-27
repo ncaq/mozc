@@ -46,7 +46,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "rewriter/rewriter_util.h"
 #include "absl/random/random.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -216,14 +216,14 @@ bool EmoticonRewriter::RewriteCandidate(Segments *segments) const {
 
 std::unique_ptr<EmoticonRewriter> EmoticonRewriter::CreateFromDataManager(
     const DataManagerInterface &data_manager) {
-  absl::string_view token_array_data, string_array_data;
+  std::string_view token_array_data, string_array_data;
   data_manager.GetEmoticonRewriterData(&token_array_data, &string_array_data);
   return std::make_unique<EmoticonRewriter>(token_array_data,
                                             string_array_data);
 }
 
-EmoticonRewriter::EmoticonRewriter(absl::string_view token_array_data,
-                                   absl::string_view string_array_data)
+EmoticonRewriter::EmoticonRewriter(std::string_view token_array_data,
+                                   std::string_view string_array_data)
     : dic_(token_array_data, string_array_data) {}
 
 int EmoticonRewriter::capability(const ConversionRequest &request) const {

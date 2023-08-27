@@ -33,7 +33,7 @@
 
 #include "base/embedded_file.h"
 #include "base/logging.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace testing {
@@ -51,7 +51,7 @@ constexpr char kMagicNumber[] = MOZC_DATASET_MAGIC_NUMBER;
 }  // namespace
 
 MockDataManager::MockDataManager() {
-  const absl::string_view magic(kMagicNumber, std::size(kMagicNumber) - 1);
+  const std::string_view magic(kMagicNumber, std::size(kMagicNumber) - 1);
   CHECK_EQ(Status::OK, InitFromArray(LoadEmbeddedFile(kMockMozcDataSet), magic))
       << "Embedded mock_mozc_data.h is broken";
 }

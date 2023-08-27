@@ -41,12 +41,12 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
 bool EnglishVariantsRewriter::ExpandEnglishVariants(
-    const absl::string_view input, std::vector<std::string> *variants) const {
+    const std::string_view input, std::vector<std::string> *variants) const {
   DCHECK(variants);
 
   if (input.empty()) {

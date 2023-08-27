@@ -52,61 +52,61 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
 namespace {
 
 // Table of number character of Kansuji
-constexpr absl::string_view kNumKanjiDigits[] = {
+constexpr std::string_view kNumKanjiDigits[] = {
     "〇", "一", "二", "三", "四", "五", "六", "七", "八", "九", ""};
-constexpr absl::string_view kNumKanjiOldDigits[] = {
+constexpr std::string_view kNumKanjiOldDigits[] = {
     "", "壱", "弐", "参", "四", "五", "六", "七", "八", "九"};
-constexpr absl::string_view kNumFullWidthDigits[] = {
+constexpr std::string_view kNumFullWidthDigits[] = {
     "０", "１", "２", "３", "４", "５", "６", "７", "８", "９", ""};
-constexpr absl::string_view kNumHalfWidthDigits[] = {
+constexpr std::string_view kNumHalfWidthDigits[] = {
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""};
 
 // Table of Kanji number ranks
-constexpr absl::string_view kNumKanjiRanks[] = {"", "", "十", "百", "千"};
-constexpr absl::string_view kNumKanjiBiggerRanks[] = {"", "万", "億", "兆",
+constexpr std::string_view kNumKanjiRanks[] = {"", "", "十", "百", "千"};
+constexpr std::string_view kNumKanjiBiggerRanks[] = {"", "万", "億", "兆",
                                                       "京"};
-constexpr absl::string_view kNumKanjiOldRanks[] = {"", "", "拾", "百", "阡"};
-constexpr absl::string_view kNumKanjiBiggerOldRanks[] = {"", "萬", "億", "兆",
+constexpr std::string_view kNumKanjiOldRanks[] = {"", "", "拾", "百", "阡"};
+constexpr std::string_view kNumKanjiBiggerOldRanks[] = {"", "萬", "億", "兆",
                                                          "京"};
 
-constexpr absl::string_view kRomanNumbersCapital[] = {
+constexpr std::string_view kRomanNumbersCapital[] = {
     "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ", ""};
 
-constexpr absl::string_view kRomanNumbersSmall[] = {
+constexpr std::string_view kRomanNumbersSmall[] = {
     "", "ⅰ", "ⅱ", "ⅲ", "ⅳ", "ⅴ", "ⅵ", "ⅶ", "ⅷ", "ⅸ", "ⅹ", "ⅺ", "ⅻ", ""};
 
-constexpr absl::string_view kCircledNumbers[] = {
+constexpr std::string_view kCircledNumbers[] = {
     "",   "①",  "②",  "③",  "④",  "⑤",  "⑥",  "⑦",  "⑧",  "⑨",  "⑩",
     "⑪",  "⑫",  "⑬",  "⑭",  "⑮",  "⑯",  "⑰",  "⑱",  "⑲",  "⑳",  "㉑",
     "㉒", "㉓", "㉔", "㉕", "㉖", "㉗", "㉘", "㉙", "㉚", "㉛", "㉜",
     "㉝", "㉞", "㉟", "㊱", "㊲", "㊳", "㊴", "㊵", "㊶", "㊷", "㊸",
     "㊹", "㊺", "㊻", "㊼", "㊽", "㊾", "㊿", ""};
 
-constexpr absl::string_view kSuperscriptNumbers[] = {
+constexpr std::string_view kSuperscriptNumbers[] = {
     "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹", ""};
-constexpr absl::string_view kSubscriptNumbers[] = {"₀", "₁", "₂", "₃", "₄", "₅",
+constexpr std::string_view kSubscriptNumbers[] = {"₀", "₁", "₂", "₃", "₄", "₅",
                                                    "₆", "₇", "₈", "₉", ""};
 
 // Structure to store character set variations.
 struct NumberStringVariation {
-  absl::Span<const absl::string_view> digits;
-  absl::string_view description;
-  absl::string_view separator;
-  absl::string_view point;
+  absl::Span<const std::string_view> digits;
+  std::string_view description;
+  std::string_view separator;
+  std::string_view point;
   int numbers_size;
   NumberUtil::NumberString::Style style;
 };
 
 // Judges given string is a decimal number (including integer) or not.
 // It accepts strings whose last point is a decimal point like "123456."
-bool IsDecimalNumber(absl::string_view str) {
+bool IsDecimalNumber(std::string_view str) {
   int num_point = 0;
   for (size_t i = 0; i < str.size(); ++i) {
     if (str[i] == '.') {
@@ -129,7 +129,7 @@ constexpr char kAsciiNine = '9';
 
 }  // namespace
 
-int NumberUtil::SimpleAtoi(absl::string_view str) {
+int NumberUtil::SimpleAtoi(std::string_view str) {
   int integer;
   if (absl::SimpleAtoi(str, &integer)) {
     return integer;
@@ -156,7 +156,7 @@ inline bool IsArabicDecimalChar32(char32_t ucs4) {
 
 }  // namespace
 
-bool NumberUtil::IsArabicNumber(absl::string_view input_string) {
+bool NumberUtil::IsArabicNumber(std::string_view input_string) {
   if (input_string.empty()) {
     return false;
   }
@@ -171,7 +171,7 @@ bool NumberUtil::IsArabicNumber(absl::string_view input_string) {
   return true;
 }
 
-bool NumberUtil::IsDecimalInteger(absl::string_view str) {
+bool NumberUtil::IsDecimalInteger(std::string_view str) {
   if (str.empty()) {
     return false;
   }
@@ -193,15 +193,15 @@ constexpr NumberStringVariation kKanjiVariations[] = {
      NumberUtil::NumberString::NUMBER_OLD_KANJI},
 };
 
-constexpr absl::string_view kOldTwoTen = "弐拾";
-constexpr absl::string_view kOldTwenty = "廿";
+constexpr std::string_view kOldTwoTen = "弐拾";
+constexpr std::string_view kOldTwenty = "廿";
 
 }  // namespace
 
-bool NumberUtil::ArabicToKanji(absl::string_view input_num,
+bool NumberUtil::ArabicToKanji(std::string_view input_num,
                                std::vector<NumberString> *output) {
   DCHECK(output);
-  constexpr absl::string_view kNumZero = "零";
+  constexpr std::string_view kNumZero = "零";
   constexpr int kDigitsInBigRank = 4;
 
   if (!IsDecimalInteger(input_num)) {
@@ -210,7 +210,7 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
 
   {
     // We don't convert a number starting with '0', other than 0 itself.
-    absl::string_view::size_type i;
+    std::string_view::size_type i;
     for (i = 0; i < input_num.size() && input_num[i] == kAsciiZero; ++i) {
     }
     if (i == input_num.size()) {
@@ -235,7 +235,7 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
       absl::StrCat(std::string(filled_zero_num, kAsciiZero), input_num);
 
   // Segment into kDigitsInBigRank-digits pieces
-  std::vector<absl::string_view> ranked_numbers;
+  std::vector<std::string_view> ranked_numbers;
   for (int i = static_cast<int>(input.size()) - kDigitsInBigRank; i >= 0;
        i -= kDigitsInBigRank) {
     ranked_numbers.emplace_back(input.data() + i, kDigitsInBigRank);
@@ -245,7 +245,7 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
   for (size_t variation_index = 0;
        variation_index < std::size(kKanjiVariations); ++variation_index) {
     const NumberStringVariation &variation = kKanjiVariations[variation_index];
-    const absl::Span<const absl::string_view> digits = variation.digits;
+    const absl::Span<const std::string_view> digits = variation.digits;
     const NumberString::Style style = variation.style;
 
     if (rank_size == 1 &&
@@ -254,8 +254,8 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
       continue;
     }
 
-    absl::Span<const absl::string_view> ranks;
-    absl::Span<const absl::string_view> bigger_ranks;
+    absl::Span<const std::string_view> ranks;
+    absl::Span<const std::string_view> bigger_ranks;
     if (style == NumberString::NUMBER_OLD_KANJI) {
       ranks = kNumKanjiOldRanks;
       bigger_ranks = kNumKanjiBiggerOldRanks;
@@ -268,7 +268,7 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
 
     // Converts each segment, and merges them with rank Kanjis.
     for (int rank = rank_size - 1; rank >= 0; --rank) {
-      const absl::string_view segment = ranked_numbers[rank];
+      const std::string_view segment = ranked_numbers[rank];
       std::string segment_result;
       bool leading = true;
       for (size_t i = 0; i < segment.size(); ++i) {
@@ -297,7 +297,7 @@ bool NumberUtil::ArabicToKanji(absl::string_view input_num,
       }
     }
 
-    const absl::string_view description = variation.description;
+    const std::string_view description = variation.description;
     // Add simply converted numbers.
     output->emplace_back(std::move(result), description, style);
 
@@ -333,7 +333,7 @@ constexpr NumberStringVariation kNumDigitsVariations[] = {
 
 }  // namespace
 
-bool NumberUtil::ArabicToSeparatedArabic(absl::string_view input_num,
+bool NumberUtil::ArabicToSeparatedArabic(std::string_view input_num,
                                          std::vector<NumberString> *output) {
   DCHECK(output);
 
@@ -342,13 +342,13 @@ bool NumberUtil::ArabicToSeparatedArabic(absl::string_view input_num,
   }
 
   // Separate a number into an integral part and a fractional part.
-  absl::string_view::size_type point_pos = input_num.find('.');
-  if (point_pos == absl::string_view::npos) {
+  std::string_view::size_type point_pos = input_num.find('.');
+  if (point_pos == std::string_view::npos) {
     point_pos = input_num.size();
   }
-  const absl::string_view integer = input_num.substr(0, point_pos);
+  const std::string_view integer = input_num.substr(0, point_pos);
   // |fraction| has the decimal point with digits in fractional part.
-  const absl::string_view fraction =
+  const std::string_view fraction =
       input_num.substr(point_pos, input_num.size() - point_pos);
 
   // We don't add separator to number whose integral part starts with '0'
@@ -358,11 +358,11 @@ bool NumberUtil::ArabicToSeparatedArabic(absl::string_view input_num,
 
   for (size_t i = 0; i < std::size(kNumDigitsVariations); ++i) {
     const NumberStringVariation &variation = kNumDigitsVariations[i];
-    const absl::Span<const absl::string_view> digits = variation.digits;
+    const absl::Span<const std::string_view> digits = variation.digits;
     std::string result;
 
     // integral part
-    for (absl::string_view::size_type j = 0; j < integer.size(); ++j) {
+    for (std::string_view::size_type j = 0; j < integer.size(); ++j) {
       // We don't add separater first
       if (j != 0 && (integer.size() - j) % 3 == 0) {
         absl::StrAppend(&result, variation.separator);
@@ -377,7 +377,7 @@ bool NumberUtil::ArabicToSeparatedArabic(absl::string_view input_num,
     if (!fraction.empty()) {
       DCHECK_EQ(fraction[0], '.');
       absl::StrAppend(&result, variation.point);
-      for (absl::string_view::size_type j = 1; j < fraction.size(); ++j) {
+      for (std::string_view::size_type j = 1; j < fraction.size(); ++j) {
         absl::StrAppend(&result,
                         digits[static_cast<int>(fraction[j] - kAsciiZero)]);
       }
@@ -402,7 +402,7 @@ constexpr NumberStringVariation kSingleDigitsVariations[] = {
 
 }  // namespace
 
-bool NumberUtil::ArabicToWideArabic(absl::string_view input_num,
+bool NumberUtil::ArabicToWideArabic(std::string_view input_num,
                                     std::vector<NumberString> *output) {
   DCHECK(output);
 
@@ -413,7 +413,7 @@ bool NumberUtil::ArabicToWideArabic(absl::string_view input_num,
   for (size_t i = 0; i < std::size(kSingleDigitsVariations); ++i) {
     const NumberStringVariation &variation = kSingleDigitsVariations[i];
     std::string result;
-    for (absl::string_view::size_type j = 0; j < input_num.size(); ++j) {
+    for (std::string_view::size_type j = 0; j < input_num.size(); ++j) {
       absl::StrAppend(
           &result,
           variation.digits[static_cast<int>(input_num[j] - kAsciiZero)]);
@@ -445,7 +445,7 @@ constexpr NumberStringVariation kSpecialNumericVariations[] = {
 
 }  // namespace
 
-bool NumberUtil::ArabicToOtherForms(absl::string_view input_num,
+bool NumberUtil::ArabicToOtherForms(std::string_view input_num,
                                     std::vector<NumberString> *output) {
   DCHECK(output);
 
@@ -458,7 +458,7 @@ bool NumberUtil::ArabicToOtherForms(absl::string_view input_num,
   // Googol
   {
     // 10^100
-    constexpr absl::string_view kNumGoogol =
+    constexpr std::string_view kNumGoogol =
         "100000000000000000000000000000000000000000000000000"
         "00000000000000000000000000000000000000000000000000";
 
@@ -487,7 +487,7 @@ bool NumberUtil::ArabicToOtherForms(absl::string_view input_num,
   return converted;
 }
 
-bool NumberUtil::ArabicToOtherRadixes(absl::string_view input_num,
+bool NumberUtil::ArabicToOtherRadixes(std::string_view input_num,
                                       std::vector<NumberString> *output) {
   DCHECK(output);
 
@@ -581,7 +581,7 @@ constexpr bool SafeCast(SrcType src, DestType *dest) {
 
 }  // namespace
 
-bool NumberUtil::SafeStrToInt16(absl::string_view str, int16_t *value) {
+bool NumberUtil::SafeStrToInt16(std::string_view str, int16_t *value) {
   int32_t tmp;
   // SimpleAtoi doesn't support 16-bit integers.
   if (!absl::SimpleAtoi(str, &tmp)) {
@@ -590,7 +590,7 @@ bool NumberUtil::SafeStrToInt16(absl::string_view str, int16_t *value) {
   return SafeCast(tmp, value);
 }
 
-bool NumberUtil::SafeStrToUInt16(absl::string_view str, uint16_t *value) {
+bool NumberUtil::SafeStrToUInt16(std::string_view str, uint16_t *value) {
   uint32_t tmp;
   // SimpleAtoi doesn't support 16-bit integers.
   if (!absl::SimpleAtoi(str, &tmp)) {
@@ -599,7 +599,7 @@ bool NumberUtil::SafeStrToUInt16(absl::string_view str, uint16_t *value) {
   return SafeCast(tmp, value);
 }
 
-bool NumberUtil::SafeStrToDouble(absl::string_view str, double *value) {
+bool NumberUtil::SafeStrToDouble(std::string_view str, double *value) {
   DCHECK(value);
   if (!absl::SimpleAtod(str, value)) {
     return false;
@@ -832,7 +832,7 @@ bool NormalizeNumbersHelper(const UInt64Span numbers, uint64_t &number_output) {
 }
 
 // TODO(peria): Do refactoring this method.
-bool NormalizeNumbersInternal(absl::string_view input, bool trim_leading_zeros,
+bool NormalizeNumbersInternal(std::string_view input, bool trim_leading_zeros,
                               bool allow_suffix, std::string *kanji_output,
                               std::string *arabic_output, std::string *suffix) {
   DCHECK(kanji_output);
@@ -850,7 +850,7 @@ bool NormalizeNumbersInternal(absl::string_view input, bool trim_leading_zeros,
   while (begin < end) {
     size_t mblen = 0;
     const char32_t wchar = Util::Utf8ToUcs4(begin, end, &mblen);
-    absl::string_view kanji_char(begin, mblen);
+    std::string_view kanji_char(begin, mblen);
 
     std::string tmp;
     NumberUtil::KanjiNumberToArabicNumber(kanji_char, &tmp);
@@ -914,7 +914,7 @@ bool NormalizeNumbersInternal(absl::string_view input, bool trim_leading_zeros,
 
 // Convert Kanji numbers into Arabic numbers:
 // e.g. "百二十万" -> 1200000
-bool NumberUtil::NormalizeNumbers(absl::string_view input,
+bool NumberUtil::NormalizeNumbers(std::string_view input,
                                   bool trim_leading_zeros,
                                   std::string *kanji_output,
                                   std::string *arabic_output) {
@@ -923,7 +923,7 @@ bool NumberUtil::NormalizeNumbers(absl::string_view input,
                                   kanji_output, arabic_output, nullptr);
 }
 
-bool NumberUtil::NormalizeNumbersWithSuffix(absl::string_view input,
+bool NumberUtil::NormalizeNumbersWithSuffix(std::string_view input,
                                             bool trim_leading_zeros,
                                             std::string *kanji_output,
                                             std::string *arabic_output,
@@ -933,7 +933,7 @@ bool NumberUtil::NormalizeNumbersWithSuffix(absl::string_view input,
                                   kanji_output, arabic_output, suffix);
 }
 
-void NumberUtil::KanjiNumberToArabicNumber(absl::string_view input,
+void NumberUtil::KanjiNumberToArabicNumber(std::string_view input,
                                            std::string *output) {
   // TODO(yuryu): This file will also move into strings/.
   *output = japanese::internal::ConvertUsingDoubleArray(

@@ -37,7 +37,7 @@
 #include "base/number_util.h"
 #include "base/singleton.h"
 #include "protocol/config.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -60,13 +60,13 @@ class CharacterFormManager {
   // This method cannot return the preference,
   // if str has two set of string groups having different preferences.
   // e.g., GetPreeditCharacterForm("グーグル012") returns NO_CONVERSION
-  Config::CharacterForm GetPreeditCharacterForm(absl::string_view input) const;
+  Config::CharacterForm GetPreeditCharacterForm(std::string_view input) const;
   Config::CharacterForm GetConversionCharacterForm(
-      absl::string_view input) const;
+      std::string_view input) const;
 
   // Converts string according to the config rules.
-  void ConvertPreeditString(absl::string_view input, std::string *output) const;
-  void ConvertConversionString(absl::string_view input,
+  void ConvertPreeditString(std::string_view input, std::string *output) const;
+  void ConvertConversionString(std::string_view input,
                                std::string *output) const;
 
   // Converts string according to the config rules.
@@ -76,10 +76,10 @@ class CharacterFormManager {
   // e.g., output = "@" alternative_output = "＠"
   // return true if both output and alternative_output are defined.
   bool ConvertPreeditStringWithAlternative(
-      absl::string_view input, std::string *output,
+      std::string_view input, std::string *output,
       std::string *alternative_output) const;
   bool ConvertConversionStringWithAlternative(
-      absl::string_view input, std::string *output,
+      std::string_view input, std::string *output,
       std::string *alternative_output) const;
 
   // Calls this method after user fixed the final result.
@@ -87,7 +87,7 @@ class CharacterFormManager {
   // SetCharacterForm() stores the last character form into local file.
   // Next time user calls GetPreeditCharacterForm() or
   // GetConversionCharacterForm(), the preference is restored.
-  void SetCharacterForm(absl::string_view input, Config::CharacterForm form);
+  void SetCharacterForm(std::string_view input, Config::CharacterForm form);
 
   // Guesses the character form of str and call
   // SetCharacterForm with this result.
@@ -95,7 +95,7 @@ class CharacterFormManager {
   // It is more useful to call GuessAndSetCharacterForm(), as
   // you don't need to pass the form.
   // You can just pass the final final conversion string to this method.
-  void GuessAndSetCharacterForm(absl::string_view input);
+  void GuessAndSetCharacterForm(std::string_view input);
 
   void SetLastNumberStyle(const NumberFormStyle &form_style);
   std::optional<const NumberFormStyle> GetLastNumberStyle() const;
@@ -111,9 +111,9 @@ class CharacterFormManager {
   // AddPreeditRule("[]{}()", config::Config::LAST_FORM);
   // AddPreeditRule("+=", config::Config::HALF_WIDTH);
   // The all characters in str are treated as the same group.
-  void AddPreeditRule(absl::string_view input, Config::CharacterForm form);
+  void AddPreeditRule(std::string_view input, Config::CharacterForm form);
 
-  void AddConversionRule(absl::string_view input, Config::CharacterForm form);
+  void AddConversionRule(std::string_view input, Config::CharacterForm form);
 
   // Loads Default rules.
   void SetDefaultRule();
@@ -141,9 +141,9 @@ class CharacterFormManager {
   // Ambiguous case:
   //  input1="ABC１２３" input2="ＡＢＣ123"
   //  return false.
-  static bool GetFormTypesFromStringPair(absl::string_view input1,
+  static bool GetFormTypesFromStringPair(std::string_view input1,
                                          FormType *form1,
-                                         absl::string_view input2,
+                                         std::string_view input2,
                                          FormType *form2);
 
   // Returns the singleton instance.

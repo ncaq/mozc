@@ -38,7 +38,7 @@
 
 #include "base/container/serialized_string_array.h"
 #include "converter/segments.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -63,8 +63,8 @@ enum NumberScriptType {
 // data_manager/data_manager_interface.h.  Returns false if the input cannot be
 // split.
 bool SplitStringIntoNumberAndCounterSuffix(
-    const SerializedStringArray &suffix_array, absl::string_view input,
-    absl::string_view *number, absl::string_view *counter_suffix,
+    const SerializedStringArray &suffix_array, std::string_view input,
+    std::string_view *number, std::string_view *counter_suffix,
     uint32_t *script_type);
 
 // Checks if the given candidate is number, where candidate is considered as a

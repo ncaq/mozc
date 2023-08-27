@@ -33,7 +33,7 @@
 #include <string>
 
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::composer::internal {
 
@@ -41,11 +41,11 @@ class SpecialKeyMap {
  public:
   // Parses special key strings escaped with the pair of "{" and "}"" and
   // registers them to be used by Parse(). Also returns the parsed string.
-  std::string Register(absl::string_view input);
+  std::string Register(std::string_view input);
 
   // Parses special key strings escaped with the pair of "{" and "}" and returns
   // the parsed string.
-  std::string Parse(absl::string_view input) const;
+  std::string Parse(std::string_view input) const;
 
  private:
   absl::flat_hash_map<std::string, std::string> map_;
@@ -54,11 +54,11 @@ class SpecialKeyMap {
 // Trims a special key from input and returns the rest.
 // If the input doesn't have any special keys at the beginning, it returns the
 // entire string.
-absl::string_view TrimLeadingSpecialKey(absl::string_view input);
+std::string_view TrimLeadingSpecialKey(std::string_view input);
 
 // Deletes invisible special keys wrapped with ("\x0F", "\x0E") and returns the
 // trimmed visible string.
-std::string DeleteSpecialKeys(absl::string_view input);
+std::string DeleteSpecialKeys(std::string_view input);
 
 }  // namespace mozc::composer::internal
 

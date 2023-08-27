@@ -35,7 +35,7 @@
 
 #include "composer/table.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -44,7 +44,7 @@ namespace composer {
 // Converter
 // ========================================
 
-void Converter::Convert(const absl::string_view input,
+void Converter::Convert(const std::string_view input,
                         std::string* output) const {
   std::string key(input);
   output->clear();  // equivalent to output->assign("")

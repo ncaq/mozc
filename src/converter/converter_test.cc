@@ -83,7 +83,7 @@
 #include "usage_stats/usage_stats.h"
 #include "usage_stats/usage_stats_testing_util.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -109,7 +109,7 @@ using ::testing::_;
 using ::testing::AnyNumber;
 using ::testing::StrEq;
 
-void PushBackCandidate(Segment *segment, absl::string_view text) {
+void PushBackCandidate(Segment *segment, std::string_view text) {
   Segment::Candidate *cand = segment->push_back_candidate();
   cand->key = std::string(text);
   cand->content_key = cand->key;
@@ -151,7 +151,7 @@ class StubRewriter : public RewriterInterface {
 
 SuffixDictionary *CreateSuffixDictionaryFromDataManager(
     const DataManagerInterface &data_manager) {
-  absl::string_view suffix_key_array_data, suffix_value_array_data;
+  std::string_view suffix_key_array_data, suffix_value_array_data;
   const uint32_t *token_array;
   data_manager.GetSuffixDictionaryData(&suffix_key_array_data,
                                        &suffix_value_array_data, &token_array);
@@ -192,7 +192,7 @@ class ConverterTest : public testing::TestWithTempUserProfile {
     const std::string key;
     const std::string value;
     const user_dictionary::UserDictionary::PosType pos;
-    UserDefinedEntry(absl::string_view k, absl::string_view v,
+    UserDefinedEntry(std::string_view k, std::string_view v,
                      user_dictionary::UserDictionary::PosType p)
         : key(k), value(v), pos(p) {}
   };
@@ -394,7 +394,7 @@ class ConverterTest : public testing::TestWithTempUserProfile {
     return Engine::CreateMobileEngineHelper<testing::MockDataManager>().value();
   }
 
-  bool FindCandidateByValue(absl::string_view value,
+  bool FindCandidateByValue(std::string_view value,
                             const Segment &segment) const {
     for (size_t i = 0; i < segment.candidates_size(); ++i) {
       if (segment.candidate(i).value == value) {
@@ -404,7 +404,7 @@ class ConverterTest : public testing::TestWithTempUserProfile {
     return false;
   }
 
-  int GetCandidateIndexByValue(absl::string_view value,
+  int GetCandidateIndexByValue(std::string_view value,
                                const Segment &segment) const {
     for (size_t i = 0; i < segment.candidates_size(); ++i) {
       if (segment.candidate(i).value == value) {
@@ -1158,7 +1158,7 @@ TEST_F(ConverterTest, PredictSetKey) {
   struct TestData {
     // Input conditions.
     const bool should_call_set_key_in_prediction;  // Member of Request.
-    const std::optional<absl::string_view> key;    // Input key presence.
+    const std::optional<std::string_view> key;    // Input key presence.
 
     const bool expect_set_key_is_called;
   };
@@ -1215,7 +1215,7 @@ TEST_F(ConverterTest, PredictSetKey) {
 // An action that invokes a DictionaryInterface::Callback with the token whose
 // key and value is set to the given ones.
 ACTION_P2(InvokeCallbackWithUserDictionaryToken, key, value) {
-  // const absl::string_view key = arg0;
+  // const std::string_view key = arg0;
   DictionaryInterface::Callback *const callback = arg2;
   const Token token(std::string(key), value, MockDictionary::kDefaultCost,
                     MockDictionary::kDefaultPosId,

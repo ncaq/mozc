@@ -41,7 +41,7 @@
 #include "composer/table.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -83,7 +83,7 @@ class CharChunk final {
   // True if IsAppendable() is true and this object is fixed (|pending_|=="")
   // when |input| is appended.
   bool IsConvertible(Transliterators::Transliterator t12r, const Table *table,
-                     absl::string_view input) const;
+                     std::string_view input) const;
 
   // Combines all fields with |left_chunk|.
   // [this chunk] := [left_chunk]+[this chunk]
@@ -131,8 +131,8 @@ class CharChunk final {
       Transliterators::Transliterator transliterator) const;
 
   std::string Transliterate(Transliterators::Transliterator transliterator,
-                            absl::string_view raw,
-                            absl::string_view converted) const;
+                            std::string_view raw,
+                            std::string_view converted) const;
 
   // The following accessors and mutators are for test only.
   Transliterators::Transliterator transliterator() const {
@@ -193,7 +193,7 @@ class CharChunk final {
 
   // bool = should loop
   // string_view = rest of the input
-  std::pair<bool, absl::string_view> AddInputInternal(absl::string_view input);
+  std::pair<bool, std::string_view> AddInputInternal(std::string_view input);
 
  private:
   void AddInputAndConvertedChar(CompositionInput *composition_input);

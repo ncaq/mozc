@@ -32,7 +32,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -40,7 +40,7 @@ class CalculatorInterface {
  public:
   // Calculates expression and outputs to |result|. If key is not an expression,
   // it returns false.
-  virtual bool CalculateString(absl::string_view key,
+  virtual bool CalculateString(std::string_view key,
                                std::string *result) const = 0;
 
  protected:

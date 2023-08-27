@@ -66,7 +66,7 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 #ifndef NDEBUG
@@ -119,32 +119,32 @@ KeyValueView GetCandidateKeyAndValue(const Result &result
                                      const KeyValueView history) {
   if (result.types & PredictionType::BIGRAM) {
     // remove the prefix of history key and history value.
-    return {absl::string_view(result.key).substr(history.key.size()),
-            absl::string_view(result.value).substr(history.value.size())};
+    return {std::string_view(result.key).substr(history.key.size()),
+            std::string_view(result.value).substr(history.value.size())};
   }
   return {result.key, result.value};
 }
 
 // Returns the non-expanded lookup key for the result
-absl::string_view GetCandidateOriginalLookupKey(
-    absl::string_view input_key ABSL_ATTRIBUTE_LIFETIME_BOUND,
+std::string_view GetCandidateOriginalLookupKey(
+    std::string_view input_key ABSL_ATTRIBUTE_LIFETIME_BOUND,
     const Result &result ABSL_ATTRIBUTE_LIFETIME_BOUND,
-    absl::string_view history_key) {
+    std::string_view history_key) {
   if (result.non_expanded_original_key.empty()) {
     return input_key;
   }
 
-  absl::string_view lookup_key = result.non_expanded_original_key;
+  std::string_view lookup_key = result.non_expanded_original_key;
   if (result.types & PredictionType::BIGRAM) {
     lookup_key.remove_prefix(history_key.size());
   }
   return lookup_key;
 }
 
-absl::string_view GetCandidateKey(const Result &result
+std::string_view GetCandidateKey(const Result &result
                                       ABSL_ATTRIBUTE_LIFETIME_BOUND,
-                                  absl::string_view history_key) {
-  absl::string_view candidate_key = result.key;
+                                  std::string_view history_key) {
+  std::string_view candidate_key = result.key;
   if (result.types & PredictionType::BIGRAM) {
     candidate_key.remove_prefix(history_key.size());
   }
@@ -369,7 +369,7 @@ bool DictionaryPredictor::AddPredictionToCandidates(
   }
 
 #ifdef MOZC_DEBUG
-  auto add_debug_candidate = [&](Result result, const absl::string_view log) {
+  auto add_debug_candidate = [&](Result result, const std::string_view log) {
     absl::StrAppend(&result.log, log);
     Segment::Candidate candidate;
     FillCandidate(request, result, GetCandidateKeyAndValue(result, history),
@@ -465,17 +465,17 @@ void DictionaryPredictor::MaybeApplyHomonymCorrection(
   // Aggregates candidates passed to homonym spellchecker.
   // Only apply the spellchecker to the top values grouped by the same key.
   // key -> [value, candidate_index].
-  absl::flat_hash_map<absl::string_view, std::pair<absl::string_view, size_t>>
+  absl::flat_hash_map<std::string_view, std::pair<std::string_view, size_t>>
       candidates;
 
   constexpr size_t kMaxCandidatesSize = 5;
   const size_t size = std::min(segment->candidates_size(), kMaxCandidatesSize);
   for (size_t i = 0; i < size; ++i) {
     const auto &c = segment->candidate(i);
-    candidates.emplace(c.key, std::pair<absl::string_view, size_t>{c.value, i});
+    candidates.emplace(c.key, std::pair<std::string_view, size_t>{c.value, i});
   }
 
-  std::vector<std::pair<absl::string_view, size_t>> values;
+  std::vector<std::pair<std::string_view, size_t>> values;
   values.reserve(candidates.size());
   for (auto &[key, v] : candidates) {
     values.emplace_back(std::move(v));
@@ -486,7 +486,7 @@ void DictionaryPredictor::MaybeApplyHomonymCorrection(
     return lhs.second > rhs.second;
   });
 
-  std::vector<absl::string_view> queries;
+  std::vector<std::string_view> queries;
   queries.reserve(values.size());
   for (const auto &[value, index] : values) {
     queries.emplace_back(value);
@@ -542,7 +542,7 @@ void DictionaryPredictor::MaybeApplyHomonymCorrection(
 
 int DictionaryPredictor::CalculateSingleKanjiCostOffset(
     const ConversionRequest &request, uint16_t rid,
-    const absl::string_view input_key, absl::Span<const Result> results,
+    const std::string_view input_key, absl::Span<const Result> results,
     absl::flat_hash_map<PrefixPenaltyKey, int> *cache) const {
   // Make a map from reference value to min-cost result.
   // Reference entry:
@@ -551,7 +551,7 @@ int DictionaryPredictor::CalculateSingleKanjiCostOffset(
   // cost is calculated with LM cost (with prefix penalty)
   // When the reference is not found, Hiragana (value == key) entry will be used
   // as the fallback.
-  absl::flat_hash_map<absl::string_view, int> min_cost_map;
+  absl::flat_hash_map<std::string_view, int> min_cost_map;
   int fallback_cost = -1;
   for (const auto &result : results) {
     if (result.removed) {
@@ -742,7 +742,7 @@ bool DictionaryPredictor::ResultFilter::ShouldRemove(const Result &result,
 }
 
 bool DictionaryPredictor::ResultFilter::CheckDupAndReturn(
-    const absl::string_view value, const Result &result,
+    const std::string_view value, const Result &result,
     std::string *log_message) {
   if (seen_.contains(value)) {
     *log_message = "Duplicated";
@@ -1194,9 +1194,9 @@ void DictionaryPredictor::ApplyPenaltyForKeyExpansion(
       continue;
     }
 
-    const absl::string_view lookup_key =
+    const std::string_view lookup_key =
         GetCandidateOriginalLookupKey(conversion_key, result, history.key);
-    const absl::string_view result_key = GetCandidateKey(result, history.key);
+    const std::string_view result_key = GetCandidateKey(result, history.key);
     if (!absl::StartsWith(result_key, lookup_key)) {
       result.cost += kKeyExpansionPenalty;
       result.penalty += kKeyExpansionPenalty;
@@ -1209,7 +1209,7 @@ void DictionaryPredictor::ApplyPenaltyForKeyExpansion(
 
 // static
 size_t DictionaryPredictor::GetMissSpelledPosition(
-    const absl::string_view key, const absl::string_view value) {
+    const std::string_view key, const std::string_view value) {
   const std::string hiragana_value = japanese::KatakanaToHiragana(value);
   // value is mixed type. return true if key == request_key.
   if (Util::GetScriptType(hiragana_value) != Util::HIRAGANA) {
@@ -1324,7 +1324,7 @@ bool DictionaryPredictor::IsAggressiveSuggestion(size_t query_len,
 }
 
 int DictionaryPredictor::CalculatePrefixPenalty(
-    const ConversionRequest &request, const absl::string_view input_key,
+    const ConversionRequest &request, const std::string_view input_key,
     const Result &result,
     const ImmutableConverterInterface *immutable_converter,
     absl::flat_hash_map<PrefixPenaltyKey, int> *cache) const {

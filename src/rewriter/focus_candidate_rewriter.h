@@ -36,7 +36,7 @@
 #include "converter/segments.h"
 #include "dictionary/pos_matcher.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -73,7 +73,7 @@ class FocusCandidateRewriter : public RewriterInterface {
   // type and suffix.  Returns -1 if there's no candidate matching the
   // condition.
   int FindMatchingCandidates(const Segment &seg, uint32_t ref_script_type,
-                             absl::string_view ref_suffix) const;
+                             std::string_view ref_suffix) const;
 
   // Parses the value of a candidate into number and counter suffix.
   // Simultaneously checks the script type of number.  Here, number candidate is
@@ -81,8 +81,8 @@ class FocusCandidateRewriter : public RewriterInterface {
   //   * [数][助数詞][並立助詞]?  (e.g., 一階, 二回, ３階や, etc.)
   // Returns false if the value of candidate doesn't match the pattern.
   bool ParseNumberCandidate(const Segment::Candidate &cand,
-                            absl::string_view *number,
-                            absl::string_view *suffix,
+                            std::string_view *number,
+                            std::string_view *suffix,
                             uint32_t *script_type) const;
 
   SerializedStringArray suffix_array_;

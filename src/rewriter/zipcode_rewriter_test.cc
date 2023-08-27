@@ -40,7 +40,7 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -52,7 +52,7 @@ enum SegmentType {
   NON_ZIPCODE = 2,
 };
 
-void AddSegment(const absl::string_view key, const absl::string_view value,
+void AddSegment(const std::string_view key, const std::string_view value,
                 SegmentType type, const PosMatcher &pos_matcher,
                 Segments *segments) {
   segments->Clear();
@@ -70,7 +70,7 @@ void AddSegment(const absl::string_view key, const absl::string_view value,
 }
 
 bool HasZipcodeAndAddress(const Segments &segments,
-                          const absl::string_view expected) {
+                          const std::string_view expected) {
   CHECK_EQ(segments.segments_size(), 1);
   for (size_t i = 0; i < segments.segment(0).candidates_size(); ++i) {
     const Segment::Candidate &candidate = segments.segment(0).candidate(i);

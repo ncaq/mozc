@@ -45,7 +45,7 @@
 #include "converter/node.h"
 #include "converter/node_allocator.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -83,7 +83,7 @@ Node *InitEOSNode(Lattice *lattice, uint16_t length) {
 }
 
 bool PathContainsString(const Node *node, size_t begin_pos, size_t end_pos,
-                        const absl::string_view str) {
+                        const std::string_view str) {
   CHECK(node);
   for (; node->prev != nullptr; node = node->prev) {
     if (node->begin_pos == begin_pos && node->end_pos == end_pos &&
@@ -125,12 +125,12 @@ std::string GetDebugStringForPath(const Node *end_node) {
   return os.str();
 }
 
-absl::string_view GetCommonPrefix(absl::string_view str1,
-                                  absl::string_view str2) {
-  const absl::string_view orig_str = str1;
+std::string_view GetCommonPrefix(std::string_view str1,
+                                  std::string_view str2) {
+  const std::string_view orig_str = str1;
   size_t common_size = 0;
   while (!str1.empty() && !str2.empty()) {
-    absl::string_view c1, c2;
+    std::string_view c1, c2;
     std::tie(c1, str1) = strings::FrontChar(str1);
     std::tie(c2, str2) = strings::FrontChar(str2);
     if (c1 != c2) {
@@ -209,8 +209,8 @@ void Lattice::ResetDebugDisplayNode() {
   info->display_node_str.clear();
 }
 
-void Lattice::UpdateKey(const absl::string_view new_key) {
-  const absl::string_view common_prefix = GetCommonPrefix(new_key, key_);
+void Lattice::UpdateKey(const std::string_view new_key) {
+  const std::string_view common_prefix = GetCommonPrefix(new_key, key_);
 
   // if the length of common prefix is too short, call SetKey
   if (common_prefix.size() <= key_.size() / 2) {
@@ -231,7 +231,7 @@ void Lattice::UpdateKey(const absl::string_view new_key) {
   AddSuffix(new_key.substr(common_prefix.size()));
 }
 
-void Lattice::AddSuffix(const absl::string_view suffix_key) {
+void Lattice::AddSuffix(const std::string_view suffix_key) {
   if (suffix_key.empty()) {
     return;
   }

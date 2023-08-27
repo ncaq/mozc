@@ -31,14 +31,14 @@
 #define MOZC_BASE_CLOCK_MOCK_H_
 
 #include "base/clock.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
 
 // Parses the given time in RFC3399 format (see `absl::RFC3399_full`), or
 // terminates the program on failure.
-absl::Time ParseTimeOrDie(absl::string_view time);
+absl::Time ParseTimeOrDie(std::string_view time);
 
 // Standard mock clock implementation.
 // This mock behaves in UTC

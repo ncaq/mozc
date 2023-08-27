@@ -40,7 +40,7 @@
 #include "prediction/suggestion_filter.h"
 #include "request/conversion_request.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -103,7 +103,7 @@ class CandidateFilter {
   // top_nodes: Node vector for the top candidate for the segment.
   // nodes: Node vector for the target candidate
   ResultType FilterCandidate(const ConversionRequest &request,
-                             absl::string_view original_key,
+                             std::string_view original_key,
                              const Segment::Candidate *candidate,
                              absl::Span<const Node *const> top_nodes,
                              absl::Span<const Node *const> nodes);
@@ -113,11 +113,11 @@ class CandidateFilter {
 
  private:
   ResultType CheckRequestType(const ConversionRequest &request,
-                              absl::string_view original_key,
+                              std::string_view original_key,
                               const Segment::Candidate &candidate,
                               absl::Span<const Node *const> nodes) const;
   ResultType FilterCandidateInternal(const ConversionRequest &request,
-                                     absl::string_view original_key,
+                                     std::string_view original_key,
                                      const Segment::Candidate *candidate,
                                      absl::Span<const Node *const> top_nodes,
                                      absl::Span<const Node *const> nodes);

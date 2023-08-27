@@ -65,7 +65,7 @@
 #include "usage_stats/usage_stats_testing_util.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -9782,8 +9782,8 @@ TEST_F(SessionTest, DeleteHistory) {
   EXPECT_CALL(engine, GetUserDataManager())
       .WillOnce(Return(&user_data_manager));
   EXPECT_CALL(user_data_manager,
-              ClearUserPredictionEntry(absl::string_view(),
-                                       absl::string_view("DeleteHistory")))
+              ClearUserPredictionEntry(std::string_view(),
+                                       std::string_view("DeleteHistory")))
       .WillOnce(Return(true));
   EXPECT_TRUE(SendKey("Ctrl Delete", &session, &command));
   EXPECT_EQ(session.context().state(), ImeContext::COMPOSITION);
@@ -10056,8 +10056,8 @@ TEST_F(SessionTest, DeleteCandidateFromHistory) {
     InitSessionToConversionWithAiueo(&session, &converter);
 
     EXPECT_CALL(user_data_manager,
-                ClearUserPredictionEntry(absl::string_view("あいうえお"),
-                                         absl::string_view("あいうえお")))
+                ClearUserPredictionEntry(std::string_view("あいうえお"),
+                                         std::string_view("あいうえお")))
         .WillOnce(Return(true));
 
     commands::Command command;
@@ -10071,8 +10071,8 @@ TEST_F(SessionTest, DeleteCandidateFromHistory) {
     InitSessionToConversionWithAiueo(&session, &converter);
 
     EXPECT_CALL(user_data_manager,
-                ClearUserPredictionEntry(absl::string_view("あいうえお"),
-                                         absl::string_view("アイウエオ")))
+                ClearUserPredictionEntry(std::string_view("あいうえお"),
+                                         std::string_view("アイウエオ")))
         .WillOnce(Return(true));
 
     commands::Command command;

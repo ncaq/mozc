@@ -29,7 +29,7 @@
 
 #include <cstdint>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 #ifndef NO_USAGE_REWRITER
 
 #include <string>
@@ -57,11 +57,11 @@ UsageRewriter::UsageRewriter(const DataManagerInterface *data_manager,
     : pos_matcher_(data_manager->GetPosMatcherData()),
       dictionary_(dictionary),
       base_conjugation_suffix_(nullptr) {
-  absl::string_view base_conjugation_suffix_data;
-  absl::string_view conjugation_suffix_data;
-  absl::string_view conjugation_suffix_index_data;
-  absl::string_view usage_items_data;
-  absl::string_view string_array_data;
+  std::string_view base_conjugation_suffix_data;
+  std::string_view conjugation_suffix_data;
+  std::string_view conjugation_suffix_index_data;
+  std::string_view usage_items_data;
+  std::string_view string_array_data;
   data_manager->GetUsageRewriterData(
       &base_conjugation_suffix_data, &conjugation_suffix_data,
       &conjugation_suffix_index_data, &usage_items_data, &string_array_data);
@@ -83,11 +83,11 @@ UsageRewriter::UsageRewriter(const DataManagerInterface *data_manager,
   for (; begin != end; ++begin) {
     for (size_t i = conjugation_suffix_data_index[begin.conjugation_id()];
          i < conjugation_suffix_data_index[begin.conjugation_id() + 1]; ++i) {
-      const absl::string_view key = string_array_[begin.key_index()];
-      const absl::string_view value = string_array_[begin.value_index()];
-      const absl::string_view key_suffix =
+      const std::string_view key = string_array_[begin.key_index()];
+      const std::string_view value = string_array_[begin.value_index()];
+      const std::string_view key_suffix =
           string_array_[conjugation_suffix[2 * i + 1]];
-      const absl::string_view value_suffix =
+      const std::string_view value_suffix =
           string_array_[conjugation_suffix[2 * i]];
       const StrPair key_value1(absl::StrCat(key, key_suffix),
                                absl::StrCat(value, value_suffix));
@@ -102,7 +102,7 @@ UsageRewriter::UsageRewriter(const DataManagerInterface *data_manager,
 // static
 // "合いました" => "合い"
 std::string UsageRewriter::GetKanjiPrefixAndOneHiragana(
-    const absl::string_view word) {
+    const std::string_view word) {
   // TODO(hidehiko): Refactor more based on ConstChar32Iterator.
   std::string result;
   int pos = 0;
@@ -158,7 +158,7 @@ UsageRewriter::LookupUnmatchedUsageHeuristically(
     return UsageDictItemIterator();
   }
   // Check result key part is a prefix of the content_key.
-  const absl::string_view key = string_array_[itr->second.key_index()];
+  const std::string_view key = string_array_[itr->second.key_index()];
   if (absl::StartsWith(candidate.content_key, key)) {
     return itr->second;
   }
@@ -168,8 +168,8 @@ UsageRewriter::LookupUnmatchedUsageHeuristically(
 
 UsageRewriter::UsageDictItemIterator UsageRewriter::LookupUsage(
     const Segment::Candidate &candidate) const {
-  const absl::string_view key = candidate.content_key;
-  const absl::string_view value = candidate.content_value;
+  const std::string_view key = candidate.content_key;
+  const std::string_view value = candidate.content_value;
   StrPair key_value(key, value);
   const auto itr = key_value_usageitem_map_.find(key_value);
   if (itr != key_value_usageitem_map_.end()) {
@@ -231,7 +231,7 @@ bool UsageRewriter::Rewrite(const ConversionRequest &request,
         DCHECK(candidate);
         candidate->usage_id = iter.usage_id();
 
-        const absl::string_view value_suffix =
+        const std::string_view value_suffix =
             string_array_[base_conjugation_suffix_[2 * iter.conjugation_id()]];
         candidate->usage_title.assign(string_array_[iter.value_index()].data(),
                                       string_array_[iter.value_index()].size());

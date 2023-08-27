@@ -37,7 +37,7 @@
 #include "dictionary/dictionary_interface.h"
 #include "dictionary/pos_matcher.h"
 #include "dictionary/suppression_dictionary.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -64,28 +64,28 @@ class DictionaryImpl : public DictionaryInterface {
 
   ~DictionaryImpl() override;
 
-  bool HasKey(absl::string_view key) const override;
-  bool HasValue(absl::string_view value) const override;
-  void LookupPredictive(absl::string_view key,
+  bool HasKey(std::string_view key) const override;
+  bool HasValue(std::string_view value) const override;
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override;
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override;
 
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override;
 
-  void LookupReverse(absl::string_view str,
+  void LookupReverse(std::string_view str,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override;
 
-  bool LookupComment(absl::string_view key, absl::string_view value,
+  bool LookupComment(std::string_view key, std::string_view value,
                      const ConversionRequest &conversion_request,
                      std::string *comment) const override;
   bool Reload() override;
-  void PopulateReverseLookupCache(absl::string_view str) const override;
+  void PopulateReverseLookupCache(std::string_view str) const override;
   void ClearReverseLookupCache() const override;
 
  private:

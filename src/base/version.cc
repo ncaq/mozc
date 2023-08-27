@@ -40,7 +40,7 @@
 #include "base/version_def.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include "base/win32/wide_char.h"
@@ -49,7 +49,7 @@
 namespace mozc {
 namespace {
 
-bool StringAsIntegerComparator(absl::string_view lhs, absl::string_view rhs) {
+bool StringAsIntegerComparator(std::string_view lhs, std::string_view rhs) {
   return NumberUtil::SimpleAtoi(lhs) < NumberUtil::SimpleAtoi(rhs);
 }
 
@@ -85,9 +85,9 @@ bool Version::CompareVersion(const std::string &lhs, const std::string &rhs) {
     LOG(WARNING) << "Unknown is given as version";
     return false;
   }
-  const std::vector<absl::string_view> vlhs =
+  const std::vector<std::string_view> vlhs =
       absl::StrSplit(lhs, '.', absl::SkipEmpty());
-  const std::vector<absl::string_view> vrhs =
+  const std::vector<std::string_view> vrhs =
       absl::StrSplit(rhs, '.', absl::SkipEmpty());
   return std::lexicographical_compare(vlhs.begin(), vlhs.end(), vrhs.begin(),
                                       vrhs.end(), StringAsIntegerComparator);

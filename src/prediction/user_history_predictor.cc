@@ -72,7 +72,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc::prediction {
@@ -117,8 +117,8 @@ constexpr char kFileName[] = "user://.history.db";
 #endif  // _WIN32
 
 // Uses '\t' as a key/value delimiter
-constexpr absl::string_view kDelimiter = "\t";
-constexpr absl::string_view kEmojiDescription = "絵文字";
+constexpr std::string_view kDelimiter = "\t";
+constexpr std::string_view kEmojiDescription = "絵文字";
 
 constexpr absl::Duration k62Days = absl::Hours(62 * 24);
 
@@ -131,15 +131,15 @@ bool IsEmojiEntry(const UserHistoryPredictor::Entry &entry) {
 }
 
 // http://unicode.org/~scherer/emoji4unicode/snapshot/full.html
-constexpr absl::string_view kUtf8MinGooglePuaEmoji = "\xf3\xbe\x80\x80";
-constexpr absl::string_view kUtf8MaxGooglePuaEmoji = "\xf3\xbe\xba\xa0";
+constexpr std::string_view kUtf8MinGooglePuaEmoji = "\xf3\xbe\x80\x80";
+constexpr std::string_view kUtf8MaxGooglePuaEmoji = "\xf3\xbe\xba\xa0";
 
-bool IsAndroidPuaEmoji(absl::string_view s) {
+bool IsAndroidPuaEmoji(std::string_view s) {
   return (s.size() == 4 && kUtf8MinGooglePuaEmoji <= s &&
           s <= kUtf8MaxGooglePuaEmoji);
 }
 
-bool IsPunctuation(absl::string_view value) {
+bool IsPunctuation(std::string_view value) {
   return (value == "。" || value == "." || value == "、" || value == "," ||
           value == "？" || value == "?" || value == "！" || value == "!" ||
           value == "，" || value == "．");
@@ -159,7 +159,7 @@ bool IsSentenceLikeCandidate(const Segment::Candidate &candidate) {
 }
 
 // Returns romanaized string.
-std::string ToRoman(const absl::string_view str) {
+std::string ToRoman(const std::string_view str) {
   std::string result;
   japanese_util::HiraganaToRomanji(str, &result);
   return result;
@@ -167,7 +167,7 @@ std::string ToRoman(const absl::string_view str) {
 
 // Returns true if value looks like a content word.
 // Currently, just checks the script type.
-bool IsContentWord(const absl::string_view value) {
+bool IsContentWord(const std::string_view value) {
   return Util::CharsLen(value) > 1 ||
          Util::GetScriptType(value) != Util::UNKNOWN_SCRIPT;
 }
@@ -582,9 +582,9 @@ void UserHistoryPredictor::EraseNextEntries(uint32_t fp, Entry *entry) {
 // node ("ccc", "CCC").
 UserHistoryPredictor::RemoveNgramChainResult
 UserHistoryPredictor::RemoveNgramChain(
-    const absl::string_view target_key, const absl::string_view target_value,
-    Entry *entry, std::vector<absl::string_view> *key_ngrams,
-    size_t key_ngrams_len, std::vector<absl::string_view> *value_ngrams,
+    const std::string_view target_key, const std::string_view target_value,
+    Entry *entry, std::vector<std::string_view> *key_ngrams,
+    size_t key_ngrams_len, std::vector<std::string_view> *value_ngrams,
     size_t value_ngrams_len) {
   DCHECK(entry);
   DCHECK(key_ngrams);
@@ -649,8 +649,8 @@ UserHistoryPredictor::RemoveNgramChain(
   return NOT_FOUND;
 }
 
-bool UserHistoryPredictor::ClearHistoryEntry(const absl::string_view key,
-                                             const absl::string_view value) {
+bool UserHistoryPredictor::ClearHistoryEntry(const std::string_view key,
+                                             const std::string_view value) {
   bool deleted = false;
   {
     // Finds the history entry that has the exactly same key and value and has
@@ -676,7 +676,7 @@ bool UserHistoryPredictor::ClearHistoryEntry(const absl::string_view key,
           !absl::StartsWith(value, entry->value())) {
         continue;
       }
-      std::vector<absl::string_view> key_ngrams, value_ngrams;
+      std::vector<std::string_view> key_ngrams, value_ngrams;
       if (RemoveNgramChain(key, value, entry, &key_ngrams, 0, &value_ngrams,
                            0) == DONE) {
         deleted = true;
@@ -723,7 +723,7 @@ std::string UserHistoryPredictor::GetRomanMisspelledKey(
 
 // static
 bool UserHistoryPredictor::MaybeRomanMisspelledKey(
-    const absl::string_view key) {
+    const std::string_view key) {
   int num_alpha = 0;
   int num_hiragana = 0;
   int num_unknown = 0;
@@ -751,7 +751,7 @@ bool UserHistoryPredictor::MaybeRomanMisspelledKey(
 
 // static
 bool UserHistoryPredictor::RomanFuzzyPrefixMatch(
-    const absl::string_view str, const absl::string_view prefix) {
+    const std::string_view str, const std::string_view prefix) {
   if (prefix.empty() || prefix.size() > str.size()) {
     return false;
   }
@@ -800,7 +800,7 @@ bool UserHistoryPredictor::RomanFuzzyPrefixMatch(
 }
 
 bool UserHistoryPredictor::RomanFuzzyLookupEntry(
-    const absl::string_view roman_input_key, const Entry *entry,
+    const std::string_view roman_input_key, const Entry *entry,
     EntryPriorityQueue *results) const {
   if (roman_input_key.empty()) {
     return false;
@@ -852,14 +852,14 @@ UserHistoryPredictor::Entry *UserHistoryPredictor::AddEntryWithNewKeyValue(
 }
 
 bool UserHistoryPredictor::GetKeyValueForExactAndRightPrefixMatch(
-    const absl::string_view input_key, const Entry *entry,
+    const std::string_view input_key, const Entry *entry,
     const Entry **result_last_entry, uint64_t *left_last_access_time,
     uint64_t *left_most_last_access_time, std::string *result_key,
     std::string *result_value) const {
   std::string key = entry->key();
   std::string value = entry->value();
   const Entry *current_entry = entry;
-  absl::flat_hash_set<std::pair<absl::string_view, absl::string_view>> seen;
+  absl::flat_hash_set<std::pair<std::string_view, std::string_view>> seen;
   seen.emplace(current_entry->key(), current_entry->value());
   // Until target entry gets longer than input_key.
   while (key.size() <= input_key.size()) {
@@ -952,8 +952,8 @@ bool UserHistoryPredictor::GetKeyValueForExactAndRightPrefixMatch(
 }
 
 bool UserHistoryPredictor::LookupEntry(RequestType request_type,
-                                       const absl::string_view input_key,
-                                       const absl::string_view key_base,
+                                       const std::string_view input_key,
+                                       const std::string_view key_base,
                                        const Trie<std::string> *key_expanded,
                                        const Entry *entry,
                                        const Entry *prev_entry,
@@ -1539,8 +1539,8 @@ void UserHistoryPredictor::InsertEvent(EntryType type) {
 }
 
 bool UserHistoryPredictor::ShouldInsert(
-    RequestType request_type, absl::string_view key, absl::string_view value,
-    const absl::string_view description) const {
+    RequestType request_type, std::string_view key, std::string_view value,
+    const std::string_view description) const {
   if (key.empty() || value.empty() || key.size() > kMaxStringLength ||
       value.size() > kMaxStringLength ||
       description.size() > kMaxStringLength) {
@@ -1556,8 +1556,8 @@ bool UserHistoryPredictor::ShouldInsert(
 }
 
 void UserHistoryPredictor::TryInsert(
-    RequestType request_type, absl::string_view key, absl::string_view value,
-    absl::string_view description, bool is_suggestion_selected,
+    RequestType request_type, std::string_view key, std::string_view value,
+    std::string_view description, bool is_suggestion_selected,
     uint32_t next_fp, uint64_t last_access_time, Segments *segments) {
   // b/279560433: Preprocess key value
   key = absl::StripTrailingAsciiWhitespace(key);
@@ -1935,7 +1935,7 @@ void UserHistoryPredictor::Revert(Segments *segments) {
 
 // static
 UserHistoryPredictor::MatchType UserHistoryPredictor::GetMatchType(
-    const absl::string_view lstr, const absl::string_view rstr) {
+    const std::string_view lstr, const std::string_view rstr) {
   if (lstr.empty() && !rstr.empty()) {
     return LEFT_EMPTY_MATCH;
   }
@@ -1962,8 +1962,8 @@ UserHistoryPredictor::MatchType UserHistoryPredictor::GetMatchType(
 
 // static
 UserHistoryPredictor::MatchType UserHistoryPredictor::GetMatchTypeFromInput(
-    const absl::string_view input_key, const absl::string_view key_base,
-    const Trie<std::string> *key_expanded, const absl::string_view target) {
+    const std::string_view input_key, const std::string_view key_base,
+    const Trie<std::string> *key_expanded, const std::string_view target) {
   if (key_expanded == nullptr) {
     // |input_key| and |key_base| can be different by composer modification.
     // For example, |input_key|, "８，＋", and |base| "８、＋".
@@ -2014,8 +2014,8 @@ UserHistoryPredictor::MatchType UserHistoryPredictor::GetMatchTypeFromInput(
 }
 
 // static
-uint32_t UserHistoryPredictor::Fingerprint(const absl::string_view key,
-                                           const absl::string_view value,
+uint32_t UserHistoryPredictor::Fingerprint(const std::string_view key,
+                                           const std::string_view value,
                                            EntryType type) {
   if (type == Entry::DEFAULT_ENTRY) {
     // Since we have already used the fingerprint function for next entries and
@@ -2028,8 +2028,8 @@ uint32_t UserHistoryPredictor::Fingerprint(const absl::string_view key,
 }
 
 // static
-uint32_t UserHistoryPredictor::Fingerprint(const absl::string_view key,
-                                           const absl::string_view value) {
+uint32_t UserHistoryPredictor::Fingerprint(const std::string_view key,
+                                           const std::string_view value) {
   return Fingerprint(key, value, Entry::DEFAULT_ENTRY);
 }
 

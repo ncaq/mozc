@@ -44,7 +44,7 @@
 #include "protocol/config.pb.h"
 #include "request/conversion_request.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::prediction {
 namespace {
@@ -84,7 +84,7 @@ size_t GetHistoryPredictionSizeFromRequest(const ConversionRequest &request) {
 }
 
 std::optional<std::string> GetReading(const ConverterInterface &converter,
-                                      absl::string_view text) {
+                                      std::string_view text) {
   Segments segments;
   if (!converter.StartReverseConversion(&segments, text)) {
     LOG(ERROR) << "Reverse conversion failed to get the reading of " << text;
@@ -149,8 +149,8 @@ bool BasePredictor::ClearUnusedHistory() {
   return user_history_predictor_->ClearUnusedHistory();
 }
 
-bool BasePredictor::ClearHistoryEntry(const absl::string_view key,
-                                      const absl::string_view value) {
+bool BasePredictor::ClearHistoryEntry(const std::string_view key,
+                                      const std::string_view value) {
   return user_history_predictor_->ClearHistoryEntry(key, value);
 }
 
@@ -184,7 +184,7 @@ void BasePredictor::PopulateReadingOfCommittedCandidateIfMissing(
     return;
   }
 
-  const absl::string_view functional_value = cand->functional_value();
+  const std::string_view functional_value = cand->functional_value();
   if (Util::GetScriptType(functional_value) != Util::HIRAGANA) {
     LOG(ERROR) << "The functional value is not hiragana: " << *cand;
     return;

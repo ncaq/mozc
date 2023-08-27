@@ -36,7 +36,7 @@
 #include "dictionary/file/codec_interface.h"
 #include "dictionary/file/section.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -49,7 +49,7 @@ class DictionaryFileBuilder {
   virtual ~DictionaryFileBuilder();
 
   // Adds a section from a file
-  bool AddSectionFromFile(absl::string_view section_name,
+  bool AddSectionFromFile(std::string_view section_name,
                           const std::string &file_name);
 
   // Writes the image of dictionary file to a file.

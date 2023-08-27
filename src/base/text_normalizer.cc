@@ -35,7 +35,7 @@
 #include <utility>
 
 #include "base/util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -173,7 +173,7 @@ std::pair<int, int> ConvertJaCjkCompatToSvs(char32_t cjk_compat_char) {
   return std::make_pair(svs_base, svs_extend);
 }
 
-std::string NormalizeTextForWindows(absl::string_view input) {
+std::string NormalizeTextForWindows(std::string_view input) {
   std::string output;
   for (ConstChar32Iterator iter(input); !iter.Done(); iter.Next()) {
     Util::Ucs4ToUtf8Append(NormalizeCharForWindows(iter.Get()), &output);
@@ -182,7 +182,7 @@ std::string NormalizeTextForWindows(absl::string_view input) {
 }
 }  // namespace
 
-std::string TextNormalizer::NormalizeTextWithFlag(absl::string_view input,
+std::string TextNormalizer::NormalizeTextWithFlag(std::string_view input,
                                                   TextNormalizer::Flag flag) {
   if (flag == TextNormalizer::kDefault) {
 #ifdef _WIN32
@@ -199,7 +199,7 @@ std::string TextNormalizer::NormalizeTextWithFlag(absl::string_view input,
   return NormalizeTextForWindows(input);
 }
 
-bool TextNormalizer::NormalizeTextToSvs(absl::string_view input,
+bool TextNormalizer::NormalizeTextToSvs(std::string_view input,
                                         std::string *output) {
   std::u32string codepoints = Util::Utf8ToUtf32(input);
   std::u32string normalized;
@@ -222,7 +222,7 @@ bool TextNormalizer::NormalizeTextToSvs(absl::string_view input,
   return true;
 }
 
-std::string TextNormalizer::NormalizeTextToSvs(absl::string_view input) {
+std::string TextNormalizer::NormalizeTextToSvs(std::string_view input) {
   std::string output;
   if (NormalizeTextToSvs(input, &output)) {
     return output;

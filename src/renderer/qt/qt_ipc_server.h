@@ -37,7 +37,7 @@
 
 #include "base/port.h"
 #include "ipc/ipc.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace renderer {
@@ -51,7 +51,7 @@ class QtIpcServer : public IPCServer {
   QtIpcServer& operator=(const QtIpcServer&) = delete;
   ~QtIpcServer() override;
 
-  bool Process(absl::string_view request, std::string *response) override;
+  bool Process(std::string_view request, std::string *response) override;
 
   void SetCallback(Callback callback) { callback_ = std::move(callback); }
 

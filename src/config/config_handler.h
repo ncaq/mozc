@@ -36,7 +36,7 @@
 #include <string>
 
 #include "protocol/config.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace config {
@@ -78,7 +78,7 @@ class ConfigHandler {
   static void Reload();
 
   // Sets config file. (for unit testing)
-  static void SetConfigFileName(absl::string_view filename);
+  static void SetConfigFileName(std::string_view filename);
 
   // Get config file name.
   static std::string GetConfigFileName();

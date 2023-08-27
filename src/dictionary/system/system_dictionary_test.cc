@@ -60,7 +60,7 @@
 #include "absl/flags/flag.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(int32_t, dictionary_test_size, 100000,
           "Dictionary size for this test.");
@@ -321,7 +321,7 @@ TEST_F(SystemDictionaryTest, SimpleLookupPrefix) {
 
 class LookupPrefixTestCallback : public SystemDictionary::Callback {
  public:
-  ResultType OnKey(absl::string_view key) override {
+  ResultType OnKey(std::string_view key) override {
     if (key == "かき") {
       return TRAVERSE_CULL;
     } else if (key == "さ") {
@@ -332,7 +332,7 @@ class LookupPrefixTestCallback : public SystemDictionary::Callback {
     return TRAVERSE_CONTINUE;
   }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     result_.insert(std::make_pair(token.key, token.value));
     return TRAVERSE_CONTINUE;

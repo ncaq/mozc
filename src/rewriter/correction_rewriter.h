@@ -38,7 +38,7 @@
 #include "data_manager/data_manager_interface.h"
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -50,9 +50,9 @@ class CorrectionRewriter : public RewriterInterface {
   static std::unique_ptr<CorrectionRewriter> CreateCorrectionRewriter(
       const DataManagerInterface *data_manager);
 
-  CorrectionRewriter(absl::string_view value_array_data,
-                     absl::string_view error_array_data,
-                     absl::string_view correction_array_data);
+  CorrectionRewriter(std::string_view value_array_data,
+                     std::string_view error_array_data,
+                     std::string_view correction_array_data);
 
   bool Rewrite(const ConversionRequest &request,
                Segments *segments) const override;
@@ -63,14 +63,14 @@ class CorrectionRewriter : public RewriterInterface {
 
  private:
   struct ReadingCorrectionItem {
-    ReadingCorrectionItem(absl::string_view v, absl::string_view e,
-                          absl::string_view c)
+    ReadingCorrectionItem(std::string_view v, std::string_view e,
+                          std::string_view c)
         : value(v), error(e), correction(c) {}
 
     // ex. (value, error, correction) = ("雰囲気", "ふいんき", "ふんいき")
-    absl::string_view value;
-    absl::string_view error;
-    absl::string_view correction;
+    std::string_view value;
+    std::string_view error;
+    std::string_view correction;
   };
 
   // Sets |candidate| fields from |iterm|.
@@ -82,7 +82,7 @@ class CorrectionRewriter : public RewriterInterface {
   // If |value| is empty, looks up corrections only using the key.
   // The matched results are saved in |results|.
   // Return false if |results| is empty.
-  bool LookupCorrection(absl::string_view key, absl::string_view value,
+  bool LookupCorrection(std::string_view key, std::string_view value,
                         std::vector<ReadingCorrectionItem> *results) const;
 
   SerializedStringArray value_array_;

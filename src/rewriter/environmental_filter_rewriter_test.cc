@@ -45,7 +45,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/container/btree_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -53,7 +53,7 @@ constexpr char kKanaSupplement_6_0[] = "\U0001B001";
 constexpr char kKanaSupplement_10_0[] = "\U0001B002";
 constexpr char kKanaExtendedA_14_0[] = "\U0001B122";
 
-void AddSegment(const absl::string_view key, const absl::string_view value,
+void AddSegment(const std::string_view key, const std::string_view value,
                 Segments *segments) {
   segments->Clear();
   Segment *seg = segments->push_back_segment();
@@ -63,7 +63,7 @@ void AddSegment(const absl::string_view key, const absl::string_view value,
   candidate->content_value = std::string(value);
 }
 
-void AddSegment(const absl::string_view key,
+void AddSegment(const std::string_view key,
                 const std::vector<std::string> &values, Segments *segments) {
   Segment *seg = segments->add_segment();
   seg->set_key(key);
@@ -76,7 +76,7 @@ void AddSegment(const absl::string_view key,
 }
 
 struct EmojiData {
-  const absl::string_view emoji;
+  const std::string_view emoji;
   const EmojiVersion unicode_version;
 };
 
@@ -125,7 +125,7 @@ class TestDataManager : public testing::MockDataManager {
     }
 
     // Set index.
-    std::vector<absl::string_view> strings;
+    std::vector<std::string_view> strings;
     size_t index = 0;
     for (auto &iter : string_index) {
       strings.push_back(iter.first);
@@ -149,17 +149,17 @@ class TestDataManager : public testing::MockDataManager {
   }
 
   void GetEmojiRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const override {
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const override {
     *token_array_data =
-        absl::string_view(reinterpret_cast<const char *>(token_array_.data()),
+        std::string_view(reinterpret_cast<const char *>(token_array_.data()),
                           token_array_.size() * sizeof(uint32_t));
     *string_array_data = string_array_data_;
   }
 
  private:
   std::vector<uint32_t> token_array_;
-  absl::string_view string_array_data_;
+  std::string_view string_array_data_;
   std::unique_ptr<uint32_t[]> string_array_buf_;
 };
 

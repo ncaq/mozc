@@ -37,7 +37,7 @@
 #include <vector>
 
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -98,8 +98,8 @@ TEST(NumberUtilTest, SafeStrToInt16) {
   EXPECT_FALSE(NumberUtil::SafeStrToInt16(".0", &value));
   EXPECT_FALSE(NumberUtil::SafeStrToInt16("", &value));
 
-  // Test for absl::string_view input.
-  constexpr absl::string_view kString = "123 abc 789";
+  // Test for std::string_view input.
+  constexpr std::string_view kString = "123 abc 789";
   EXPECT_TRUE(NumberUtil::SafeStrToInt16(kString.substr(0, 3), &value));
   EXPECT_EQ(value, 123);
   EXPECT_FALSE(NumberUtil::SafeStrToInt16(kString.substr(4, 3), &value));
@@ -144,8 +144,8 @@ TEST(NumberUtilTest, SafeStrToUInt16) {
   EXPECT_FALSE(NumberUtil::SafeStrToUInt16(".0", &value));
   EXPECT_FALSE(NumberUtil::SafeStrToUInt16("", &value));
 
-  // Test for absl::string_view input.
-  constexpr absl::string_view kString = "123 abc 789";
+  // Test for std::string_view input.
+  constexpr std::string_view kString = "123 abc 789";
   EXPECT_TRUE(NumberUtil::SafeStrToUInt16(kString.substr(0, 3), &value));
   EXPECT_EQ(value, 123);
   EXPECT_FALSE(NumberUtil::SafeStrToUInt16(kString.substr(4, 3), &value));
@@ -195,8 +195,8 @@ TEST(NumberUtilTest, SafeStrToDouble) {
   EXPECT_FALSE(NumberUtil::SafeStrToDouble(".", &value));
   EXPECT_FALSE(NumberUtil::SafeStrToDouble("", &value));
 
-  // Test for absl::string_view input.
-  constexpr absl::string_view kString = "0.01 3.1415 double";
+  // Test for std::string_view input.
+  constexpr std::string_view kString = "0.01 3.1415 double";
   EXPECT_TRUE(NumberUtil::SafeStrToDouble(kString.substr(0, 4), &value));
   EXPECT_EQ(value, 0.01);
   EXPECT_TRUE(NumberUtil::SafeStrToDouble(kString.substr(5, 6), &value));
@@ -276,9 +276,9 @@ TEST(NumberUtilTest, IsDecimalInteger) {
 }
 
 TEST(NumberUtilTest, KanjiNumberToArabicNumber) {
-  constexpr absl::string_view inputs[] = {"十", "百", "千", "万",
+  constexpr std::string_view inputs[] = {"十", "百", "千", "万",
                                           "億", "兆", "京"};
-  constexpr absl::string_view expects[] = {"10",
+  constexpr std::string_view expects[] = {"10",
                                            "100",
                                            "1000",
                                            "10000",
@@ -295,7 +295,7 @@ TEST(NumberUtilTest, KanjiNumberToArabicNumber) {
 
 TEST(NumberUtilTest, NormalizeNumbers) {
   // An element has input, expected Kanji output, and expected Arabic output.
-  constexpr absl::string_view success_data[][3] = {
+  constexpr std::string_view success_data[][3] = {
       {"一", "一", "1"},
       {"九", "九", "9"},
       {"十", "十", "10"},
@@ -353,7 +353,7 @@ TEST(NumberUtilTest, NormalizeNumbers) {
   }
 
   // An element has input, expected Kanji output, and expected Arabic output.
-  constexpr absl::string_view success_notrim_data[][3] = {
+  constexpr std::string_view success_notrim_data[][3] = {
       {"０１２", "〇一二", "012"},
       {"０00", "〇〇〇", "000"},
       {"００１２", "〇〇一二", "0012"},
@@ -372,7 +372,7 @@ TEST(NumberUtilTest, NormalizeNumbers) {
   }
 
   // Test data expected to fail
-  constexpr absl::string_view fail_data[] = {
+  constexpr std::string_view fail_data[] = {
       // 2^64
       "千八百四十四京六千七百四十四兆七百三十七億九百五十五万千六百十六",
       "てすと",
@@ -399,7 +399,7 @@ TEST(NumberUtilTest, NormalizeNumbers) {
 TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   {
     // Checks that kanji_output and arabic_output is cleared.
-    constexpr absl::string_view kInput = "一個";
+    constexpr std::string_view kInput = "一個";
     std::string arabic_output = "dummy_text_arabic";
     std::string kanji_output = "dummy_text_kanji";
     std::string suffix = "dummy_text_suffix";
@@ -411,7 +411,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "一万二十五個";
+    constexpr std::string_view kInput = "一万二十五個";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_TRUE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -421,7 +421,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "二百三五万一番目";
+    constexpr std::string_view kInput = "二百三五万一番目";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_TRUE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -431,14 +431,14 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "てすと";
+    constexpr std::string_view kInput = "てすと";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_FALSE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
   }
 
   {
-    constexpr absl::string_view kInput = "てすと２";
+    constexpr std::string_view kInput = "てすと２";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_FALSE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -446,7 +446,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
 
   // Tests for numbers less than 10.
   {
-    constexpr absl::string_view kInput = "零セット";
+    constexpr std::string_view kInput = "零セット";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_TRUE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -456,7 +456,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "九０ぷよ";
+    constexpr std::string_view kInput = "九０ぷよ";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_TRUE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -466,7 +466,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "三五$";
+    constexpr std::string_view kInput = "三五$";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_TRUE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -476,7 +476,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput =
+    constexpr std::string_view kInput =
         "二十三十に";  // same base appears twice
     std::string arabic_output, kanji_output, suffix;
     EXPECT_FALSE(NumberUtil::NormalizeNumbersWithSuffix(
@@ -484,7 +484,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput =
+    constexpr std::string_view kInput =
         "２，０００";  // separated number style
     std::string arabic_output, kanji_output, suffix;
     EXPECT_FALSE(NumberUtil::NormalizeNumbersWithSuffix(
@@ -492,7 +492,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
   }
 
   {
-    constexpr absl::string_view kInput = "２時３０分";
+    constexpr std::string_view kInput = "２時３０分";
     std::string arabic_output, kanji_output, suffix;
     EXPECT_FALSE(NumberUtil::NormalizeNumbersWithSuffix(
         kInput, true, &kanji_output, &arabic_output, &suffix));
@@ -500,7 +500,7 @@ TEST(NumberUtilTest, NormalizeNumbersWithSuffix) {
 }
 
 TEST(NumberUtilTest, ArabicToWideArabicTest) {
-  absl::string_view arabic;
+  std::string_view arabic;
   std::vector<NumberUtil::NumberString> output;
 
   arabic = "12345";
@@ -553,9 +553,9 @@ TEST(NumberUtilTest, ArabicToWideArabicTest) {
 namespace {
 constexpr int kMaxCandsInArabicToKanjiTest = 4;
 struct ArabicToKanjiTestData {
-  absl::string_view input;
+  std::string_view input;
   int expect_num;
-  absl::string_view expect_value[kMaxCandsInArabicToKanjiTest];
+  std::string_view expect_value[kMaxCandsInArabicToKanjiTest];
   NumberUtil::NumberString::Style expect_style[kMaxCandsInArabicToKanjiTest];
 };
 }  // namespace
@@ -617,7 +617,7 @@ TEST(NumberUtilTest, ArabicToKanjiTest) {
     }
   }
 
-  constexpr absl::string_view kFailInputs[] = {"asf56789", "0.001", "-100",
+  constexpr std::string_view kFailInputs[] = {"asf56789", "0.001", "-100",
                                                "123456789012345678901"};
   for (size_t i = 0; i < std::size(kFailInputs); ++i) {
     std::vector<NumberUtil::NumberString> output;
@@ -631,7 +631,7 @@ TEST(NumberUtilTest, ArabicToSeparatedArabicTest) {
   std::vector<NumberUtil::NumberString> output;
 
   // Test data expected to succeed
-  constexpr absl::string_view kSuccess[][3] = {
+  constexpr std::string_view kSuccess[][3] = {
       {"4", "4", "４"},
       {"123456789", "123,456,789", "１２３，４５６，７８９"},
       {"1234567.89", "1,234,567.89", "１，２３４，５６７．８９"},
@@ -640,7 +640,7 @@ TEST(NumberUtilTest, ArabicToSeparatedArabicTest) {
   };
 
   for (size_t i = 0; i < std::size(kSuccess); ++i) {
-    const absl::string_view arabic = kSuccess[i][0];
+    const std::string_view arabic = kSuccess[i][0];
     output.clear();
     EXPECT_TRUE(NumberUtil::ArabicToSeparatedArabic(arabic, &output));
     ASSERT_EQ(output.size(), 2);
@@ -655,14 +655,14 @@ TEST(NumberUtilTest, ArabicToSeparatedArabicTest) {
   }
 
   // Test data expected to fail
-  constexpr absl::string_view kFail[] = {
+  constexpr std::string_view kFail[] = {
       "0123456789",
       "asdf0123456789",
       "0.001",
       "-100",
   };
 
-  for (const absl::string_view arabic : kFail) {
+  for (const std::string_view arabic : kFail) {
     output.clear();
     EXPECT_FALSE(NumberUtil::ArabicToSeparatedArabic(arabic, &output));
     ASSERT_EQ(output.size(), 0);
@@ -671,7 +671,7 @@ TEST(NumberUtilTest, ArabicToSeparatedArabicTest) {
 
 // ArabicToOtherForms
 TEST(NumberUtilTest, ArabicToOtherFormsTest) {
-  absl::string_view arabic;
+  std::string_view arabic;
   std::vector<NumberUtil::NumberString> output;
 
   arabic = "5";
@@ -721,7 +721,7 @@ TEST(NumberUtilTest, ArabicToOtherFormsTest) {
 
 // ArabicToOtherRadixes
 TEST(NumberUtilTest, ArabicToOtherRadixesTest) {
-  absl::string_view arabic;
+  std::string_view arabic;
   std::vector<NumberUtil::NumberString> output;
 
   arabic = "1";

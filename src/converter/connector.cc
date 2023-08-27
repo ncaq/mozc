@@ -45,7 +45,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 
 namespace mozc {
@@ -111,7 +111,7 @@ absl::StatusOr<Metadata> ParseMetadata(const char *connection_data,
                                        size_t connection_size) {
   if (connection_size < Metadata::kByteSize) {
     const auto &data =
-        Util::Escape(absl::string_view(connection_data, connection_size));
+        Util::Escape(std::string_view(connection_data, connection_size));
     return absl::FailedPreconditionError(absl::StrCat(
         "connector.cc: At least ", Metadata::kByteSize,
         " bytes expected.  Bytes: '", data, "' (", connection_size, " bytes)"));

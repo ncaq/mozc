@@ -34,13 +34,13 @@
 
 #include "engine/engine.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
 absl::StatusOr<std::unique_ptr<Engine>> CreateEvalEngine(
-    absl::string_view data_file_path, absl::string_view data_type,
-    absl::string_view engine_type);
+    std::string_view data_file_path, std::string_view data_type,
+    std::string_view engine_type);
 
 }  // namespace mozc
 

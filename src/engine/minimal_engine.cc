@@ -43,7 +43,7 @@
 #include "engine/user_data_manager_interface.h"
 #include "prediction/predictor_interface.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -59,14 +59,14 @@ class UserDataManagerStub : public UserDataManagerInterface {
   bool ClearUserHistory() override { return true; }
   bool ClearUserPrediction() override { return true; }
   bool ClearUnusedUserPrediction() override { return true; }
-  bool ClearUserPredictionEntry(const absl::string_view key,
-                                const absl::string_view value) override {
+  bool ClearUserPredictionEntry(const std::string_view key,
+                                const std::string_view value) override {
     return true;
   }
   bool Wait() override { return true; }
 };
 
-bool AddAsIsCandidate(const absl::string_view key, Segments *segments) {
+bool AddAsIsCandidate(const std::string_view key, Segments *segments) {
   if (segments == nullptr) {
     return false;
   }
@@ -108,12 +108,12 @@ class MinimalConverter : public ConverterInterface {
   }
 
   bool StartConversion(Segments *segments,
-                       const absl::string_view key) const override {
+                       const std::string_view key) const override {
     return AddAsIsCandidate(key, segments);
   }
 
   bool StartReverseConversion(Segments *segments,
-                              const absl::string_view key) const override {
+                              const std::string_view key) const override {
     return false;
   }
 
@@ -123,7 +123,7 @@ class MinimalConverter : public ConverterInterface {
   }
 
   bool StartPrediction(Segments *segments,
-                       const absl::string_view key) const override {
+                       const std::string_view key) const override {
     return AddAsIsCandidate(key, segments);
   }
 
@@ -133,7 +133,7 @@ class MinimalConverter : public ConverterInterface {
   }
 
   bool StartSuggestion(Segments *segments,
-                       const absl::string_view key) const override {
+                       const std::string_view key) const override {
     return AddAsIsCandidate(key, segments);
   }
 
@@ -143,7 +143,7 @@ class MinimalConverter : public ConverterInterface {
   }
 
   bool StartPartialPrediction(Segments *segments,
-                              const absl::string_view key) const override {
+                              const std::string_view key) const override {
     return false;
   }
 
@@ -153,7 +153,7 @@ class MinimalConverter : public ConverterInterface {
   }
 
   bool StartPartialSuggestion(Segments *segments,
-                              const absl::string_view key) const override {
+                              const std::string_view key) const override {
     return false;
   }
 
@@ -168,7 +168,7 @@ class MinimalConverter : public ConverterInterface {
 
   bool ReconstructHistory(
       Segments *segments,
-      const absl::string_view preceding_text) const override {
+      const std::string_view preceding_text) const override {
     return true;
   }
 
@@ -179,8 +179,8 @@ class MinimalConverter : public ConverterInterface {
 
   bool CommitPartialSuggestionSegmentValue(
       Segments *segments, size_t segment_index, int candidate_index,
-      absl::string_view current_segment_key,
-      absl::string_view new_segment_key) const override {
+      std::string_view current_segment_key,
+      std::string_view new_segment_key) const override {
     return true;
   }
 

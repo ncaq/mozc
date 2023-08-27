@@ -49,7 +49,7 @@
 #include "absl/strings/ascii.h"
 #include "absl/strings/escaping.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/strings/strip.h"
 
 #ifdef _WIN32
@@ -58,7 +58,7 @@
 
 namespace mozc {
 
-ConstChar32Iterator::ConstChar32Iterator(absl::string_view utf8_string)
+ConstChar32Iterator::ConstChar32Iterator(std::string_view utf8_string)
     : utf8_string_(utf8_string), current_(0), done_(false) {
   Next();
 }
@@ -77,7 +77,7 @@ void ConstChar32Iterator::Next() {
 bool ConstChar32Iterator::Done() const { return done_; }
 
 ConstChar32ReverseIterator::ConstChar32ReverseIterator(
-    absl::string_view utf8_string)
+    std::string_view utf8_string)
     : utf8_string_(utf8_string), current_(0), done_(false) {
   Next();
 }
@@ -95,7 +95,7 @@ void ConstChar32ReverseIterator::Next() {
 
 bool ConstChar32ReverseIterator::Done() const { return done_; }
 
-void Util::SplitStringToUtf8Chars(absl::string_view str,
+void Util::SplitStringToUtf8Chars(std::string_view str,
                                   std::vector<std::string> *output) {
   const char *begin = str.data();
   const char *const end = str.data() + str.size();
@@ -112,7 +112,7 @@ void Util::SplitStringToUtf8Chars(absl::string_view str,
 // Note, this function does not support full requirements of the grapheme
 // specifications defined by Unicode.
 // * https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries
-void Util::SplitStringToUtf8Graphemes(absl::string_view str,
+void Util::SplitStringToUtf8Graphemes(std::string_view str,
                                       std::vector<std::string> *graphemes) {
   Util::SplitStringToUtf8Chars(str, graphemes);
   if (graphemes->size() <= 1) {
@@ -193,7 +193,7 @@ void Util::SplitStringToUtf8Graphemes(absl::string_view str,
   *graphemes = std::move(new_graphemes);
 }
 
-void Util::SplitCSV(absl::string_view input, std::vector<std::string> *output) {
+void Util::SplitCSV(std::string_view input, std::vector<std::string> *output) {
   std::string tmp(input);
   char *str = tmp.data();
 
@@ -306,15 +306,15 @@ void Util::CapitalizeString(std::string *str) {
   str->assign(absl::StrCat(first_str, tailing_str));
 }
 
-bool Util::IsLowerAscii(absl::string_view s) {
+bool Util::IsLowerAscii(std::string_view s) {
   return absl::c_all_of(s, absl::ascii_islower);
 }
 
-bool Util::IsUpperAscii(absl::string_view s) {
+bool Util::IsUpperAscii(std::string_view s) {
   return absl::c_all_of(s, absl::ascii_isupper);
 }
 
-bool Util::IsCapitalizedAscii(absl::string_view s) {
+bool Util::IsCapitalizedAscii(std::string_view s) {
   if (s.empty()) {
     return true;
   }
@@ -346,7 +346,7 @@ size_t Util::CharsLen(const char *src, size_t size) {
   return length;
 }
 
-std::u32string Util::Utf8ToUtf32(absl::string_view str) {
+std::u32string Util::Utf8ToUtf32(std::string_view str) {
   std::u32string codepoints;
   char32_t codepoint;
   while (Util::SplitFirstChar32(str, &codepoint, &str)) {
@@ -364,8 +364,8 @@ std::string Util::Utf32ToUtf8(const std::u32string_view str) {
 }
 
 char32_t Util::Utf8ToUcs4(const char *begin, const char *end, size_t *mblen) {
-  absl::string_view s(begin, end - begin);
-  absl::string_view rest;
+  std::string_view s(begin, end - begin);
+  std::string_view rest;
   char32_t c = 0;
   if (!Util::SplitFirstChar32(s, &c, &rest)) {
     *mblen = 0;
@@ -375,19 +375,19 @@ char32_t Util::Utf8ToUcs4(const char *begin, const char *end, size_t *mblen) {
   return c;
 }
 
-bool Util::SplitFirstChar32(absl::string_view s, char32_t *first_char32,
-                            absl::string_view *rest) {
+bool Util::SplitFirstChar32(std::string_view s, char32_t *first_char32,
+                            std::string_view *rest) {
   char32_t dummy_char32 = 0;
   if (first_char32 == nullptr) {
     first_char32 = &dummy_char32;
   }
-  absl::string_view dummy_rest;
+  std::string_view dummy_rest;
   if (rest == nullptr) {
     rest = &dummy_rest;
   }
 
   *first_char32 = 0;
-  *rest = absl::string_view();
+  *rest = std::string_view();
 
   if (s.empty()) {
     return false;
@@ -465,9 +465,9 @@ bool Util::SplitFirstChar32(absl::string_view s, char32_t *first_char32,
   return true;
 }
 
-bool Util::SplitLastChar32(absl::string_view s, absl::string_view *rest,
+bool Util::SplitLastChar32(std::string_view s, std::string_view *rest,
                            char32_t *last_char32) {
-  absl::string_view dummy_rest;
+  std::string_view dummy_rest;
   if (rest == nullptr) {
     rest = &dummy_rest;
   }
@@ -477,21 +477,21 @@ bool Util::SplitLastChar32(absl::string_view s, absl::string_view *rest,
   }
 
   *last_char32 = 0;
-  *rest = absl::string_view();
+  *rest = std::string_view();
 
   if (s.empty()) {
     return false;
   }
-  absl::string_view::const_reverse_iterator it = s.rbegin();
+  std::string_view::const_reverse_iterator it = s.rbegin();
   for (; (it != s.rend()) && IsUtf8TrailingByte(*it); ++it) {
   }
   if (it == s.rend()) {
     return false;
   }
-  const absl::string_view::difference_type len =
+  const std::string_view::difference_type len =
       std::distance(s.rbegin(), it) + 1;
-  const absl::string_view last_piece = absl::ClippedSubstr(s, s.size() - len);
-  absl::string_view result_piece;
+  const std::string_view last_piece = absl::ClippedSubstr(s, s.size() - len);
+  std::string_view result_piece;
   if (!SplitFirstChar32(last_piece, last_char32, &result_piece)) {
     return false;
   }
@@ -503,9 +503,9 @@ bool Util::SplitLastChar32(absl::string_view s, absl::string_view *rest,
   return true;
 }
 
-bool Util::IsValidUtf8(absl::string_view s) {
+bool Util::IsValidUtf8(std::string_view s) {
   char32_t first;
-  absl::string_view rest;
+  std::string_view rest;
   while (!s.empty()) {
     if (!SplitFirstChar32(s, &first, &rest)) {
       return false;
@@ -579,16 +579,16 @@ size_t Util::Ucs4ToUtf8(char32_t c, char *output) {
 }
 
 #ifdef _WIN32
-size_t Util::WideCharsLen(absl::string_view src) {
+size_t Util::WideCharsLen(std::string_view src) {
   return win32::WideCharsLen(src);
 }
 
-int Util::Utf8ToWide(absl::string_view input, std::wstring *output) {
+int Util::Utf8ToWide(std::string_view input, std::wstring *output) {
   *output = win32::Utf8ToWide(input);
   return output->size();
 }
 
-std::wstring Util::Utf8ToWide(absl::string_view input) {
+std::wstring Util::Utf8ToWide(std::string_view input) {
   return win32::Utf8ToWide(input);
 }
 
@@ -609,17 +609,17 @@ std::string Util::WideToUtf8(const std::wstring &input) {
 }
 #endif  // _WIN32
 
-absl::string_view Util::Utf8SubString(absl::string_view src, size_t start) {
+std::string_view Util::Utf8SubString(std::string_view src, size_t start) {
   const char *begin = src.data();
   const char *end = begin + src.size();
   for (size_t i = 0; i < start && begin < end; ++i) {
     begin += OneCharLen(begin);
   }
   const size_t prefix_len = begin - src.data();
-  return absl::string_view(begin, src.size() - prefix_len);
+  return std::string_view(begin, src.size() - prefix_len);
 }
 
-absl::string_view Util::Utf8SubString(absl::string_view src, size_t start,
+std::string_view Util::Utf8SubString(std::string_view src, size_t start,
                                       size_t length) {
   src = Utf8SubString(src, start);
   size_t l = length;
@@ -629,13 +629,13 @@ absl::string_view Util::Utf8SubString(absl::string_view src, size_t start,
     substr_end += OneCharLen(substr_end);
     --l;
   }
-  return absl::string_view(src.data(), substr_end - src.data());
+  return std::string_view(src.data(), substr_end - src.data());
 }
 
-void Util::Utf8SubString(absl::string_view src, size_t start, size_t length,
+void Util::Utf8SubString(std::string_view src, size_t start, size_t length,
                          std::string *result) {
   DCHECK(result);
-  const absl::string_view substr = Utf8SubString(src, start, length);
+  const std::string_view substr = Utf8SubString(src, start, length);
   result->assign(substr.data(), substr.size());
 }
 
@@ -644,7 +644,7 @@ void Util::StripUtf8Bom(std::string *line) {
   *line = std::string(absl::StripPrefix(*line, kUtf8Bom));
 }
 
-bool Util::IsUtf16Bom(absl::string_view line) {
+bool Util::IsUtf16Bom(std::string_view line) {
   static constexpr char kUtf16LeBom[] = "\xff\xfe";
   static constexpr char kUtf16BeBom[] = "\xfe\xff";
   if (line.size() >= 2 &&
@@ -665,7 +665,7 @@ bool Util::ChopReturns(std::string *line) {
 
 namespace {
 
-void EscapeInternal(char input, absl::string_view prefix, std::string *output) {
+void EscapeInternal(char input, std::string_view prefix, std::string *output) {
   const int hi = ((static_cast<int>(input) & 0xF0) >> 4);
   const int lo = (static_cast<int>(input) & 0x0F);
   output->append(prefix.data(), prefix.size());
@@ -677,7 +677,7 @@ void EscapeInternal(char input, absl::string_view prefix, std::string *output) {
 // * Both `open` and `close` bracket must be sorted.
 // * Both `open` and `close` bracket must be the same size.
 // If you add a new bracket pair, you must keep this property.
-constexpr std::array<absl::string_view, 20> kSortedBrackets{
+constexpr std::array<std::string_view, 20> kSortedBrackets{
     "()",    // U+0028 U+0029
     "[]",    // U+005B U+005D
     "{}",    // U+007B U+007D
@@ -700,22 +700,22 @@ constexpr std::array<absl::string_view, 20> kSortedBrackets{
     "｢｣",    // U+FF62 U+FF63
 };
 
-absl::string_view OpenBracket(absl::string_view pair) {
+std::string_view OpenBracket(std::string_view pair) {
   return pair.substr(0, pair.size() / 2);
 }
 
-absl::string_view CloseBracket(absl::string_view pair) {
+std::string_view CloseBracket(std::string_view pair) {
   return pair.substr(pair.size() / 2);
 }
 
 }  // namespace
 
-bool Util::IsOpenBracket(absl::string_view key,
-                         absl::string_view *close_bracket) {
+bool Util::IsOpenBracket(std::string_view key,
+                         std::string_view *close_bracket) {
   const auto end = kSortedBrackets.end();
   const auto iter =
       std::lower_bound(kSortedBrackets.begin(), end, key,
-                       [](absl::string_view pair, absl::string_view key) {
+                       [](std::string_view pair, std::string_view key) {
                          return OpenBracket(pair) < key;
                        });
   if (iter == end || OpenBracket(*iter) != key) {
@@ -725,12 +725,12 @@ bool Util::IsOpenBracket(absl::string_view key,
   return true;
 }
 
-bool Util::IsCloseBracket(absl::string_view key,
-                          absl::string_view *open_bracket) {
+bool Util::IsCloseBracket(std::string_view key,
+                          std::string_view *open_bracket) {
   const auto end = kSortedBrackets.end();
   const auto iter =
       std::lower_bound(kSortedBrackets.begin(), end, key,
-                       [](absl::string_view pair, absl::string_view key) {
+                       [](std::string_view pair, std::string_view key) {
                          return CloseBracket(pair) < key;
                        });
   if (iter == end || CloseBracket(*iter) != key) {
@@ -740,12 +740,12 @@ bool Util::IsCloseBracket(absl::string_view key,
   return true;
 }
 
-bool Util::IsBracketPairText(absl::string_view input) {
+bool Util::IsBracketPairText(std::string_view input) {
   // The characters like ", ' <, > and ` are not always considered as "brackets"
   // themselves but they also have bracket-like usages by doubling, or coupling
   // with the corresponding characters. (e.g. "", '', <>, ``)
   // This function considers such character sequences as "bracket pairs".
-  static const std::array<absl::string_view, 4> kAdditionalBracketPairs{
+  static const std::array<std::string_view, 4> kAdditionalBracketPairs{
       "\"\"", "''", "<>", "``"};  // sorted
   const auto iter0 = std::lower_bound(kAdditionalBracketPairs.begin(),
                                       kAdditionalBracketPairs.end(), input);
@@ -762,7 +762,7 @@ bool Util::IsBracketPairText(absl::string_view input) {
   return false;
 }
 
-bool Util::IsFullWidthSymbolInHalfWidthKatakana(absl::string_view input) {
+bool Util::IsFullWidthSymbolInHalfWidthKatakana(std::string_view input) {
   for (ConstChar32Iterator iter(input); !iter.Done(); iter.Next()) {
     switch (iter.Get()) {
       case 0x3002:  // FULLSTOP "。"
@@ -781,7 +781,7 @@ bool Util::IsFullWidthSymbolInHalfWidthKatakana(absl::string_view input) {
   return true;
 }
 
-bool Util::IsHalfWidthKatakanaSymbol(absl::string_view input) {
+bool Util::IsHalfWidthKatakanaSymbol(std::string_view input) {
   for (ConstChar32Iterator iter(input); !iter.Done(); iter.Next()) {
     switch (iter.Get()) {
       case 0xFF61:  // FULLSTOP "｡"
@@ -800,7 +800,7 @@ bool Util::IsHalfWidthKatakanaSymbol(absl::string_view input) {
   return true;
 }
 
-bool Util::IsKanaSymbolContained(absl::string_view input) {
+bool Util::IsKanaSymbolContained(std::string_view input) {
   for (ConstChar32Iterator iter(input); !iter.Done(); iter.Next()) {
     switch (iter.Get()) {
       case 0x3002:  // FULLSTOP "。"
@@ -825,7 +825,7 @@ bool Util::IsKanaSymbolContained(absl::string_view input) {
   return false;
 }
 
-bool Util::IsEnglishTransliteration(absl::string_view value) {
+bool Util::IsEnglishTransliteration(std::string_view value) {
   for (size_t i = 0; i < value.size(); ++i) {
     if (value[i] == 0x20 || value[i] == 0x21 || value[i] == 0x27 ||
         value[i] == 0x2D ||
@@ -840,20 +840,20 @@ bool Util::IsEnglishTransliteration(absl::string_view value) {
   return true;
 }
 
-void Util::Escape(absl::string_view input, std::string *output) {
+void Util::Escape(std::string_view input, std::string *output) {
   output->clear();
   for (size_t i = 0; i < input.size(); ++i) {
     EscapeInternal(input[i], "\\x", output);
   }
 }
 
-std::string Util::Escape(absl::string_view input) {
+std::string Util::Escape(std::string_view input) {
   std::string s;
   Escape(input, &s);
   return s;
 }
 
-bool Util::Unescape(absl::string_view input, std::string *output) {
+bool Util::Unescape(std::string_view input, std::string *output) {
   return absl::CUnescape(input, output);
 }
 
@@ -973,7 +973,7 @@ Util::ScriptType Util::GetScriptType(const char *begin, const char *end,
 
 namespace {
 
-Util::ScriptType GetScriptTypeInternal(absl::string_view str,
+Util::ScriptType GetScriptTypeInternal(std::string_view str,
                                        bool ignore_symbols) {
   Util::ScriptType result = Util::SCRIPT_TYPE_SIZE;
 
@@ -1019,21 +1019,21 @@ Util::ScriptType GetScriptTypeInternal(absl::string_view str,
 
 }  // namespace
 
-Util::ScriptType Util::GetScriptType(absl::string_view str) {
+Util::ScriptType Util::GetScriptType(std::string_view str) {
   return GetScriptTypeInternal(str, false);
 }
 
-Util::ScriptType Util::GetFirstScriptType(absl::string_view str) {
+Util::ScriptType Util::GetFirstScriptType(std::string_view str) {
   size_t mblen = 0;
   return GetScriptType(str.data(), str.data() + str.size(), &mblen);
 }
 
-Util::ScriptType Util::GetScriptTypeWithoutSymbols(absl::string_view str) {
+Util::ScriptType Util::GetScriptTypeWithoutSymbols(std::string_view str) {
   return GetScriptTypeInternal(str, true);
 }
 
 // return true if all script_type in str is "type"
-bool Util::IsScriptType(absl::string_view str, Util::ScriptType type) {
+bool Util::IsScriptType(std::string_view str, Util::ScriptType type) {
   for (ConstChar32Iterator iter(str); !iter.Done(); iter.Next()) {
     const char32_t w = iter.Get();
     // Exception: 30FC (PROLONGEDSOUND MARK is categorized as HIRAGANA as well)
@@ -1045,7 +1045,7 @@ bool Util::IsScriptType(absl::string_view str, Util::ScriptType type) {
 }
 
 // return true if the string contains script_type char
-bool Util::ContainsScriptType(absl::string_view str, ScriptType type) {
+bool Util::ContainsScriptType(std::string_view str, ScriptType type) {
   for (ConstChar32Iterator iter(str); !iter.Done(); iter.Next()) {
     if (type == GetScriptType(iter.Get())) {
       return true;
@@ -1055,7 +1055,7 @@ bool Util::ContainsScriptType(absl::string_view str, ScriptType type) {
 }
 
 // return the Form Type of string
-Util::FormType Util::GetFormType(absl::string_view str) {
+Util::FormType Util::GetFormType(std::string_view str) {
   // TODO(hidehiko): get rid of using FORM_TYPE_SIZE.
   FormType result = FORM_TYPE_SIZE;
 
@@ -1070,7 +1070,7 @@ Util::FormType Util::GetFormType(absl::string_view str) {
   return result;
 }
 
-bool Util::IsAscii(absl::string_view str) {
+bool Util::IsAscii(std::string_view str) {
   return absl::c_all_of(str, absl::ascii_isascii);
 }
 
@@ -1107,7 +1107,7 @@ bool IsJisX0208Char(char32_t ucs4) {
 }
 }  // namespace
 
-bool Util::IsJisX0208(absl::string_view str) {
+bool Util::IsJisX0208(std::string_view str) {
   for (ConstChar32Iterator iter(str); !iter.Done(); iter.Next()) {
     if (!IsJisX0208Char(iter.Get())) {
       return false;
@@ -1129,7 +1129,7 @@ std::string Util::SerializeUint64(uint64_t x) {
   return std::string(s, 8);
 }
 
-bool Util::DeserializeUint64(absl::string_view s, uint64_t *x) {
+bool Util::DeserializeUint64(std::string_view s, uint64_t *x) {
   if (s.size() != 8) {
     return false;
   }

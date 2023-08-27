@@ -119,7 +119,7 @@ TEST_F(ConfigFileStreamTest, OpenReadBinary) {
   };
   constexpr size_t kBinaryDataSize = sizeof(kBinaryData);
   ASSERT_OK(FileUtil::SetContents(
-      test_file_path, absl::string_view(kBinaryData, kBinaryDataSize)));
+      test_file_path, std::string_view(kBinaryData, kBinaryDataSize)));
   ASSERT_OK(FileUtil::FileExists(test_file_path));
   {
     std::unique_ptr<std::istream> ifs(ConfigFileStream::OpenReadBinary(
@@ -138,11 +138,11 @@ TEST_F(ConfigFileStreamTest, OpenReadBinary) {
 TEST_F(ConfigFileStreamTest, OpenReadText) {
   // At first, generate a binary data file in (temporary) user directory
   // so that we can load it as "user://my_binary_file.dat"
-  constexpr absl::string_view kTestFileName = "my_text_file.dat";
+  constexpr std::string_view kTestFileName = "my_text_file.dat";
   const std::string &test_file_path =
       FileUtil::JoinPath(SystemUtil::GetUserProfileDirectory(), kTestFileName);
 
-  constexpr absl::string_view kSourceTextData = "ab\rc\nd\r\ne";
+  constexpr std::string_view kSourceTextData = "ab\rc\nd\r\ne";
   ASSERT_OK(FileUtil::SetContents(test_file_path, kSourceTextData));
   ASSERT_OK(FileUtil::FileExists(test_file_path));
 

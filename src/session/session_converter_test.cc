@@ -65,7 +65,7 @@
 #include "transliteration/transliteration.h"
 #include "usage_stats/usage_stats.h"
 #include "usage_stats/usage_stats_testing_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -91,8 +91,8 @@ constexpr char kChars_Mozukusu[] = "もずくす";
 constexpr char kChars_Momonga[] = "ももんが";
 }  // namespace
 
-void AddSegmentWithSingleCandidate(Segments *segments, absl::string_view key,
-                                   absl::string_view value) {
+void AddSegmentWithSingleCandidate(Segments *segments, std::string_view key,
+                                   std::string_view value) {
   Segment *seg = segments->add_segment();
   seg->set_key(key);
   Segment::Candidate *cand = seg->add_candidate();
@@ -3071,7 +3071,7 @@ TEST_F(SessionConverterTest, GetReadingText) {
   candidate->key = kKanjiAiueo;
   candidate->value = kChars_Aiueo;
   EXPECT_CALL(mock_converter,
-              StartReverseConversion(_, absl::string_view(kKanjiAiueo)))
+              StartReverseConversion(_, std::string_view(kKanjiAiueo)))
       .WillOnce(DoAll(SetArgPointee<0>(reverse_segments), Return(true)));
   std::string reading;
   EXPECT_TRUE(converter.GetReadingText(kKanjiAiueo, &reading));
@@ -3622,7 +3622,7 @@ TEST_F(SessionConverterTest, ReconstructHistoryByPrecedingText) {
     MockConverter mock_converter;
     SessionConverter converter(&mock_converter, request_.get(), config_.get());
 
-    EXPECT_CALL(mock_converter, ReconstructHistory(_, absl::string_view(kKey)))
+    EXPECT_CALL(mock_converter, ReconstructHistory(_, std::string_view(kKey)))
         .WillOnce(DoAll(SetArgPointee<0>(mock_result), Return(true)));
 
     Context context;
@@ -3644,7 +3644,7 @@ TEST_F(SessionConverterTest, ReconstructHistoryByPrecedingText) {
     MockConverter mock_converter;
     SessionConverter converter(&mock_converter, request_.get(), config_.get());
 
-    EXPECT_CALL(mock_converter, ReconstructHistory(_, absl::string_view(kKey)))
+    EXPECT_CALL(mock_converter, ReconstructHistory(_, std::string_view(kKey)))
         .WillOnce(DoAll(SetArgPointee<0>(mock_result), Return(true)));
 
     Context context;

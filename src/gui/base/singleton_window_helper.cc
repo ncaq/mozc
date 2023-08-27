@@ -38,7 +38,7 @@
 #include "base/logging.h"
 #include "base/process_mutex.h"
 #include "ipc/window_info.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <wil/resource.h>
@@ -113,7 +113,7 @@ bool ReadWindowInfo(const std::string &lock_name,
 }
 }  // namespace
 
-SingletonWindowHelper::SingletonWindowHelper(absl::string_view name) {
+SingletonWindowHelper::SingletonWindowHelper(std::string_view name) {
   mutex_ = std::make_unique<mozc::ProcessMutex>(name);
 }
 

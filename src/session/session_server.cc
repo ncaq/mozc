@@ -43,7 +43,7 @@
 #include "protocol/commands.pb.h"
 #include "session/session_handler.h"
 #include "session/session_usage_observer.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace {
@@ -86,7 +86,7 @@ bool SessionServer::Connected() const {
           IPCServer::Connected());
 }
 
-bool SessionServer::Process(absl::string_view request, std::string *response) {
+bool SessionServer::Process(std::string_view request, std::string *response) {
   if (!session_handler_) {
     LOG(WARNING) << "handler is not available";
     return false;  // shutdown the server if handler doesn't exist

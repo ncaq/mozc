@@ -33,7 +33,7 @@
 
 #include "testing/gmock.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::utf8_internal {
 namespace {
@@ -50,7 +50,7 @@ TEST(Utf8InternalTest, OneCharLen) {
 }
 
 class EncodeDecodeTest
-    : public ::testing::TestWithParam<std::pair<absl::string_view, char32_t>> {
+    : public ::testing::TestWithParam<std::pair<std::string_view, char32_t>> {
 };
 
 TEST_P(EncodeDecodeTest, Decode) {
@@ -64,11 +64,11 @@ TEST_P(EncodeDecodeTest, Decode) {
 
 TEST_P(EncodeDecodeTest, Encode) {
   const EncodeResult actual = Encode(GetParam().second);
-  EXPECT_EQ(absl::string_view(actual.data(), actual.size()), GetParam().first);
+  EXPECT_EQ(std::string_view(actual.data(), actual.size()), GetParam().first);
 }
 
-constexpr std::pair<absl::string_view, char32_t> kEncodeDecodeParams[] = {
-    {absl::string_view("\0", 1), 0},
+constexpr std::pair<std::string_view, char32_t> kEncodeDecodeParams[] = {
+    {std::string_view("\0", 1), 0},
     {"a", U'a'},
     {"€", U'€'},
     {"あ", U'あ'},
@@ -81,15 +81,15 @@ INSTANTIATE_TEST_SUITE_P(Convert, EncodeDecodeTest,
 
 TEST(EncodeTest, Invalid) {
   EncodeResult actual = Encode(0xfffd);
-  EXPECT_EQ(absl::string_view(actual.data(), actual.size()), "\ufffd");
+  EXPECT_EQ(std::string_view(actual.data(), actual.size()), "\ufffd");
   actual = Encode(0x110000);
-  EXPECT_EQ(absl::string_view(actual.data(), actual.size()), "\ufffd");
+  EXPECT_EQ(std::string_view(actual.data(), actual.size()), "\ufffd");
 }
 
 class DecodeInvalidTest
-    : public ::testing::TestWithParam<std::pair<absl::string_view, int>> {};
+    : public ::testing::TestWithParam<std::pair<std::string_view, int>> {};
 
-constexpr std::pair<absl::string_view, int> kDecodeInvalidTestParams[] = {
+constexpr std::pair<std::string_view, int> kDecodeInvalidTestParams[] = {
     {"\xC0\xA0", 1},  // C0 is not allowed
     {"\xC2", 1},
     {"\xC2 ", 1},

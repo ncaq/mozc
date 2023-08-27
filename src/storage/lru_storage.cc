@@ -392,7 +392,7 @@ void LruStorage::Close() {
   lru_map_.clear();
 }
 
-const char *LruStorage::Lookup(const absl::string_view key,
+const char *LruStorage::Lookup(const std::string_view key,
                                uint32_t *last_access_time) const {
   const uint64_t fp = FingerprintWithSeed(key, seed_);
   const auto it = lru_map_.find(fp);
@@ -424,7 +424,7 @@ void LruStorage::GetAllValues(std::vector<std::string> *values) const {
   }
 }
 
-bool LruStorage::Touch(const absl::string_view key) {
+bool LruStorage::Touch(const std::string_view key) {
   const uint64_t fp = FingerprintWithSeed(key, seed_);
   auto it = lru_map_.find(fp);
   if (it == lru_map_.end()) {
@@ -440,7 +440,7 @@ bool LruStorage::Touch(const absl::string_view key) {
   return true;
 }
 
-bool LruStorage::Insert(const absl::string_view key, const char *value) {
+bool LruStorage::Insert(const std::string_view key, const char *value) {
   if (value == nullptr) {
     return false;
   }
@@ -485,7 +485,7 @@ bool LruStorage::Insert(const absl::string_view key, const char *value) {
   return false;
 }
 
-bool LruStorage::TryInsert(const absl::string_view key, const char *value) {
+bool LruStorage::TryInsert(const std::string_view key, const char *value) {
   const uint64_t fp = FingerprintWithSeed(key, seed_);
   auto it = lru_map_.find(fp);
   if (it != lru_map_.end()) {
@@ -495,7 +495,7 @@ bool LruStorage::TryInsert(const absl::string_view key, const char *value) {
   return true;
 }
 
-bool LruStorage::Delete(const absl::string_view key) {
+bool LruStorage::Delete(const std::string_view key) {
   const uint64_t fp = FingerprintWithSeed(key, seed_);
   return Delete(fp);
 }
@@ -567,7 +567,7 @@ int LruStorage::DeleteElementsUntouchedFor62Days() {
   return DeleteElementsBefore(timestamp);
 }
 
-void LruStorage::Write(size_t i, uint64_t fp, const absl::string_view value,
+void LruStorage::Write(size_t i, uint64_t fp, const std::string_view value,
                        uint32_t last_access_time) {
   DCHECK_LT(i, size_);
   char *ptr = begin_ + (i * item_size());

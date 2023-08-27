@@ -75,7 +75,7 @@ class CompositionTest : public testing::Test {
     composition_.SetInputMode(Transliterators::CONVERSION_STRING);
   }
 
-  void SetInput(const absl::string_view raw, std::string conversion,
+  void SetInput(const std::string_view raw, std::string conversion,
                 const bool is_new_input, CompositionInput* input) {
     input->Clear();
     input->set_raw(table_.ParseSpecialKey(raw));

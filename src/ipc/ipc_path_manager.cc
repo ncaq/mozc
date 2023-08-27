@@ -54,7 +54,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 #if defined(__ANDROID__) || defined(__wasm__)
@@ -151,7 +151,7 @@ class IPCPathManagerMap {
     manager_map_.clear();
   }
 
-  IPCPathManager *GetIPCPathManager(const absl::string_view name) {
+  IPCPathManager *GetIPCPathManager(const std::string_view name) {
     absl::MutexLock l(&mutex_);
     const auto it = manager_map_.find(name);
     if (it != manager_map_.end()) {
@@ -172,7 +172,7 @@ class IPCPathManagerMap {
 }  // namespace
 
 IPCPathManager *IPCPathManager::GetIPCPathManager(
-    const absl::string_view name) {
+    const std::string_view name) {
   IPCPathManagerMap *manager_map = Singleton<IPCPathManagerMap>::get();
   DCHECK(manager_map != nullptr);
   return manager_map->GetIPCPathManager(name);
@@ -311,7 +311,7 @@ void IPCPathManager::Clear() {
 }
 
 bool IPCPathManager::IsValidServer(uint32_t pid,
-                                   const absl::string_view server_path) {
+                                   const std::string_view server_path) {
   absl::MutexLock l(&mutex_);
   if (pid == 0) {
     // For backward compatibility.

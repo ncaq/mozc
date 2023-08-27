@@ -48,7 +48,7 @@
 
 #include "base/win32/wide_char.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 #else  // _WIN32
 #include <unistd.h>
@@ -99,7 +99,7 @@ DWORD GetTempPath(const absl::Span<wchar_t> buf) {
   return ::GetTempPathW(buf.size(), buf.data());
 }
 
-UINT GetTempFileNameW(const absl::string_view path, const wchar_t *prefix,
+UINT GetTempFileNameW(const std::string_view path, const wchar_t *prefix,
                       wchar_t *output) {
   return ::GetTempFileNameW(win32::Utf8ToWide(path).c_str(), prefix, 0, output);
 }

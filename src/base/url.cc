@@ -36,12 +36,12 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace url {
 
-std::string DecodeUrl(const absl::string_view input) {
+std::string DecodeUrl(const std::string_view input) {
   std::string result;
   result.reserve(input.size());
   for (auto p = input.begin(); p < input.end(); ++p) {
@@ -61,7 +61,7 @@ std::string DecodeUrl(const absl::string_view input) {
   return result;
 }
 
-std::string EncodeUrl(const absl::string_view input) {
+std::string EncodeUrl(const std::string_view input) {
   std::string result;
   result.reserve(input.size());
   for (const char c : input) {
@@ -85,14 +85,14 @@ constexpr char kSurveyHtmlLanguage[] = "jp";
 constexpr char kSurveyFormatEntry[] = "format";
 constexpr char kSurveyFormat[] = "inproduct";
 
-std::string ParamPairToString(const absl::string_view key,
-                              const absl::string_view value) {
+std::string ParamPairToString(const std::string_view key,
+                              const std::string_view value) {
   return absl::StrCat(key, "=", EncodeUrl(value));
 }
 
 }  // namespace
 
-std::string GetUninstallationSurveyUrl(const absl::string_view version) {
+std::string GetUninstallationSurveyUrl(const std::string_view version) {
   std::vector<std::string> params = {
       ParamPairToString(kSurveyContactTypeEntry, kSurveyContactType),
       ParamPairToString(kSurveyHtmlLanguageEntry, kSurveyHtmlLanguage),

@@ -41,7 +41,7 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -54,7 +54,7 @@ class EnglishVariantsRewriterTest : public testing::TestWithTempUserProfile {
     rewriter_ = std::make_unique<EnglishVariantsRewriter>(pos_matcher_);
   }
 
-  bool GetRankFromValue(const Segment &segment, const absl::string_view value,
+  bool GetRankFromValue(const Segment &segment, const std::string_view value,
                         int *rank) {
     for (size_t i = 0; i < segment.candidates_size(); ++i) {
       if (segment.candidate(i).value == value) {

@@ -45,7 +45,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -54,7 +54,7 @@ using ::testing::_;
 using ::testing::Ref;
 using ::testing::Return;
 
-void AddSegment(const absl::string_view key, const absl::string_view value,
+void AddSegment(const std::string_view key, const std::string_view value,
                 Segments *segments) {
   Segment *seg = segments->push_back_segment();
   seg->set_key(key);
@@ -64,7 +64,7 @@ void AddSegment(const absl::string_view key, const absl::string_view value,
   candidate->content_value = std::string(value);
 }
 
-void AddCandidate(const absl::string_view value, Segment *segment) {
+void AddCandidate(const std::string_view value, Segment *segment) {
   Segment::Candidate *candidate = segment->add_candidate();
   candidate->value = std::string(value);
   candidate->content_key = segment->key();
@@ -72,8 +72,8 @@ void AddCandidate(const absl::string_view value, Segment *segment) {
 }
 
 bool HasCandidateAndDescription(const Segments &segments, int index,
-                                const absl::string_view key,
-                                const absl::string_view description) {
+                                const std::string_view key,
+                                const std::string_view description) {
   CHECK_GT(segments.segments_size(), index);
   bool check_description = !description.empty();
 
@@ -92,7 +92,7 @@ bool HasCandidateAndDescription(const Segments &segments, int index,
 }
 
 bool HasCandidate(const Segments &segments, int index,
-                  const absl::string_view value) {
+                  const std::string_view value) {
   return HasCandidateAndDescription(segments, index, value, "");
 }
 

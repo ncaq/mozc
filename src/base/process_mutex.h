@@ -32,7 +32,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <wil/resource.h>
@@ -57,7 +57,7 @@ namespace mozc {
 
 class ProcessMutex {
  public:
-  explicit ProcessMutex(absl::string_view name);
+  explicit ProcessMutex(std::string_view name);
   ProcessMutex(const ProcessMutex &) = delete;
   ProcessMutex &operator=(const ProcessMutex &) = delete;
   ~ProcessMutex();
@@ -66,7 +66,7 @@ class ProcessMutex {
   bool Lock();
 
   // Lock the mutex file and write some message to this file
-  bool LockAndWrite(absl::string_view message);
+  bool LockAndWrite(std::string_view message);
 
   // always return true at this moment.
   bool UnLock();

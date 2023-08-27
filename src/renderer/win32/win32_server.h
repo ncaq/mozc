@@ -35,7 +35,7 @@
 #include <memory>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 #include "renderer/renderer_interface.h"
 #include "renderer/renderer_server.h"
@@ -68,7 +68,7 @@ class Win32Server : public RendererServer, public RendererInterface {
   bool ExecCommand(const commands::RendererCommand &command) override;
   void SetSendCommandInterface(
       client::SendCommandInterface *send_command_interface) override;
-  bool AsyncExecCommand(absl::string_view proto_message) override;
+  bool AsyncExecCommand(std::string_view proto_message) override;
   int StartMessageLoop() override;
 
  private:

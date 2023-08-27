@@ -34,7 +34,7 @@
 
 #include "storage/existence_filter.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -50,7 +50,7 @@ class SuggestionFilter {
       absl::Span<const uint32_t> data);
   static SuggestionFilter CreateOrDie(absl::Span<const uint32_t> data);
 
-  bool IsBadSuggestion(absl::string_view text) const;
+  bool IsBadSuggestion(std::string_view text) const;
 
  private:
   storage::ExistenceFilter filter_;

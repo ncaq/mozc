@@ -35,7 +35,7 @@
 
 #include "data_manager/dataset.pb.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -44,13 +44,13 @@ namespace mozc {
 class DataSetWriter {
  public:
   // Creates a writer with specified magic number.
-  explicit DataSetWriter(absl::string_view magic) : image_(magic) {}
+  explicit DataSetWriter(std::string_view magic) : image_(magic) {}
 
   // Adds a binary image to the packed file so that data is aligned at the
   // specified bit boundary (8, 16, 32, 64, ...).
-  void Add(const std::string &name, int alignment, absl::string_view data);
+  void Add(const std::string &name, int alignment, std::string_view data);
 
-  // Similar to Add() for absl::string_view but data is read from file.
+  // Similar to Add() for std::string_view but data is read from file.
   void AddFile(const std::string &name, int alignment,
                const std::string &filepath);
 

@@ -35,7 +35,7 @@
 #include <vector>
 
 #include "dictionary/system/codec_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -55,22 +55,22 @@ class SystemDictionaryCodec : public SystemDictionaryCodecInterface {
   std::string GetSectionNameForPos() const override;
 
   // Compresses key string into small bytes.
-  void EncodeKey(absl::string_view src, std::string *dst) const override;
+  void EncodeKey(std::string_view src, std::string *dst) const override;
 
   // Decompress key string
-  void DecodeKey(absl::string_view src, std::string *dst) const override;
+  void DecodeKey(std::string_view src, std::string *dst) const override;
 
   // Returns the length of encoded key string.
-  size_t GetEncodedKeyLength(absl::string_view src) const override;
+  size_t GetEncodedKeyLength(std::string_view src) const override;
 
   // Returns the length of decoded key string.
-  size_t GetDecodedKeyLength(absl::string_view src) const override;
+  size_t GetDecodedKeyLength(std::string_view src) const override;
 
   // Compresses value string into small bytes.
-  void EncodeValue(absl::string_view src, std::string *dst) const override;
+  void EncodeValue(std::string_view src, std::string *dst) const override;
 
   // Decompress value string
-  void DecodeValue(absl::string_view src, std::string *dst) const override;
+  void DecodeValue(std::string_view src, std::string *dst) const override;
 
   // Compress tokens
   void EncodeTokens(const std::vector<TokenInfo> &tokens,

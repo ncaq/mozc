@@ -47,7 +47,7 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -56,9 +56,9 @@ using dictionary::SuppressionDictionary;
 using dictionary::UserDictionary;
 using dictionary::UserPos;
 
-void AddCandidate(const absl::string_view key, const absl::string_view value,
-                  const absl::string_view content_key,
-                  const absl::string_view content_value, Segment *segment) {
+void AddCandidate(const std::string_view key, const std::string_view value,
+                  const std::string_view content_key,
+                  const std::string_view content_value, Segment *segment) {
   Segment::Candidate *candidate = segment->add_candidate();
   candidate->key = std::string(key);
   candidate->value = std::string(value);

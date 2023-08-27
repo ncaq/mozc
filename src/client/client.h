@@ -46,7 +46,7 @@
 #include "protocol/commands.pb.h"
 #include "protocol/config.pb.h"
 #include "testing/gunit_prod.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 // for FRIEND_TEST()
 
@@ -63,7 +63,7 @@ class ServerLauncher : public ServerLauncherInterface {
 
   bool StartServer(ClientInterface *client) override;
 
-  bool ForceTerminateServer(absl::string_view name) override;
+  bool ForceTerminateServer(std::string_view name) override;
 
   bool WaitServer(uint32_t pid) override;
 
@@ -71,7 +71,7 @@ class ServerLauncher : public ServerLauncherInterface {
 
   // specify server program. On Mac, we need to specify the server path
   // using this method.
-  void set_server_program(const absl::string_view server_program) override {
+  void set_server_program(const std::string_view server_program) override {
     strings::Assign(server_program_, server_program);
   }
 
@@ -154,11 +154,11 @@ class Client : public ClientInterface {
 
   void set_timeout(absl::Duration timeout) override;
   void set_restricted(bool restricted) override;
-  void set_server_program(absl::string_view program_path) override;
+  void set_server_program(std::string_view program_path) override;
   void set_suppress_error_dialog(bool suppress) override;
   void set_client_capability(const commands::Capability &capability) override;
 
-  bool LaunchTool(const std::string &mode, absl::string_view arg) override;
+  bool LaunchTool(const std::string &mode, std::string_view arg) override;
   bool LaunchToolWithProtoBuf(const commands::Output &output) override;
   // Converts Output message from server to corresponding mozc_tool arguments
   // If launch_tool_mode is not set or NO_TOOL is set or an invalid value is
@@ -189,8 +189,8 @@ class Client : public ClientInterface {
 
   // Dump the recent user inputs to specified file with label
   // This is used for debugging
-  void DumpHistorySnapshot(absl::string_view filename,
-                           absl::string_view label) const;
+  void DumpHistorySnapshot(std::string_view filename,
+                           std::string_view label) const;
 
   // Start server:
   // * Return true if server is launched successfully or server is already

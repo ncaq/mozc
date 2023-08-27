@@ -35,7 +35,7 @@
 #include <memory>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -102,7 +102,7 @@ class ConfigFileStream {
                            const std::string &new_binary_contens);
 
   // if prefix is system:// or memory:// return "";
-  static std::string GetFileName(absl::string_view filename);
+  static std::string GetFileName(std::string_view filename);
 
   // Clear all memory:// files.  This is a utility method for testing.
   static void ClearOnMemoryFiles();

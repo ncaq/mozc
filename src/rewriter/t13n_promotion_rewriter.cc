@@ -40,7 +40,7 @@
 #include "rewriter/rewriter_util.h"
 #include "transliteration/transliteration.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -68,7 +68,7 @@ bool MaybeInsertLatinT13n(Segment *segment) {
   const size_t insert_pos =
       RewriterUtil::CalculateInsertPosition(*segment, kLatinT13nOffset);
 
-  absl::flat_hash_set<absl::string_view> seen;
+  absl::flat_hash_set<std::string_view> seen;
   for (size_t i = 0; i < insert_pos; ++i) {
     seen.insert(segment->candidate(i).value);
   }

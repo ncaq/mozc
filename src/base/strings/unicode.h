@@ -41,7 +41,7 @@
 #include "base/strings/internal/utf8_internal.h"
 #include "absl/base/attributes.h"
 #include "absl/base/optimization.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace strings {
@@ -73,7 +73,7 @@ constexpr uint8_t OneCharLen(const InputIterator it) {
 }
 
 // Checks if the string is a valid UTF-8 string.
-bool IsValidUtf8(absl::string_view sv);
+bool IsValidUtf8(std::string_view sv);
 
 // Returns the codepoint count of the given UTF-8 string indicated as [first,
 // last) or a string_view.
@@ -83,7 +83,7 @@ bool IsValidUtf8(absl::string_view sv);
 // Complexity: linear
 template <typename InputIterator>
 size_t CharsLen(InputIterator first, InputIterator last);
-inline size_t CharsLen(const absl::string_view sv) {
+inline size_t CharsLen(const std::string_view sv) {
   return CharsLen(sv.begin(), sv.end());
 }
 
@@ -104,18 +104,18 @@ inline size_t CharsLen(const absl::string_view sv) {
 //    }
 template <typename InputIterator>
 size_t AtLeastCharsLen(InputIterator first, InputIterator last, size_t n);
-inline size_t AtLeastCharsLen(absl::string_view sv, size_t n) {
+inline size_t AtLeastCharsLen(std::string_view sv, size_t n) {
   return AtLeastCharsLen(sv.begin(), sv.end(), n);
 }
 
 // Returns <first char, rest> of the string.
 // The result is clipped if the input string isn't long enough.
-constexpr std::pair<absl::string_view, absl::string_view> FrontChar(
-    absl::string_view s);
+constexpr std::pair<std::string_view, std::string_view> FrontChar(
+    std::string_view s);
 
 // Converts the UTF-8 string to UTF-32. ToUtf32 works correctly with
 // ill-formed UTF-8 sequences. Unrecognized encodings are replaced with U+FFFD.
-std::u32string Utf8ToUtf32(absl::string_view sv);
+std::u32string Utf8ToUtf32(std::string_view sv);
 
 // Converts the UTF-32 string to UTF-8. If a code point is outside of the
 // valid Unicode range [U+0000, U+10FFFF], it'll be replaced with U+FFFD.
@@ -139,8 +139,8 @@ inline void StrAppendChar32(std::string* dest, const char32_t cp) {
 //
 // REQUIRES: The UTF-8 string is valid. pos <= CharsLen(sv).
 // Complexity: linear to pos + count or pos if count it not provided.
-absl::string_view Utf8Substring(absl::string_view sv, size_t pos);
-absl::string_view Utf8Substring(absl::string_view sv, size_t pos, size_t count);
+std::string_view Utf8Substring(std::string_view sv, size_t pos);
+std::string_view Utf8Substring(std::string_view sv, size_t pos, size_t count);
 
 }  // namespace strings
 
@@ -153,7 +153,7 @@ class Utf8CharIterator {
  public:
   using difference_type =
       typename std::iterator_traits<const char*>::difference_type;
-  using value_type = std::conditional_t<AsChar32, char32_t, absl::string_view>;
+  using value_type = std::conditional_t<AsChar32, char32_t, std::string_view>;
   using pointer = const value_type*;
   // The reference type can be non-reference for input iterators.
   using reference = value_type;
@@ -195,9 +195,9 @@ class Utf8CharIterator {
   // Returns the code point of the  current character as char32_t.
   char32_t char32() const { return dr_.code_point(); }
 
-  // Returns the UTF-8 string of the current character as absl::string_view.
-  absl::string_view view() const {
-    return absl::string_view(ptr_, dr_.bytes_seen());
+  // Returns the UTF-8 string of the current character as std::string_view.
+  std::string_view view() const {
+    return std::string_view(ptr_, dr_.bytes_seen());
   }
 
   // Returns if the current character has a valid UTF-8 encoding.
@@ -216,9 +216,9 @@ class Utf8CharIterator {
   //
   // REQUIRES: last points to the same string object.
   template <bool AsChar32Last>
-  absl::string_view SubstringTo(
+  std::string_view SubstringTo(
       const Utf8CharIterator<AsChar32Last> last) const {
-    return absl::string_view(ptr_, last.ptr_ - ptr_);
+    return std::string_view(ptr_, last.ptr_ - ptr_);
   }
 
  private:
@@ -247,7 +247,7 @@ bool operator!=(const Utf8CharIterator<AsChar32L> lhs,
 }
 
 // Utf8AsCharsBase is a wrapper to iterate over a UTF-8 string as a char32_t
-// code point or an absl::string_view substring of each character. Use the
+// code point or an std::string_view substring of each character. Use the
 // aliases Utf8AsChars32 and Utf8AsChars.
 //
 // Note: Utf8AsCharsBase doesn't satisfy all items of the C++ Container
@@ -261,10 +261,10 @@ bool operator!=(const Utf8CharIterator<AsChar32L> lhs,
 template <bool AsChar32>
 class Utf8AsCharsBase {
  public:
-  using StringViewT = absl::string_view;
+  using StringViewT = std::string_view;
   using CharT = StringViewT::value_type;
 
-  using value_type = std::conditional_t<AsChar32, char32_t, absl::string_view>;
+  using value_type = std::conditional_t<AsChar32, char32_t, std::string_view>;
   using reference = value_type&;
   using const_reference = const value_type&;
   using iterator = Utf8CharIterator<AsChar32>;
@@ -397,7 +397,7 @@ bool operator>(const Utf8AsCharsBase<AsChar32L> lhs,
 // Characters with invalid encodings are replaced with U+FFFD.
 //
 // Example:
-//  bool Func(const absl::string_view sv) {
+//  bool Func(const std::string_view sv) {
 //    for (const char32_t c : Utf8AsChars32(sv)) {
 //      ...
 //    }
@@ -405,7 +405,7 @@ bool operator>(const Utf8AsCharsBase<AsChar32L> lhs,
 //  }
 //
 // Example:
-//  const absl::string_view sv = ...;
+//  const std::string_view sv = ...;
 //  std::u32string s32 = ...;
 //  std::vector<char32_t> v;
 //  absl::c_copy(Utf8AsChars32(sv), std::back_inserter(s32));
@@ -416,16 +416,16 @@ using Utf8AsChars32 = Utf8AsCharsBase<true>;
 // substrings. Characters with invalid encodings are returned as they are.
 //
 // Example:
-//  bool Func(const absl::string_view sv) {
-//    for (const absl::string_view c : Utf8AsChars(sv)) {
+//  bool Func(const std::string_view sv) {
+//    for (const std::string_view c : Utf8AsChars(sv)) {
 //      ...
 //    }
 //    ...
 //  }
 //
 // Example:
-// const absl::string_view sv = ...;
-// std::vector<absl::string_view> v;
+// const std::string_view sv = ...;
+// std::vector<std::string_view> v;
 // absl::c_copy(Utf8AsChars(sv), std::back_inserter(v));
 using Utf8AsChars = Utf8AsCharsBase<false>;
 
@@ -453,8 +453,8 @@ size_t AtLeastCharsLen(InputIterator first, const InputIterator last,
   return i;
 }
 
-constexpr std::pair<absl::string_view, absl::string_view> FrontChar(
-    absl::string_view s) {
+constexpr std::pair<std::string_view, std::string_view> FrontChar(
+    std::string_view s) {
   if (s.empty()) {
     return {};
   }

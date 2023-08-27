@@ -44,7 +44,7 @@
 #include "dictionary/pos_matcher.h"
 #include "dictionary/system/codec_interface.h"
 #include "storage/louds/louds_trie.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 using mozc::storage::louds::LoudsTrie;
 
@@ -63,19 +63,19 @@ ValueDictionary::~ValueDictionary() {}
 // and SystemDictionary::HasKey should return the same result with
 // ValueDictionary::HasKey.  So we can skip the actual logic of HasKey
 // and return just false.
-bool ValueDictionary::HasKey(absl::string_view key) const { return false; }
+bool ValueDictionary::HasKey(std::string_view key) const { return false; }
 
 // ValueDictionary is supposed to use the same data with SystemDictionary
 // and SystemDictionary::HasValue should return the same result with
 // ValueDictionary::HasValue.  So we can skip the actual logic of HasValue
 // and return just false.
-bool ValueDictionary::HasValue(absl::string_view value) const { return false; }
+bool ValueDictionary::HasValue(std::string_view value) const { return false; }
 
 namespace {
 
 // A version of the above function for Token.
 inline void FillToken(const uint16_t suggestion_only_word_id,
-                      absl::string_view key, Token *token) {
+                      std::string_view key, Token *token) {
   token->key.assign(key.data(), key.size());
   token->value = token->key;
   token->cost = 10000;
@@ -83,7 +83,7 @@ inline void FillToken(const uint16_t suggestion_only_word_id,
   token->attributes = Token::NONE;
 }
 
-inline bool IsValidKey(absl::string_view key) {
+inline bool IsValidKey(std::string_view key) {
   // Do nothing for empty key, although looking up all the entries with empty
   // string seems natural.
   if (key.empty()) {
@@ -103,7 +103,7 @@ inline DictionaryInterface::Callback::ResultType HandleTerminalNode(
     const uint16_t suggestion_only_word_id, const LoudsTrie::Node &node,
     DictionaryInterface::Callback *callback, char *encoded_value_buffer,
     std::string *value, Token *token) {
-  const absl::string_view encoded_value =
+  const std::string_view encoded_value =
       value_trie.RestoreKeyString(node, encoded_value_buffer);
 
   value->clear();
@@ -121,7 +121,7 @@ inline DictionaryInterface::Callback::ResultType HandleTerminalNode(
 }  // namespace
 
 void ValueDictionary::LookupPredictive(
-    absl::string_view key, const ConversionRequest &conversion_request,
+    std::string_view key, const ConversionRequest &conversion_request,
     Callback *callback) const {
   if (!IsValidKey(key)) {
     return;
@@ -167,11 +167,11 @@ void ValueDictionary::LookupPredictive(
   } while (!queue.empty());
 }
 
-void ValueDictionary::LookupPrefix(absl::string_view key,
+void ValueDictionary::LookupPrefix(std::string_view key,
                                    const ConversionRequest &conversion_request,
                                    Callback *callback) const {}
 
-void ValueDictionary::LookupExact(absl::string_view key,
+void ValueDictionary::LookupExact(std::string_view key,
                                   const ConversionRequest &conversion_request,
                                   Callback *callback) const {
   if (!IsValidKey(key)) {
@@ -191,7 +191,7 @@ void ValueDictionary::LookupExact(absl::string_view key,
   callback->OnToken(key, key, token);
 }
 
-void ValueDictionary::LookupReverse(absl::string_view str,
+void ValueDictionary::LookupReverse(std::string_view str,
                                     const ConversionRequest &conversion_request,
                                     Callback *callback) const {}
 

@@ -44,7 +44,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -400,7 +400,7 @@ void Composition::CombinePendingChunks(CharChunkList::iterator it,
     return;
   }
   // Combine |**it| and |**(--it)| into |**it| as long as possible.
-  const absl::string_view next_input =
+  const std::string_view next_input =
       input.conversion().empty() ? input.raw() : input.conversion();
 
   while (it != chunks_.begin()) {

@@ -62,7 +62,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -356,7 +356,7 @@ const Output &SessionHandlerInterpreter::LastOutput() const {
 }
 
 const CandidateWord &SessionHandlerInterpreter::GetCandidateByValue(
-    const absl::string_view value) const {
+    const std::string_view value) const {
   const Output &output = LastOutput();
 
   for (const CandidateWord &candidate :
@@ -378,7 +378,7 @@ const CandidateWord &SessionHandlerInterpreter::GetCandidateByValue(
 }
 
 bool SessionHandlerInterpreter::GetCandidateIdByValue(
-    const absl::string_view value, uint32_t *id) const {
+    const std::string_view value, uint32_t *id) const {
   const Output &output = LastOutput();
 
   auto find_id = [&value](const CandidateList &candidate_list,
@@ -406,7 +406,7 @@ bool SessionHandlerInterpreter::GetCandidateIdByValue(
 }
 
 std::vector<uint32_t> SessionHandlerInterpreter::GetCandidateIdsByValue(
-    absl::string_view value) const {
+    std::string_view value) const {
   const Output &output = LastOutput();
 
   auto find_ids = [&value](const CandidateList &candidate_list,
@@ -496,8 +496,8 @@ std::vector<std::string> SessionHandlerInterpreter::Parse(
   if (line.empty() || line.front() == '#') {
     return args;
   }
-  std::vector<absl::string_view> columns = absl::StrSplit(line, '\t');
-  for (absl::string_view column : columns) {
+  std::vector<std::string_view> columns = absl::StrSplit(line, '\t');
+  for (std::string_view column : columns) {
     if (column.empty()) {
       args.push_back("");
       continue;

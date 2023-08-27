@@ -37,7 +37,7 @@
 
 #include "base/hash.h"
 #include "base/logging.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -73,7 +73,7 @@ const Candidate &CandidateList::GetDeepestFocusedCandidate() const {
 }
 
 void CandidateList::AddCandidateWithAttributes(const int id,
-                                               const absl::string_view value,
+                                               const std::string_view value,
                                                const Attributes attributes) {
   if (id >= 0) {
     DCHECK(id >= next_available_id_);

@@ -36,7 +36,7 @@
 #include "base/logging.h"
 #include "storage/louds/louds.h"
 #include "storage/louds/simple_succinct_bit_vector_index.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -108,7 +108,7 @@ bool LoudsTrie::MoveToChildByLabel(char label, Node *node) const {
   return false;
 }
 
-bool LoudsTrie::Traverse(absl::string_view key, Node *node) const {
+bool LoudsTrie::Traverse(std::string_view key, Node *node) const {
   for (auto iter = key.begin(); iter != key.end(); ++iter) {
     if (!MoveToChildByLabel(*iter, node)) {
       return false;
@@ -117,7 +117,7 @@ bool LoudsTrie::Traverse(absl::string_view key, Node *node) const {
   return true;
 }
 
-int LoudsTrie::ExactSearch(absl::string_view key) const {
+int LoudsTrie::ExactSearch(std::string_view key) const {
   Node node;  // Root
   if (Traverse(key, &node) && IsTerminalNode(node)) {
     return GetKeyIdOfTerminalNode(node);
@@ -125,7 +125,7 @@ int LoudsTrie::ExactSearch(absl::string_view key) const {
   return -1;
 }
 
-absl::string_view LoudsTrie::RestoreKeyString(Node node, char *buf) const {
+std::string_view LoudsTrie::RestoreKeyString(Node node, char *buf) const {
   // Ensure the returned string view is null-terminated.
   char *const buf_end = buf + kMaxDepth;
   *buf_end = '\0';
@@ -135,7 +135,7 @@ absl::string_view LoudsTrie::RestoreKeyString(Node node, char *buf) const {
   for (; !louds_.IsRoot(node); louds_.MoveToParent(&node)) {
     *--ptr = GetEdgeLabelToParentNode(node);
   }
-  return absl::string_view(ptr, buf_end - ptr);
+  return std::string_view(ptr, buf_end - ptr);
 }
 
 }  // namespace louds

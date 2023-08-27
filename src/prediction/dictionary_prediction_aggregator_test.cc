@@ -72,7 +72,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace prediction {
@@ -256,7 +256,7 @@ auto InvokeCallbackWithKeyValues(
   return InvokeCallbackWithKeyValuesImpl(key_value_list, attribute);
 }
 
-void InitSegmentsWithKey(absl::string_view key, Segments *segments) {
+void InitSegmentsWithKey(std::string_view key, Segments *segments) {
   segments->Clear();
 
   Segment *seg = segments->add_segment();
@@ -264,7 +264,7 @@ void InitSegmentsWithKey(absl::string_view key, Segments *segments) {
   seg->set_segment_type(Segment::FREE);
 }
 
-void PrependHistorySegments(absl::string_view key, absl::string_view value,
+void PrependHistorySegments(std::string_view key, std::string_view value,
                             Segments *segments) {
   Segment *seg = segments->push_front_segment();
   seg->set_segment_type(Segment::HISTORY);
@@ -276,23 +276,23 @@ void PrependHistorySegments(absl::string_view key, absl::string_view value,
   c->content_value = c->value;
 }
 
-void SetUpInputForSuggestion(absl::string_view key,
+void SetUpInputForSuggestion(std::string_view key,
                              composer::Composer *composer, Segments *segments) {
   composer->Reset();
   composer->SetPreeditTextForTestOnly(key);
   InitSegmentsWithKey(key, segments);
 }
 
-void SetUpInputForSuggestionWithHistory(absl::string_view key,
-                                        absl::string_view hist_key,
-                                        absl::string_view hist_value,
+void SetUpInputForSuggestionWithHistory(std::string_view key,
+                                        std::string_view hist_key,
+                                        std::string_view hist_value,
                                         composer::Composer *composer,
                                         Segments *segments) {
   SetUpInputForSuggestion(key, composer, segments);
   PrependHistorySegments(hist_key, hist_value, segments);
 }
 
-void GenerateKeyEvents(absl::string_view text,
+void GenerateKeyEvents(std::string_view text,
                        std::vector<commands::KeyEvent> *keys) {
   keys->clear();
   for (const char32_t w : Util::Utf8ToUtf32(text)) {
@@ -307,7 +307,7 @@ void GenerateKeyEvents(absl::string_view text,
   }
 }
 
-void InsertInputSequence(absl::string_view text, composer::Composer *composer) {
+void InsertInputSequence(std::string_view text, composer::Composer *composer) {
   std::vector<commands::KeyEvent> keys;
   GenerateKeyEvents(text, &keys);
 
@@ -316,7 +316,7 @@ void InsertInputSequence(absl::string_view text, composer::Composer *composer) {
   }
 }
 
-void InsertInputSequenceForProbableKeyEvent(absl::string_view text,
+void InsertInputSequenceForProbableKeyEvent(std::string_view text,
                                             const uint32_t *corrected_key_codes,
                                             float corrected_prob,
                                             composer::Composer *composer) {
@@ -348,7 +348,7 @@ PredictionTypes AddDefaultPredictionTypes(PredictionTypes types,
 }
 
 bool FindResultByValue(const std::vector<Result> &results,
-                       const absl::string_view value) {
+                       const std::string_view value) {
   for (const auto &result : results) {
     if (result.value == value && !result.removed) {
       return true;
@@ -359,7 +359,7 @@ bool FindResultByValue(const std::vector<Result> &results,
 
 DictionaryInterface *CreateSuffixDictionaryFromDataManager(
     const DataManagerInterface &data_manager) {
-  absl::string_view suffix_key_array_data, suffix_value_array_data;
+  std::string_view suffix_key_array_data, suffix_value_array_data;
   const uint32_t *token_array;
   data_manager.GetSuffixDictionaryData(&suffix_key_array_data,
                                        &suffix_value_array_data, &token_array);
@@ -371,7 +371,7 @@ class MockTypingModel : public mozc::composer::TypingModel {
  public:
   MockTypingModel() : TypingModel(nullptr, 0, nullptr, 0, nullptr) {}
   ~MockTypingModel() override = default;
-  int GetCost(absl::string_view key) const override { return 10; }
+  int GetCost(std::string_view key) const override { return 10; }
 };
 
 // Simple immutable converter mock for the realtime conversion test
@@ -1193,7 +1193,7 @@ TEST_F(DictionaryPredictionAggregatorTest, MobileUnigram) {
   EXPECT_LE(prefix_count, 11);
   // Candidates that predict symbols should not be handled as the redundant
   // candidates.
-  const absl::string_view kExpected[] = {
+  const std::string_view kExpected[] = {
       "東京", "TOKYO", "東京!", "東京!?", "東京❤",
   };
   for (int i = 0; i < ABSL_ARRAYSIZE(kExpected); ++i) {
@@ -1635,8 +1635,8 @@ TEST_F(DictionaryPredictionAggregatorTest, AggregateRealtimeConversion) {
     // "Watashino" | "Namaeha" | "Nakanodesu"
     Segments segments;
 
-    auto add_segment = [&segments](absl::string_view key,
-                                   absl::string_view value) {
+    auto add_segment = [&segments](std::string_view key,
+                                   std::string_view value) {
       Segment *segment = segments.add_segment();
       segment->set_key(key);
       Segment::Candidate *candidate = segment->add_candidate();
@@ -1757,11 +1757,11 @@ class TestSuffixDictionary : public DictionaryInterface {
   TestSuffixDictionary() = default;
   ~TestSuffixDictionary() override = default;
 
-  bool HasKey(absl::string_view value) const override { return false; }
+  bool HasKey(std::string_view value) const override { return false; }
 
-  bool HasValue(absl::string_view value) const override { return false; }
+  bool HasValue(std::string_view value) const override { return false; }
 
-  void LookupPredictive(absl::string_view key,
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override {
     Token token;
@@ -1792,15 +1792,15 @@ class TestSuffixDictionary : public DictionaryInterface {
     }
   }
 
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override {}
 
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override {}
 
-  void LookupReverse(absl::string_view str,
+  void LookupReverse(std::string_view str,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override {}
 };
@@ -2578,14 +2578,14 @@ TEST_F(DictionaryPredictionAggregatorTest, GetZeroQueryCandidates) {
   ZeroQueryDict zero_query_dict;
   {
     // kTestZeroQueryTokenArray contains a trailing '\0', so create a
-    // absl::string_view that excludes it by subtracting 1.
-    const absl::string_view token_array_data(
+    // std::string_view that excludes it by subtracting 1.
+    const std::string_view token_array_data(
         kTestZeroQueryTokenArray, std::size(kTestZeroQueryTokenArray) - 1);
-    std::vector<absl::string_view> strs;
+    std::vector<std::string_view> strs;
     for (const char *str : kTestZeroQueryStrings) {
       strs.push_back(str);
     }
-    const absl::string_view string_array_data =
+    const std::string_view string_array_data =
         SerializedStringArray::SerializeToBuffer(strs, &string_data_buffer);
     zero_query_dict.Init(token_array_data, string_array_data);
   }
@@ -2761,8 +2761,8 @@ TEST_F(DictionaryPredictionAggregatorTest, SingleKanji) {
       ->set_enable_single_kanji_prediction(true);
 
   {
-    auto create_single_kanji_result = [](absl::string_view key,
-                                         absl::string_view value) {
+    auto create_single_kanji_result = [](std::string_view key,
+                                         std::string_view value) {
       Result result;
       result.key = std::string(key);
       result.value = std::string(value);

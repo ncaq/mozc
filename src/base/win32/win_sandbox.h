@@ -40,7 +40,7 @@
 #include <vector>
 
 #include "base/strings/zstring_view.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 class Sid {
@@ -157,8 +157,8 @@ class WinSandbox {
   // level.
   // Return true if process is successfully launched.
   // if pid is specified, pid of child process is set.
-  static bool SpawnSandboxedProcess(absl::string_view path,
-                                    absl::string_view arg,
+  static bool SpawnSandboxedProcess(std::string_view path,
+                                    std::string_view arg,
                                     const SecurityInfo &info, DWORD *pid);
 
   // Following three methods returns corresponding list of SID or LUID for

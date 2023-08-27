@@ -31,7 +31,7 @@
 #include "gui/base/debug_util.h"
 
 #include "base/logging.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace gui {
@@ -40,7 +40,7 @@ void DebugUtil::MessageHandler(QtMsgType type,
                                const QMessageLogContext &context,
                                const QString &q_msg) {
   QByteArray q_ba = q_msg.toUtf8();
-  const absl::string_view msg(q_ba.constData(), q_ba.size());
+  const std::string_view msg(q_ba.constData(), q_ba.size());
   switch (type) {
     case QtDebugMsg:
       LOG(INFO) << msg;

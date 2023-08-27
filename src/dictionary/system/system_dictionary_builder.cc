@@ -59,7 +59,7 @@
 #include "absl/flags/flag.h"
 #include "absl/status/status.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(bool, preserve_intermediate_dictionary, false,
           "preserve inetemediate dictionary file.");
@@ -88,7 +88,7 @@ struct TokenGreaterThan {
 void WriteSectionToFile(const DictionaryFileSection &section,
                         const std::string &filename) {
   if (absl::Status s = FileUtil::SetContents(
-          filename, absl::string_view(section.ptr, section.len));
+          filename, std::string_view(section.ptr, section.len));
       !s.ok()) {
     LOG(ERROR) << "Cannot write a section to " << filename;
   }
@@ -131,7 +131,7 @@ void SystemDictionaryBuilder::WriteToFile(
 }
 
 void SystemDictionaryBuilder::WriteToStream(
-    const absl::string_view intermediate_output_file_base_path,
+    const std::string_view intermediate_output_file_base_path,
     std::ostream *output_stream) const {
   // Memory images of each section
   std::vector<DictionaryFileSection> sections;
@@ -164,7 +164,7 @@ void SystemDictionaryBuilder::WriteToStream(
   if (absl::GetFlag(FLAGS_preserve_intermediate_dictionary) &&
       !intermediate_output_file_base_path.empty()) {
     // Write out intermediate results to files.
-    const absl::string_view basepath = intermediate_output_file_base_path;
+    const std::string_view basepath = intermediate_output_file_base_path;
     LOG(INFO) << "Writing intermediate files.";
     WriteSectionToFile(value_trie_section, absl::StrCat(basepath, ".value"));
     WriteSectionToFile(key_trie_section, absl::StrCat(basepath, ".key"));
@@ -216,7 +216,7 @@ bool HasHomonymsInSamePos(const SystemDictionaryBuilder::KeyInfo &key_info) {
 
 bool HasHeterophones(
     const SystemDictionaryBuilder::KeyInfo &key_info,
-    const absl::flat_hash_set<absl::string_view> &heteronym_values) {
+    const absl::flat_hash_set<std::string_view> &heteronym_values) {
   for (const TokenInfo &token_info : key_info.tokens) {
     if (heteronym_values.contains(token_info.token->value)) {
       return true;
@@ -349,10 +349,10 @@ void SystemDictionaryBuilder::SortTokenInfo(KeyInfoList *key_info_list) const {
 
 void SystemDictionaryBuilder::SetCostType(KeyInfoList *key_info_list) const {
   // Values that have multiple keys.
-  absl::flat_hash_set<absl::string_view> heterophone_values;
+  absl::flat_hash_set<std::string_view> heterophone_values;
   {
     // value → reading
-    absl::flat_hash_map<absl::string_view, absl::string_view> seen_reading_map;
+    absl::flat_hash_map<std::string_view, std::string_view> seen_reading_map;
     for (const KeyInfo &key_info : *key_info_list) {
       for (const TokenInfo &token_info : key_info.tokens) {
         const Token *token = token_info.token;

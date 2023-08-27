@@ -32,7 +32,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace internal {
@@ -51,7 +51,7 @@ class UnverifiedSHA1 {
 
   // Returns 20-byte-length SHA1 digest.
   // CAVEATS: See the above comment.
-  static std::string MakeDigest(absl::string_view source);
+  static std::string MakeDigest(std::string_view source);
 };
 
 }  // namespace internal

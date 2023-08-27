@@ -34,14 +34,14 @@
 #include <vector>
 
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
 namespace louds {
 namespace {
 
-std::vector<uint8_t> MakeSequence(absl::string_view s) {
+std::vector<uint8_t> MakeSequence(std::string_view s) {
   std::vector<uint8_t> seq;
   int bit_len = 0;
   for (size_t i = 0; i < s.size(); ++i) {

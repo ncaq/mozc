@@ -41,7 +41,7 @@
 #include "protocol/candidates.pb.h"
 #include "protocol/commands.pb.h"
 #include "session/internal/candidate_list.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -83,7 +83,7 @@ class SessionOutput {
                          commands::Candidates *candidates_proto);
 
   // Fill the access key of Candidates protobuf with the sequence of shortcuts.
-  static void FillShortcuts(absl::string_view shortcuts,
+  static void FillShortcuts(std::string_view shortcuts,
                             commands::Candidates *candidates_proto);
 
   // Fill the sub_label of footer_proto.  This function should be
@@ -110,7 +110,7 @@ class SessionOutput {
   };
   // Add a Preedit::Segment protobuf to the Preedit protobuf with key
   // and value.  Return true iff. new segment is added to preedit.
-  static bool AddSegment(absl::string_view, absl::string_view value,
+  static bool AddSegment(std::string_view, std::string_view value,
                          uint32_t segment_type_mask,
                          commands::Preedit *preedit);
 
@@ -121,12 +121,12 @@ class SessionOutput {
 
   // Fill the Result protobuf with the key and result strings
   // nomalizing the string for a conversion result.
-  static void FillConversionResult(absl::string_view key, std::string result,
+  static void FillConversionResult(std::string_view key, std::string result,
                                    commands::Result *result_proto);
 
   // Fill the Result protobuf with the preedit string nomalizing the
   // string for a preedit result.
-  static void FillPreeditResult(absl::string_view preedit,
+  static void FillPreeditResult(std::string_view preedit,
                                 commands::Result *result_proto);
 
   // Fill the Result protobuf with cursor offset.

@@ -43,7 +43,7 @@
 #include "protocol/commands.pb.h"
 #include "absl/container/btree_map.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 using commands::KeyEvent;
@@ -181,7 +181,7 @@ class KeyParserData {
 }  // namespace
 
 // static
-bool KeyParser::ParseKey(const absl::string_view key_string,
+bool KeyParser::ParseKey(const std::string_view key_string,
                          KeyEvent *key_event) {
   std::vector<std::string> keys =
       absl::StrSplit(key_string, ' ', absl::SkipEmpty());

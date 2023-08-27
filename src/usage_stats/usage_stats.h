@@ -36,7 +36,7 @@
 #include <vector>
 
 #include "usage_stats/usage_stats.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace usage_stats {
@@ -46,26 +46,26 @@ class UsageStats {
  public:
   // Updates count value
   // Increments val to current value
-  static void IncrementCountBy(absl::string_view name, uint32_t val);
-  static void IncrementCount(const absl::string_view name) {
+  static void IncrementCountBy(std::string_view name, uint32_t val);
+  static void IncrementCount(const std::string_view name) {
     IncrementCountBy(name, 1);
   }
 
   // Updates timing value
   // Updates current value using given val
-  static void UpdateTiming(absl::string_view name, uint32_t val);
+  static void UpdateTiming(std::string_view name, uint32_t val);
 
   // Sets integer value
   // Replaces old value with val
-  static void SetInteger(absl::string_view name, int val);
+  static void SetInteger(std::string_view name, int val);
 
   // Sets boolean value
   // Replaces old value with val
-  static void SetBoolean(absl::string_view name, bool val);
+  static void SetBoolean(std::string_view name, bool val);
 
   // Returns true if given stats name is in the stats list
   // (for debugging)
-  static bool IsListed(absl::string_view name);
+  static bool IsListed(std::string_view name);
 
   // Stores virtual keyboard touch event stats.
   // The map "touch_stats" structure is as following
@@ -76,7 +76,7 @@ class UsageStats {
   //                        source_id_2 : TouchEventStats,
   //                        source_id_3 : TouchEventStats))
   static void StoreTouchEventStats(
-      absl::string_view name,
+      std::string_view name,
       const std::map<std::string, TouchEventStatsMap> &touch_stats);
 
   // Synchronizes (writes) usage data into disk. Returns false on failure.
@@ -94,15 +94,15 @@ class UsageStats {
   // Reads a value from registry, and sets it in the value.
   // Returns true if all steps go successfully.
   // NULL pointers are accetable for the target arguments of GetTimingForTest().
-  static bool GetCountForTest(absl::string_view name, uint32_t *value);
-  static bool GetIntegerForTest(absl::string_view name, int32_t *value);
-  static bool GetBooleanForTest(absl::string_view name, bool *value);
-  static bool GetTimingForTest(absl::string_view name, uint64_t *total_time,
+  static bool GetCountForTest(std::string_view name, uint32_t *value);
+  static bool GetIntegerForTest(std::string_view name, int32_t *value);
+  static bool GetBooleanForTest(std::string_view name, bool *value);
+  static bool GetTimingForTest(std::string_view name, uint64_t *total_time,
                                uint32_t *num_timings, uint32_t *avg_time,
                                uint32_t *min_time, uint32_t *max_time);
-  static bool GetVirtualKeyboardForTest(absl::string_view name, Stats *stats);
+  static bool GetVirtualKeyboardForTest(std::string_view name, Stats *stats);
   // This method doesn't check type of the stats.
-  static bool GetStatsForTest(absl::string_view name, Stats *stats);
+  static bool GetStatsForTest(std::string_view name, Stats *stats);
 
   UsageStats() = delete;
   UsageStats(const UsageStats &) = delete;

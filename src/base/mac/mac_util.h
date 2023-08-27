@@ -35,7 +35,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 class MacUtil {
@@ -44,7 +44,7 @@ class MacUtil {
   ~MacUtil() = delete;
 
   // Returns the label commonly used in the project for specified suffix.
-  static std::string GetLabelForSuffix(absl::string_view suffix);
+  static std::string GetLabelForSuffix(std::string_view suffix);
 
   // Returns (basically) "~/Library/Application Support".
   static std::string GetApplicationSupportDirectory();

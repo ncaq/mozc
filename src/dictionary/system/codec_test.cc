@@ -44,7 +44,7 @@
 #include "testing/gunit.h"
 #include "absl/random/distributions.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -60,7 +60,7 @@ namespace {
 }
 
 ::testing::AssertionResult IsExpectedEncodedSize(
-    char32_t c, const absl::string_view encoded) {
+    char32_t c, const std::string_view encoded) {
   const std::string::size_type size = encoded.size();
   if (c == 0x00) {
     return ::testing::AssertionFailure() << "NUL is not supported.";
@@ -321,19 +321,19 @@ class SystemDictionaryCodecMock : public SystemDictionaryCodecInterface {
   std::string GetSectionNameForValue() const override { return "Mock"; }
   std::string GetSectionNameForTokens() const override { return "Mock"; }
   std::string GetSectionNameForPos() const override { return "Mock"; }
-  void EncodeKey(const absl::string_view src, std::string *dst) const override {
+  void EncodeKey(const std::string_view src, std::string *dst) const override {
   }
-  void DecodeKey(const absl::string_view src, std::string *dst) const override {
+  void DecodeKey(const std::string_view src, std::string *dst) const override {
   }
-  size_t GetEncodedKeyLength(const absl::string_view src) const override {
+  size_t GetEncodedKeyLength(const std::string_view src) const override {
     return 0;
   }
-  size_t GetDecodedKeyLength(const absl::string_view src) const override {
+  size_t GetDecodedKeyLength(const std::string_view src) const override {
     return 0;
   }
-  void EncodeValue(const absl::string_view src,
+  void EncodeValue(const std::string_view src,
                    std::string *dst) const override {}
-  void DecodeValue(const absl::string_view src,
+  void DecodeValue(const std::string_view src,
                    std::string *dst) const override {}
   void EncodeTokens(const std::vector<TokenInfo> &tokens,
                     std::string *output) const override {}

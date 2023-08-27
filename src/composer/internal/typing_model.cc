@@ -33,7 +33,7 @@
 #include <limits>
 #include <memory>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -55,7 +55,7 @@ TypingModel::TypingModel(const char *characters, size_t characters_size,
   }
 }
 
-int TypingModel::GetCost(absl::string_view key) const {
+int TypingModel::GetCost(std::string_view key) const {
   size_t index = GetIndex(key);
   if (index >= cost_table_size_) {
     return kInfinity;
@@ -64,7 +64,7 @@ int TypingModel::GetCost(absl::string_view key) const {
   return cost_index == kNoData ? kInfinity : mapping_table_[cost_index];
 }
 
-size_t TypingModel::GetIndex(absl::string_view key) const {
+size_t TypingModel::GetIndex(std::string_view key) const {
   const unsigned int radix = characters_size_ + 1;
   size_t index = 0;
   for (size_t i = 0; i < key.length(); ++i) {
@@ -101,7 +101,7 @@ std::unique_ptr<const TypingModel> TypingModel::CreateTypingModel(
       return nullptr;
   }
 
-  const absl::string_view data = data_manager.GetTypingModel(key);
+  const std::string_view data = data_manager.GetTypingModel(key);
   if (data.empty()) {
     return nullptr;
   }

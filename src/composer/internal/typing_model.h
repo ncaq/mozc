@@ -37,7 +37,7 @@
 #include "protocol/commands.pb.h"
 // for FRIEND_TEST()
 #include "testing/gunit_prod.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -57,7 +57,7 @@ class TypingModel {
 
   // Gets cost value from key.
   // virtual for mocking.
-  virtual int GetCost(absl::string_view key) const;
+  virtual int GetCost(std::string_view key) const;
 
   // Creates a TypingModel based on SpecialRomanjiTable.
   // nullptr if no corresponding model is available.
@@ -80,7 +80,7 @@ class TypingModel {
   // so when accessing to cost value, index should be
   // calculated by this method.
   // c.f. gen_typing_model.py's GetIndexFromKey.
-  size_t GetIndex(absl::string_view key) const;
+  size_t GetIndex(std::string_view key) const;
 
   // Radix table, needed by GetIndex.
   std::unique_ptr<unsigned char[]> character_to_radix_table_;

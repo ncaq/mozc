@@ -34,13 +34,13 @@
 #include <ostream>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
 
 void OutputExistenceHeader(absl::Span<const std::string> entries,
-                           absl::string_view data_namespace, std::ostream *ofs,
+                           std::string_view data_namespace, std::ostream *ofs,
                            double error_rate);
 void OutputExistenceBinary(absl::Span<const std::string> entries,
                            std::ostream *ofs, double error_rate);

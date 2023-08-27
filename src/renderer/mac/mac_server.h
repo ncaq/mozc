@@ -35,7 +35,7 @@
 #include <memory>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 #include "renderer/renderer_interface.h"
 #include "renderer/renderer_server.h"
@@ -58,7 +58,7 @@ class MacServer : public RendererServer {
 
   ~MacServer() override = default;
 
-  bool AsyncExecCommand(absl::string_view proto_message) override;
+  bool AsyncExecCommand(std::string_view proto_message) override;
   int StartMessageLoop() override;
 
   // This method is called when an asynchronous exec-command message

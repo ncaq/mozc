@@ -44,7 +44,7 @@
 #include "storage/existence_filter.h"
 #include "absl/base/optimization.h"
 #include "absl/flags/flag.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 ABSL_FLAG(std::string, input, "", "per-line suggestion filter list");
 ABSL_FLAG(std::string, output, "", "output bloom filter");
@@ -72,7 +72,7 @@ void ReadHashList(const std::string &name, std::vector<uint64_t> *words) {
   }
 }
 
-void ReadSafeWords(const absl::string_view safe_list_files,
+void ReadSafeWords(const std::string_view safe_list_files,
                    std::vector<std::string> *safe_word_list) {
   if (safe_list_files.empty()) {
     return;

@@ -36,7 +36,7 @@
 #include <utility>
 
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef __ANDROID__
 // This is used only for code generation, so shouldn't be used from android
@@ -59,7 +59,7 @@ BasicCodeGenByteArrayStreamBuf::BasicCodeGenByteArrayStreamBuf(
 
 // Writes the beginning of a variable definition.
 bool BasicCodeGenByteArrayStreamBuf::OpenVarDef(
-    const absl::string_view var_name_base) {
+    const std::string_view var_name_base) {
   if (is_open_ || var_name_base.empty()) {
     return false;
   }
@@ -169,7 +169,7 @@ CodeGenByteArrayOutputStream &CodeGenByteArrayOutputStream::operator=(
 // Writes the beginning of a variable definition.
 // A call to |OpenVarDef| must precede any output to the instance.
 void CodeGenByteArrayOutputStream::OpenVarDef(
-    const absl::string_view var_name_base) {
+    const std::string_view var_name_base) {
   if (!streambuf_.OpenVarDef(var_name_base)) {
     this->setstate(std::ios_base::failbit);
   }

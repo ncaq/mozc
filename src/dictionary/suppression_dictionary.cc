@@ -34,7 +34,7 @@
 
 #include "base/logging.h"
 #include "absl/base/thread_annotations.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -83,8 +83,8 @@ bool SuppressionDictionary::IsEmpty() const {
   return true;
 }
 
-bool SuppressionDictionary::SuppressEntry(const absl::string_view key,
-                                          const absl::string_view value) const {
+bool SuppressionDictionary::SuppressEntry(const std::string_view key,
+                                          const std::string_view value) const {
   if (mutex_.TryLock()) {
     if (keys_only_.empty() && values_only_.empty() && keys_values_.empty()) {
       // Almost all users don't use word suppression function.

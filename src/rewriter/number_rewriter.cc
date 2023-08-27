@@ -52,7 +52,7 @@
 #include "rewriter/number_compound_util.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/flat_hash_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -177,8 +177,8 @@ int GetInsertOffset(RewriteType type) {
   return (type == ARABIC_FIRST) ? 2 : kArabicNumericOffset;
 }
 
-void PushBackCandidate(const absl::string_view value,
-                       const absl::string_view desc,
+void PushBackCandidate(const std::string_view value,
+                       const std::string_view desc,
                        NumberUtil::NumberString::Style style,
                        std::vector<Segment::Candidate> *results) {
   bool found = false;
@@ -261,13 +261,13 @@ void SetNumberInfoToExistingCandidates(
 
 class CheckValueOperator {
  public:
-  explicit CheckValueOperator(const absl::string_view v) : find_value_(v) {}
+  explicit CheckValueOperator(const std::string_view v) : find_value_(v) {}
   bool operator()(const Segment::Candidate &cand) const {
     return (cand.value == find_value_);
   }
 
  private:
-  const absl::string_view find_value_;
+  const std::string_view find_value_;
 };
 
 // If we have the candidates to be inserted before the base candidate,
@@ -377,7 +377,7 @@ void InsertConvertedCandidates(const std::vector<Segment::Candidate> &results,
   // For example, "千万" v.s. "一千万", or "一二三" v.s. "百二十三".
   // We don't want to rewrite "千万" to "一千万".
   {
-    const absl::string_view base_value =
+    const std::string_view base_value =
         seg->candidate(base_candidate_pos).value;
     std::vector<Segment::Candidate>::const_iterator itr = std::find_if(
         results.begin(), results.end(), CheckValueOperator(base_value));
@@ -404,7 +404,7 @@ int GetInsertPos(int base_pos, const Segment &segment, RewriteType type) {
                        segment.candidates_size());
 }
 
-void InsertHalfArabic(const absl::string_view half_arabic,
+void InsertHalfArabic(const std::string_view half_arabic,
                       std::vector<NumberUtil::NumberString> *output) {
   output->emplace_back(std::string(half_arabic), "",
                        NumberUtil::NumberString::DEFAULT_STYLE);
@@ -412,7 +412,7 @@ void InsertHalfArabic(const absl::string_view half_arabic,
 
 std::vector<NumberUtil::NumberString> GetNumbersInDefaultOrder(
     RewriteType type, bool exec_radix_conversion,
-    const absl::string_view arabic_content_value) {
+    const std::string_view arabic_content_value) {
   std::vector<NumberUtil::NumberString> output;
   if (type == ARABIC_FIRST) {
     InsertHalfArabic(arabic_content_value, &output);
@@ -441,7 +441,7 @@ NumberRewriter::NumberRewriter(const DataManagerInterface *data_manager)
   const char *array = nullptr;
   size_t size = 0;
   data_manager->GetCounterSuffixSortedArray(&array, &size);
-  const absl::string_view data(array, size);
+  const std::string_view data(array, size);
   // Data manager is responsible for providing a valid data.  Just verify data
   // in debug build.
   DCHECK(SerializedStringArray::VerifyData(data));

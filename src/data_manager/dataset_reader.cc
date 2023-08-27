@@ -39,7 +39,7 @@
 #include "base/util.h"
 #include "data_manager/dataset.pb.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -49,7 +49,7 @@ constexpr size_t kFooterSize = 36;
 
 }  // namespace
 
-bool DataSetReader::Init(absl::string_view memblock, absl::string_view magic) {
+bool DataSetReader::Init(std::string_view memblock, std::string_view magic) {
   memblock_ = memblock;
   name_to_data_map_.clear();
 
@@ -108,7 +108,7 @@ bool DataSetReader::Init(absl::string_view memblock, absl::string_view magic) {
 
   // Open metadata.
   DataSetMetadata metadata;
-  const absl::string_view metadata_chunk =
+  const std::string_view metadata_chunk =
       absl::ClippedSubstr(memblock, metadata_offset, metadata_size);
   if (!metadata.ParseFromArray(metadata_chunk.data(), metadata_chunk.size())) {
     LOG(ERROR) << "Broken: Failed to parse metadata";
@@ -140,7 +140,7 @@ bool DataSetReader::Init(absl::string_view memblock, absl::string_view magic) {
   return true;
 }
 
-bool DataSetReader::Get(absl::string_view name, absl::string_view* data) const {
+bool DataSetReader::Get(std::string_view name, std::string_view* data) const {
   auto iter = name_to_data_map_.find(name);
   if (iter == name_to_data_map_.end()) {
     return false;
@@ -150,8 +150,8 @@ bool DataSetReader::Get(absl::string_view name, absl::string_view* data) const {
 }
 
 std::optional<std::pair<size_t, size_t>> DataSetReader::GetOffsetAndSize(
-    absl::string_view name) const {
-  absl::string_view data;
+    std::string_view name) const {
+  std::string_view data;
   if (!Get(name, &data)) {
     return std::nullopt;
   }
@@ -159,7 +159,7 @@ std::optional<std::pair<size_t, size_t>> DataSetReader::GetOffsetAndSize(
   return std::make_pair(offset, data.size());
 }
 
-bool DataSetReader::VerifyChecksum(absl::string_view memblock) {
+bool DataSetReader::VerifyChecksum(std::string_view memblock) {
   if (memblock.size() < kFooterSize) {
     return false;
   }
@@ -169,7 +169,7 @@ bool DataSetReader::VerifyChecksum(absl::string_view memblock) {
 
   // Extract the stored SHA1; see dataset.proto for file format.
   const std::size_t kSHA1Length = 20;
-  absl::string_view expected_checksum =
+  std::string_view expected_checksum =
       absl::ClippedSubstr(memblock, memblock.size() - 28, kSHA1Length);
 
   return actual_checksum == expected_checksum;

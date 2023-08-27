@@ -38,7 +38,7 @@
 #include <vector>
 
 #include "protocol/user_dictionary_storage.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -56,13 +56,13 @@ class UserDictionaryUtil {
 
   // Returns true if all characters in the given string is a legitimate
   // character for reading.
-  static bool IsValidReading(absl::string_view reading);
+  static bool IsValidReading(std::string_view reading);
 
   // Performs varirous kinds of character normalization such as
   // katakana-> hiragana and full-width ascii -> half width
   // ascii. Identity of reading of a word should be defined by the
   // output of this function.
-  static void NormalizeReading(absl::string_view input, std::string *output);
+  static void NormalizeReading(std::string_view input, std::string *output);
 
   // Returns true if all fields of the given data is properly set and
   // have a legitimate value. It checks for an empty string, an
@@ -103,7 +103,7 @@ class UserDictionaryUtil {
   // Returns the error status of the validity for the given dictionary name.
   static user_dictionary::UserDictionaryCommandStatus::Status
   ValidateDictionaryName(const user_dictionary::UserDictionaryStorage &storage,
-                         absl::string_view dictionary_name);
+                         std::string_view dictionary_name);
 
   // Returns true if the given storage hits the limit for the number of
   // dictionaries.
@@ -149,7 +149,7 @@ class UserDictionaryUtil {
   // Creates dictionary with the given name.
   static user_dictionary::UserDictionaryCommandStatus::Status CreateDictionary(
       user_dictionary::UserDictionaryStorage *storage,
-      absl::string_view dictionary_name, uint64_t *new_dictionary_id);
+      std::string_view dictionary_name, uint64_t *new_dictionary_id);
 
   // Deletes dictionary specified by the given dictionary_id.
   // If the deleted_dictionary is not nullptr, the pointer to the

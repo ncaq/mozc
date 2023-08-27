@@ -32,7 +32,7 @@
 
 #include "prediction/result.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc::prediction {
@@ -42,7 +42,7 @@ class RescorerInterface {
   virtual ~RescorerInterface() = default;
 
   virtual void RescoreResults(const ConversionRequest &request,
-                              absl::string_view history,
+                              std::string_view history,
                               absl::Span<Result> results) const = 0;
 };
 

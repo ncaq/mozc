@@ -61,7 +61,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -90,8 +90,8 @@ class UserDataManagerImpl final : public UserDataManagerInterface {
   bool ClearUserHistory() override;
   bool ClearUserPrediction() override;
   bool ClearUnusedUserPrediction() override;
-  bool ClearUserPredictionEntry(absl::string_view key,
-                                absl::string_view value) override;
+  bool ClearUserPredictionEntry(std::string_view key,
+                                std::string_view value) override;
   bool Wait() override;
 
  private:
@@ -127,7 +127,7 @@ bool UserDataManagerImpl::ClearUnusedUserPrediction() {
 }
 
 bool UserDataManagerImpl::ClearUserPredictionEntry(
-    const absl::string_view key, const absl::string_view value) {
+    const std::string_view key, const std::string_view value) {
   return predictor_->ClearHistoryEntry(key, value);
 }
 
@@ -200,7 +200,7 @@ absl::Status Engine::Init(
       suppression_dictionary_.get(), pos_matcher_.get());
   RETURN_IF_NULL(dictionary_);
 
-  absl::string_view suffix_key_array_data, suffix_value_array_data;
+  std::string_view suffix_key_array_data, suffix_value_array_data;
   const uint32_t *token_array = nullptr;
   data_manager->GetSuffixDictionaryData(&suffix_key_array_data,
                                         &suffix_value_array_data, &token_array);

@@ -37,12 +37,12 @@
 #include "protocol/config.pb.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddSegment(absl::string_view key, absl::string_view value,
+void AddSegment(std::string_view key, std::string_view value,
                 Segments *segments) {
   Segment *seg = segments->add_segment();
   Segment::Candidate *candidate = seg->add_candidate();
@@ -52,14 +52,14 @@ void AddSegment(absl::string_view key, absl::string_view value,
   strings::Assign(candidate->content_value, value);
 }
 
-void InitSegments(absl::string_view key, absl::string_view value,
+void InitSegments(std::string_view key, std::string_view value,
                   Segments *segments) {
   segments->Clear();
   AddSegment(key, value, segments);
 }
 
 bool ContainCandidate(const Segments &segments,
-                      const absl::string_view candidate) {
+                      const std::string_view candidate) {
   const Segment &segment = segments.segment(0);
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     if (candidate == segment.candidate(i).value) {
@@ -88,8 +88,8 @@ TEST_F(SmallLetterRewriterTest, ScriptConversionTest) {
   const ConversionRequest request;
 
   struct InputOutputData {
-    absl::string_view input;
-    absl::string_view output;
+    std::string_view input;
+    std::string_view output;
   };
 
   constexpr InputOutputData kInputOutputData[] = {
@@ -123,7 +123,7 @@ TEST_F(SmallLetterRewriterTest, ScriptConversionTest) {
       {"あ^2", "あ²"},
   };
 
-  constexpr absl::string_view kMozcUnsupportedInput[] = {
+  constexpr std::string_view kMozcUnsupportedInput[] = {
       // Roman alphabet superscript
       "^n",
       "^x",
@@ -157,7 +157,7 @@ TEST_F(SmallLetterRewriterTest, ScriptConversionTest) {
   }
 
   // Mozc does not accept some superscript/subscript supported in Unicode
-  for (const absl::string_view &item : kMozcUnsupportedInput) {
+  for (const std::string_view &item : kMozcUnsupportedInput) {
     InitSegments(item, item, &segments);
     EXPECT_FALSE(rewriter.Rewrite(request, &segments));
   }

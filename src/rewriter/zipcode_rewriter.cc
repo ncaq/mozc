@@ -39,7 +39,7 @@
 #include "protocol/config.pb.h"
 #include "request/conversion_request.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -88,7 +88,7 @@ bool ZipcodeRewriter::InsertCandidate(const size_t insert_pos,
       break;
   }
 
-  absl::string_view space;
+  std::string_view space;
   if (is_full_width) {
     space = "　";  // "　" (full-width space)
   } else {
@@ -126,7 +126,7 @@ bool ZipcodeRewriter::Rewrite(const ConversionRequest &request,
   }
 
   const Segment &segment = segments->conversion_segment(0);
-  const absl::string_view key = segment.key();
+  const std::string_view key = segment.key();
   if (key.empty()) {
     LOG(ERROR) << "Key is empty";
     return false;

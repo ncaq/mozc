@@ -34,60 +34,60 @@
 #include <utility>
 #include <vector>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::japanese {
 
 // Japanese utilities for character form transliteration.
-void HiraganaToKatakana(absl::string_view input, std::string *output);
-std::string HiraganaToKatakana(absl::string_view input);
+void HiraganaToKatakana(std::string_view input, std::string *output);
+std::string HiraganaToKatakana(std::string_view input);
 
-void HiraganaToHalfwidthKatakana(absl::string_view input, std::string *output);
-std::string HiraganaToHalfwidthKatakana(absl::string_view input);
+void HiraganaToHalfwidthKatakana(std::string_view input, std::string *output);
+std::string HiraganaToHalfwidthKatakana(std::string_view input);
 
-void HiraganaToRomanji(absl::string_view input, std::string *output);
-std::string HiraganaToRomanji(absl::string_view input);
+void HiraganaToRomanji(std::string_view input, std::string *output);
+std::string HiraganaToRomanji(std::string_view input);
 
-void HalfWidthAsciiToFullWidthAscii(absl::string_view input,
+void HalfWidthAsciiToFullWidthAscii(std::string_view input,
                                     std::string *output);
-std::string HalfWidthAsciiToFullWidthAscii(absl::string_view input);
+std::string HalfWidthAsciiToFullWidthAscii(std::string_view input);
 
-void FullWidthAsciiToHalfWidthAscii(absl::string_view input,
+void FullWidthAsciiToHalfWidthAscii(std::string_view input,
                                     std::string *output);
-std::string FullWidthAsciiToHalfWidthAscii(absl::string_view input);
+std::string FullWidthAsciiToHalfWidthAscii(std::string_view input);
 
-void HiraganaToFullwidthRomanji(absl::string_view input, std::string *output);
-std::string HiraganaToFullwidthRomanji(absl::string_view input);
+void HiraganaToFullwidthRomanji(std::string_view input, std::string *output);
+std::string HiraganaToFullwidthRomanji(std::string_view input);
 
-void RomanjiToHiragana(absl::string_view input, std::string *output);
-std::string RomanjiToHiragana(absl::string_view input);
+void RomanjiToHiragana(std::string_view input, std::string *output);
+std::string RomanjiToHiragana(std::string_view input);
 
-void KatakanaToHiragana(absl::string_view input, std::string *output);
-std::string KatakanaToHiragana(absl::string_view input);
+void KatakanaToHiragana(std::string_view input, std::string *output);
+std::string KatakanaToHiragana(std::string_view input);
 
-void HalfWidthKatakanaToFullWidthKatakana(absl::string_view input,
+void HalfWidthKatakanaToFullWidthKatakana(std::string_view input,
                                           std::string *output);
-std::string HalfWidthKatakanaToFullWidthKatakana(absl::string_view input);
+std::string HalfWidthKatakanaToFullWidthKatakana(std::string_view input);
 
-void FullWidthKatakanaToHalfWidthKatakana(absl::string_view input,
+void FullWidthKatakanaToHalfWidthKatakana(std::string_view input,
                                           std::string *output);
-std::string FullWidthKatakanaToHalfWidthKatakana(absl::string_view input);
+std::string FullWidthKatakanaToHalfWidthKatakana(std::string_view input);
 
-void FullWidthToHalfWidth(absl::string_view input, std::string *output);
-std::string FullWidthToHalfWidth(absl::string_view input);
+void FullWidthToHalfWidth(std::string_view input, std::string *output);
+std::string FullWidthToHalfWidth(std::string_view input);
 
-void HalfWidthToFullWidth(absl::string_view input, std::string *output);
-std::string HalfWidthToFullWidth(absl::string_view input);
+void HalfWidthToFullWidth(std::string_view input, std::string *output);
+std::string HalfWidthToFullWidth(std::string_view input);
 
-void NormalizeVoicedSoundMark(absl::string_view input, std::string *output);
-std::string NormalizeVoicedSoundMark(absl::string_view input);
+void NormalizeVoicedSoundMark(std::string_view input, std::string *output);
+std::string NormalizeVoicedSoundMark(std::string_view input);
 
 // Returns alignment.
-std::vector<std::pair<absl::string_view, absl::string_view>>
-AlignRomanjiToHiragana(absl::string_view input);
+std::vector<std::pair<std::string_view, std::string_view>>
+AlignRomanjiToHiragana(std::string_view input);
 
-std::vector<std::pair<absl::string_view, absl::string_view>>
-AlignHiraganaToRomanji(absl::string_view input);
+std::vector<std::pair<std::string_view, std::string_view>>
+AlignHiraganaToRomanji(std::string_view input);
 
 }  // namespace mozc::japanese
 

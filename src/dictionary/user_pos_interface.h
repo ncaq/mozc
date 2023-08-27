@@ -36,7 +36,7 @@
 #include <utility>
 #include <vector>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -91,20 +91,20 @@ class UserPosInterface : public PosListProviderInterface {
   };
 
   // Returns true if the given string is one of the POSes Mozc can handle.
-  virtual bool IsValidPos(absl::string_view pos) const = 0;
+  virtual bool IsValidPos(std::string_view pos) const = 0;
 
   // Returns iid from Mozc POS. If the pos has inflection, this method only
   // returns the ids of base form.
-  virtual bool GetPosIds(absl::string_view pos, uint16_t *id) const = 0;
+  virtual bool GetPosIds(std::string_view pos, uint16_t *id) const = 0;
 
   // Converts the given tuple (key, value, pos, locale) to Token.  If the pos
   // has inflection, this function expands possible inflections automatically.
-  virtual bool GetTokens(absl::string_view key, absl::string_view value,
-                         absl::string_view pos, absl::string_view locale,
+  virtual bool GetTokens(std::string_view key, std::string_view value,
+                         std::string_view pos, std::string_view locale,
                          std::vector<Token> *tokens) const = 0;
 
-  bool GetTokens(absl::string_view key, absl::string_view value,
-                 absl::string_view pos, std::vector<Token> *tokens) const {
+  bool GetTokens(std::string_view key, std::string_view value,
+                 std::string_view pos, std::vector<Token> *tokens) const {
     return GetTokens(key, value, pos, "", tokens);
   }
 };

@@ -50,12 +50,12 @@
 //    }
 //
 //    // In this translation unit, the file content can be retrieved by:
-//    absl::string_view data = LoadEmbeddedFile(kVarName);
+//    std::string_view data = LoadEmbeddedFile(kVarName);
 
 #include <cstddef>
 #include <cstdint>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -68,8 +68,8 @@ struct EmbeddedFile {
 };
 
 // Interprets EmbeddedFile as a byte array.
-inline absl::string_view LoadEmbeddedFile(EmbeddedFile f) {
-  return absl::string_view(reinterpret_cast<const char *>(f.data), f.size);
+inline std::string_view LoadEmbeddedFile(EmbeddedFile f) {
+  return std::string_view(reinterpret_cast<const char *>(f.data), f.size);
 }
 
 }  // namespace mozc

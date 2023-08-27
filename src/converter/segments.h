@@ -44,7 +44,7 @@
 #include "base/number_util.h"
 #include "base/strings/assign.h"
 #include "converter/lattice.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifndef NDEBUG
 #define MOZC_CANDIDATE_DEBUG
@@ -220,8 +220,8 @@ class Segment final {
     // The original cost before rescoring. Used for debugging purpose.
     int32_t cost_before_rescoring = 0;
 #ifdef MOZC_CANDIDATE_DEBUG
-    void Dlog(absl::string_view filename, int line,
-              absl::string_view message) const;
+    void Dlog(std::string_view filename, int line,
+              std::string_view message) const;
     mutable std::string log;
 #endif  // MOZC_CANDIDATE_DEBUG
 
@@ -247,7 +247,7 @@ class Segment final {
 
     // Iterates inner segments.  Usage example:
     // for (InnerSegmentIterator iter(&cand); !iter.Done(); iter.Next()) {
-    //   absl::string_view s = iter.GetContentKey();
+    //   std::string_view s = iter.GetContentKey();
     //   ...
     // }
     class InnerSegmentIterator final {
@@ -263,12 +263,12 @@ class Segment final {
       }
 
       void Next();
-      absl::string_view GetKey() const;
-      absl::string_view GetValue() const;
-      absl::string_view GetContentKey() const;
-      absl::string_view GetContentValue() const;
-      absl::string_view GetFunctionalKey() const;
-      absl::string_view GetFunctionalValue() const;
+      std::string_view GetKey() const;
+      std::string_view GetValue() const;
+      std::string_view GetContentKey() const;
+      std::string_view GetContentValue() const;
+      std::string_view GetFunctionalKey() const;
+      std::string_view GetFunctionalValue() const;
 
      private:
       const Candidate *candidate_;
@@ -285,12 +285,12 @@ class Segment final {
     // Returns functional key.
     // functional_key =
     // key.substr(content_key.size(), key.size() - content_key.size());
-    absl::string_view functional_key() const;
+    std::string_view functional_key() const;
 
     // Returns functional value.
     // functional_value =
     // value.substr(content_value.size(), value.size() - content_value.size());
-    absl::string_view functional_value() const;
+    std::string_view functional_value() const;
 
     // Returns whether the inner_segment_boundary member is consistent with
     // key and value.
@@ -549,17 +549,17 @@ class Segments final {
 };
 
 // Inlining basic accessors here.
-inline absl::string_view Segment::Candidate::functional_key() const {
+inline std::string_view Segment::Candidate::functional_key() const {
   return key.size() <= content_key.size()
-             ? absl::string_view()
-             : absl::string_view(key.data() + content_key.size(),
+             ? std::string_view()
+             : std::string_view(key.data() + content_key.size(),
                                  key.size() - content_key.size());
 }
 
-inline absl::string_view Segment::Candidate::functional_value() const {
+inline std::string_view Segment::Candidate::functional_value() const {
   return value.size() <= content_value.size()
-             ? absl::string_view()
-             : absl::string_view(value.data() + content_value.size(),
+             ? std::string_view()
+             : std::string_view(value.data() + content_value.size(),
                                  value.size() - content_value.size());
 }
 

@@ -34,30 +34,30 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
 // Calculates 64-bit fingerprint.
-uint64_t Fingerprint(absl::string_view str);
-uint64_t FingerprintWithSeed(absl::string_view str, uint32_t seed);
+uint64_t Fingerprint(std::string_view str);
+uint64_t FingerprintWithSeed(std::string_view str, uint32_t seed);
 
 // Calculates 32-bit fingerprint.
-uint32_t Fingerprint32(absl::string_view str);
-uint32_t Fingerprint32WithSeed(absl::string_view str, uint32_t seed);
+uint32_t Fingerprint32(std::string_view str);
+uint32_t Fingerprint32WithSeed(std::string_view str, uint32_t seed);
 
 template <class T,
           std::enable_if_t<std::is_integral_v<T>, std::nullptr_t> = nullptr>
 uint64_t Fingerprint(T num) {
   return Fingerprint(
-      absl::string_view(reinterpret_cast<const char*>(&num), sizeof(num)));
+      std::string_view(reinterpret_cast<const char*>(&num), sizeof(num)));
 }
 
 template <class T,
           std::enable_if_t<std::is_integral_v<T>, std::nullptr_t> = nullptr>
 uint64_t FingerprintWithSeed(T num, uint32_t seed) {
   return FingerprintWithSeed(
-      absl::string_view(reinterpret_cast<const char*>(&num), sizeof(num)),
+      std::string_view(reinterpret_cast<const char*>(&num), sizeof(num)),
       seed);
 }
 
@@ -65,14 +65,14 @@ template <class T,
           std::enable_if_t<std::is_integral_v<T>, std::nullptr_t> = nullptr>
 uint32_t Fingerprint32(T num) {
   return Fingerprint32(
-      absl::string_view(reinterpret_cast<const char*>(&num), sizeof(num)));
+      std::string_view(reinterpret_cast<const char*>(&num), sizeof(num)));
 }
 
 template <class T,
           std::enable_if_t<std::is_integral_v<T>, std::nullptr_t> = nullptr>
 uint32_t Fingerprint32WithSeed(T num, uint32_t seed) {
   return Fingerprint32WithSeed(
-      absl::string_view(reinterpret_cast<const char*>(&num), sizeof(num)),
+      std::string_view(reinterpret_cast<const char*>(&num), sizeof(num)),
       seed);
 }
 

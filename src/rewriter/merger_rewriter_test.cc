@@ -37,7 +37,7 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -46,14 +46,14 @@ namespace {
 // and what value should be returned.
 class TestRewriter : public RewriterInterface {
  public:
-  TestRewriter(std::string *buffer, const absl::string_view name,
+  TestRewriter(std::string *buffer, const std::string_view name,
                bool return_value)
       : buffer_(buffer),
         name_(name),
         return_value_(return_value),
         capability_(RewriterInterface::CONVERSION) {}
 
-  TestRewriter(std::string *buffer, const absl::string_view name,
+  TestRewriter(std::string *buffer, const std::string_view name,
                bool return_value, int capability)
       : buffer_(buffer),
         name_(name),

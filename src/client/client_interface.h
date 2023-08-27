@@ -39,7 +39,7 @@
 #include "ipc/ipc.h"
 #include "protocol/commands.pb.h"
 #include "protocol/config.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
@@ -63,7 +63,7 @@ class ServerLauncherInterface {
 
   // terminate the server.
   // You should not call this method unless protocol version mismatch happens.
-  virtual bool ForceTerminateServer(absl::string_view name) = 0;
+  virtual bool ForceTerminateServer(std::string_view name) = 0;
 
   // Wait server until it terminates
   virtual bool WaitServer(uint32_t pid) = 0;
@@ -72,7 +72,7 @@ class ServerLauncherInterface {
   virtual void OnFatal(ServerErrorType type) = 0;
 
   // set the full path of server program.
-  virtual void set_server_program(absl::string_view server_program) = 0;
+  virtual void set_server_program(std::string_view server_program) = 0;
 
   // return the full path of server program
   // This is used for making IPC connection.
@@ -201,7 +201,7 @@ class ClientInterface {
 
   // Sets server program path.
   // mainly for unittesting.
-  virtual void set_server_program(absl::string_view program_path) = 0;
+  virtual void set_server_program(std::string_view program_path) = 0;
 
   // Sets the flag of error dialog suppression.
   virtual void set_suppress_error_dialog(bool suppress) = 0;
@@ -213,7 +213,7 @@ class ClientInterface {
   // Launches mozc tool. |mode| is the mode of MozcTool,
   // e,g,. "config_dialog", "dictionary_tool".
   virtual bool LaunchTool(const std::string &mode,
-                          absl::string_view extra_arg) = 0;
+                          std::string_view extra_arg) = 0;
   // Launches mozc_tool with output message.
   // If launch_tool_mode has no value or is set as NO_TOOL, this function will
   // do nothing and return false.

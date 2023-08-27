@@ -38,7 +38,7 @@
 #include "testing/gunit.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -46,8 +46,8 @@ namespace {
 using ::testing::UnorderedElementsAreArray;
 
 struct TestParam {
-  explicit TestParam(absl::string_view key) : key(key) {}
-  TestParam(const absl::string_view key,
+  explicit TestParam(std::string_view key) : key(key) {}
+  TestParam(const std::string_view key,
             const std::initializer_list<NumberDecoder::Result> results)
       : key(key), expected(results) {}
 
@@ -56,14 +56,14 @@ struct TestParam {
     sink.Append(param.key);
   }
 
-  absl::string_view key;
+  std::string_view key;
   std::vector<NumberDecoder::Result> expected;
 };
 
-TestParam AllConsumed(const absl::string_view key,
-                      const std::initializer_list<absl::string_view> results) {
+TestParam AllConsumed(const std::string_view key,
+                      const std::initializer_list<std::string_view> results) {
   TestParam param(key);
-  for (const absl::string_view &result : results) {
+  for (const std::string_view &result : results) {
     param.expected.emplace_back(key.size(), std::string(result));
   }
   return param;
@@ -154,7 +154,7 @@ INSTANTIATE_TEST_SUITE_P(InvalidSequences, NumberDecoderTest,
                                            TestParam("しがいせん", {})));
 
 TEST(NumberDecoderRandomTest, Random) {
-  constexpr absl::string_view kKeys[] = {
+  constexpr std::string_view kKeys[] = {
       "ぜろ",     "いち",      "いっ",   "に",     "さん",     "し",
       "よん",     "ご",        "ろく",   "ろっ",   "なな",     "しち",
       "はち",     "はっ",      "きゅう", "きゅー", "く",       "じゅう",

@@ -41,7 +41,7 @@
 #include "protocol/commands.pb.h"
 #include "protocol/config.pb.h"
 #include "transliteration/transliteration.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -108,7 +108,7 @@ class SessionConverterInterface {
       const ConversionPreferences &preferences) = 0;
 
   // Get reading text (e.g. from "猫" to "ねこ").
-  virtual bool GetReadingText(absl::string_view str, std::string *reading) = 0;
+  virtual bool GetReadingText(std::string_view str, std::string *reading) = 0;
 
   // Send a transliteration request to the converter.
   virtual bool ConvertToTransliteration(

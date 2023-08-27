@@ -47,7 +47,7 @@
 #include "prediction/suggestion_filter.h"
 #include "protocol/commands.pb.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -238,7 +238,7 @@ void CandidateFilter::Reset() {
 }
 
 CandidateFilter::ResultType CandidateFilter::CheckRequestType(
-    const ConversionRequest &request, const absl::string_view original_key,
+    const ConversionRequest &request, const std::string_view original_key,
     const Segment::Candidate &candidate,
     const absl::Span<const Node *const> nodes) const {
   // Filtering by the suggestion filter, which is applied only for the
@@ -292,7 +292,7 @@ CandidateFilter::ResultType CandidateFilter::CheckRequestType(
 }
 
 CandidateFilter::ResultType CandidateFilter::FilterCandidateInternal(
-    const ConversionRequest &request, const absl::string_view original_key,
+    const ConversionRequest &request, const std::string_view original_key,
     const Segment::Candidate *candidate,
     const absl::Span<const Node *const> top_nodes,
     const absl::Span<const Node *const> nodes) {
@@ -462,9 +462,9 @@ CandidateFilter::ResultType CandidateFilter::FilterCandidateInternal(
   // non_content_value ("たり") should be Hiragana.
   // Background:
   // 名詞,接尾 nodes ("済み", "損", etc) can also be non_content_value.
-  const absl::string_view top_non_content_value(
+  const std::string_view top_non_content_value(
       top_candidate_->value.data() + top_candidate_->content_value.size());
-  const absl::string_view non_content_value(candidate->value.data() +
+  const std::string_view non_content_value(candidate->value.data() +
                                             candidate->content_value.size());
   if (!is_noisy_weak_compound && top_candidate_ != candidate &&
       top_candidate_->content_value != top_candidate_->value &&
@@ -583,7 +583,7 @@ CandidateFilter::ResultType CandidateFilter::FilterCandidateInternal(
     int number_nodes = 0;
     uint16_t prev_lid = 0;
     for (const auto &node : nodes) {
-      absl::string_view value = node->value;
+      std::string_view value = node->value;
       size_t mblen = 0;
       if (Util::IsScriptType(node->key, Util::NUMBER)) {
         continue;
@@ -623,7 +623,7 @@ CandidateFilter::ResultType CandidateFilter::FilterCandidateInternal(
 }
 
 CandidateFilter::ResultType CandidateFilter::FilterCandidate(
-    const ConversionRequest &request, const absl::string_view original_key,
+    const ConversionRequest &request, const std::string_view original_key,
     const Segment::Candidate *candidate,
     const absl::Span<const Node *const> top_nodes,
     const absl::Span<const Node *const> nodes) {

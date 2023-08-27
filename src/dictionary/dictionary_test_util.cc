@@ -40,7 +40,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -55,8 +55,8 @@ bool IsTokenEqualImpl(const Token &expected, const Token &actual) {
 }  // namespace
 
 DictionaryInterface::Callback::ResultType CollectTokenCallback::OnToken(
-    absl::string_view,  // key
-    absl::string_view,  // actual_key
+    std::string_view,  // key
+    std::string_view,  // actual_key
     const Token &token) {
   tokens_.push_back(token);
   return TRAVERSE_CONTINUE;
@@ -67,8 +67,8 @@ CheckTokenExistenceCallback::CheckTokenExistenceCallback(
     : target_token_(target_token), found_(false) {}
 
 DictionaryInterface::Callback::ResultType CheckTokenExistenceCallback::OnToken(
-    absl::string_view,  // key
-    absl::string_view,  // actual_key
+    std::string_view,  // key
+    std::string_view,  // actual_key
     const Token &token) {
   if (IsTokenEqualImpl(*target_token_, token)) {
     found_ = true;
@@ -103,8 +103,8 @@ bool CheckMultiTokensExistenceCallback::AreAllFound() const {
 }
 
 DictionaryInterface::Callback::ResultType
-CheckMultiTokensExistenceCallback::OnToken(absl::string_view,  // key
-                                           absl::string_view,  // actual_key
+CheckMultiTokensExistenceCallback::OnToken(std::string_view,  // key
+                                           std::string_view,  // actual_key
                                            const Token &token) {
   for (auto iter = result_.begin(); iter != result_.end(); ++iter) {
     if (!iter->second && IsTokenEqualImpl(*iter->first, token)) {

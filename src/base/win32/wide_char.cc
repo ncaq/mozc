@@ -38,7 +38,7 @@
 
 #include "base/logging.h"
 #include "absl/base/casts.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::win32 {
 namespace wide_char_internal {
@@ -57,7 +57,7 @@ void StrAppendWInternal(std::wstring *dest,
 
 }  // namespace wide_char_internal
 
-size_t WideCharsLen(const absl::string_view input) {
+size_t WideCharsLen(const std::string_view input) {
   // This API call should always succeed as long as the codepage (CP_UTF8) and
   // flag (0) are valid.
   const int wchar_count =
@@ -66,7 +66,7 @@ size_t WideCharsLen(const absl::string_view input) {
   return absl::implicit_cast<size_t>(wchar_count);
 }
 
-std::wstring Utf8ToWide(const absl::string_view input) {
+std::wstring Utf8ToWide(const std::string_view input) {
   if (input.empty()) {
     return std::wstring();
   }

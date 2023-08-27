@@ -42,7 +42,7 @@
 #include "base/logging.h"
 #include "base/util.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -50,7 +50,7 @@ template <typename T>
 class Trie final {
  public:
   template <typename U>
-  void AddEntry(absl::string_view key, U &&data) {
+  void AddEntry(std::string_view key, U &&data) {
     if (key.empty()) {
       data_ = std::forward<U>(data);
       return;
@@ -64,7 +64,7 @@ class Trie final {
     res.trie->AddEntry(res.rest, std::forward<U>(data));
   }
 
-  bool DeleteEntry(absl::string_view key) {
+  bool DeleteEntry(std::string_view key) {
     if (key.empty()) {
       if (trie_.empty()) {
         return true;
@@ -80,7 +80,7 @@ class Trie final {
     return false;
   }
 
-  bool LookUp(absl::string_view key, T *data) const {
+  bool LookUp(std::string_view key, T *data) const {
     if (key.empty()) {
       if (!data_.has_value()) {
         return false;
@@ -103,7 +103,7 @@ class Trie final {
   //  -- Do not refer 'a' here.
   //  - Return true for the key, 'ac'
   //  -- Matches in prefix by 'a', and 'a' have data
-  bool LookUpPrefix(absl::string_view key, T *data, size_t *key_length,
+  bool LookUpPrefix(std::string_view key, T *data, size_t *key_length,
                     bool *fixed) const {
     const FindResult res = FindSubTrie(key);
     if (res.trie == nullptr) {
@@ -133,7 +133,7 @@ class Trie final {
   //  -- Matches in prefix by 'a'.
   //  - Return true for the key, 'ac'
   //  -- Matches in prefix by 'a', and 'a' have data
-  bool LongestMatch(absl::string_view key, T *data, size_t *key_length) const {
+  bool LongestMatch(std::string_view key, T *data, size_t *key_length) const {
     const FindResult res = FindSubTrie(key);
     if (res.trie == nullptr) {
       *key_length = 0;
@@ -163,7 +163,7 @@ class Trie final {
   //  - Return 'abc', 'abd', 'a', for the key 'a'
   //  - Return 'abc', 'abd' for the key 'ab'
   //  - Return nothing for the key 'b'
-  void LookUpPredictiveAll(absl::string_view key,
+  void LookUpPredictiveAll(std::string_view key,
                            std::vector<T> *data_list) const {
     DCHECK(data_list);
     if (!key.empty()) {
@@ -182,7 +182,7 @@ class Trie final {
     }
   }
 
-  bool HasSubTrie(absl::string_view key) const {
+  bool HasSubTrie(std::string_view key) const {
     const FindResult res = FindSubTrie(key);
     if (res.trie == nullptr) {
       return false;
@@ -207,7 +207,7 @@ class Trie final {
   struct FindResult {
     Trie<T> *trie = nullptr;
     char32_t first_char = 0;
-    absl::string_view rest;
+    std::string_view rest;
   };
 
   // Finds the subtrie that is reachable by the first UTF8 character of `key`.
@@ -215,7 +215,7 @@ class Trie final {
   // nullptr. If `key` is nonempty, this method also sets the value of char32
   // for the first character and the rest of strings regardless of the find
   // result.
-  FindResult FindSubTrie(absl::string_view key) const {
+  FindResult FindSubTrie(std::string_view key) const {
     FindResult res;
     if (!key.empty()) {
       Util::SplitFirstChar32(key, &res.first_char, &res.rest);

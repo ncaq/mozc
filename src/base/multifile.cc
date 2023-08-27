@@ -38,11 +38,11 @@
 #include "base/file_stream.h"
 #include "base/logging.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
-InputMultiFile::InputMultiFile(const absl::string_view filenames,
+InputMultiFile::InputMultiFile(const std::string_view filenames,
                                std::ios_base::openmode mode)
     : filenames_(absl::StrSplit(filenames, ',', absl::SkipEmpty())),
       mode_(mode) {

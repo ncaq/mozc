@@ -42,7 +42,7 @@
 #include "storage/tiny_storage.h"
 #include "absl/base/attributes.h"
 #include "absl/base/const_init.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -51,7 +51,7 @@ namespace {
 
 ABSL_CONST_INIT absl::Mutex g_mutex(absl::kConstInit);
 
-constexpr absl::string_view RegistryFileName() {
+constexpr std::string_view RegistryFileName() {
   if constexpr (TargetIsWindows()) {
     return "registry.db";
   } else {

@@ -42,7 +42,7 @@
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
 #include "storage/lru_storage.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -98,8 +98,8 @@ class UserSegmentHistoryRewriter : public RewriterInterface {
                      const Segment::Candidate &candidate) const;
   bool SortCandidates(const std::vector<ScoreCandidate> &sorted_scores,
                       Segment *segment) const;
-  Score Fetch(absl::string_view key, uint32_t weight) const;
-  void Insert(absl::string_view key, bool force);
+  Score Fetch(std::string_view key, uint32_t weight) const;
+  void Insert(std::string_view key, bool force);
 
   std::unique_ptr<storage::LruStorage> storage_;
   const dictionary::PosMatcher *pos_matcher_;

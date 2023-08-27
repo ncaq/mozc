@@ -37,7 +37,7 @@
 
 #include "dictionary/dictionary_token.h"
 #include "testing/gunit_prod.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 // for FRIEND_TEST
 
 namespace mozc {
@@ -62,13 +62,13 @@ class TextDictionaryLoader {
   // that the tokens loaded so far are all cleared and that this class takes the
   // ownership of the loaded tokens, i.e., they are deleted on destruction of
   // this loader instance.
-  void Load(absl::string_view dictionary_filename,
-            absl::string_view reading_correction_filename);
+  void Load(std::string_view dictionary_filename,
+            std::string_view reading_correction_filename);
 
   // The same as Load() method above except that the number of tokens to be
   // loaded is limited up to first |limit| entries.
-  void LoadWithLineLimit(absl::string_view dictionary_filename,
-                         absl::string_view reading_correction_filename,
+  void LoadWithLineLimit(std::string_view dictionary_filename,
+                         std::string_view reading_correction_filename,
                          int limit);
 
   // Clears the loaded tokens.
@@ -87,7 +87,7 @@ class TextDictionaryLoader {
 
  private:
   static std::vector<std::unique_ptr<Token>> LoadReadingCorrectionTokens(
-      absl::string_view reading_correction_filename,
+      std::string_view reading_correction_filename,
       const std::vector<std::unique_ptr<Token>> &ref_sorted_tokens, int *limit);
 
   // Encodes special information into |token| with the |label|.
@@ -97,11 +97,11 @@ class TextDictionaryLoader {
   //   - "ZIP_CODE", or
   //   - "ENGLISH".
   // Otherwise, the method returns false.
-  bool RewriteSpecialToken(Token *token, absl::string_view label) const;
+  bool RewriteSpecialToken(Token *token, std::string_view label) const;
 
-  std::unique_ptr<Token> ParseTSVLine(absl::string_view line) const;
+  std::unique_ptr<Token> ParseTSVLine(std::string_view line) const;
   std::unique_ptr<Token> ParseTSV(
-      const std::vector<absl::string_view> &columns) const;
+      const std::vector<std::string_view> &columns) const;
 
   const uint16_t zipcode_id_;
   const uint16_t isolated_word_id_;

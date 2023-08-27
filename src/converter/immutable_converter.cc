@@ -62,7 +62,7 @@
 #include "absl/algorithm/container.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -86,7 +86,7 @@ bool IsMobileRequest(const ConversionRequest &request) {
 
 class KeyCorrectedNodeListBuilder : public BaseNodeListBuilder {
  public:
-  KeyCorrectedNodeListBuilder(size_t pos, absl::string_view original_lookup_key,
+  KeyCorrectedNodeListBuilder(size_t pos, std::string_view original_lookup_key,
                               const KeyCorrector *key_corrector,
                               const SpatialCostParams &spatial_cost_params,
                               NodeAllocator *allocator)
@@ -97,7 +97,7 @@ class KeyCorrectedNodeListBuilder : public BaseNodeListBuilder {
         key_corrector_(key_corrector),
         tail_(nullptr) {}
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     const size_t offset =
         key_corrector_->GetOriginalOffset(pos_, token.key.size());
@@ -123,7 +123,7 @@ class KeyCorrectedNodeListBuilder : public BaseNodeListBuilder {
 
  private:
   const size_t pos_;
-  const absl::string_view original_lookup_key_;
+  const std::string_view original_lookup_key_;
   const KeyCorrector *key_corrector_;
   Node *tail_;
 };
@@ -144,7 +144,7 @@ void InsertCorrectedNodes(size_t pos, const std::string &key,
   KeyCorrectedNodeListBuilder builder(pos, key, key_corrector,
                                       GetSpatialCostParams(request),
                                       lattice->node_allocator());
-  dictionary->LookupPrefix(absl::string_view(str, length), request, &builder);
+  dictionary->LookupPrefix(std::string_view(str, length), request, &builder);
   if (builder.tail() != nullptr) {
     builder.tail()->bnext = nullptr;
   }
@@ -155,7 +155,7 @@ void InsertCorrectedNodes(size_t pos, const std::string &key,
 
 bool IsNumber(const char c) { return c >= '0' && c <= '9'; }
 
-bool ContainsWhiteSpacesOnly(const absl::string_view s) {
+bool ContainsWhiteSpacesOnly(const std::string_view s) {
   for (ConstChar32Iterator iter(s); !iter.Done(); iter.Next()) {
     switch (iter.Get()) {
       case 0x09:    // TAB
@@ -718,7 +718,7 @@ class NodeListBuilderWithCacheEnabled : public NodeListBuilderForLookupPrefix {
     DCHECK(allocator);
   }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     Node *node = NewNodeFromToken(token);
     node->attributes |= Node::ENABLE_CACHE;
@@ -745,7 +745,7 @@ Node *ImmutableConverterImpl::Lookup(const int begin_pos, const int end_pos,
     BaseNodeListBuilder builder(lattice->node_allocator(),
                                 lattice->node_allocator()->max_nodes_size(),
                                 GetSpatialCostParams(request));
-    dictionary_->LookupReverse(absl::string_view(begin, len), request,
+    dictionary_->LookupReverse(std::string_view(begin, len), request,
                                &builder);
     result_node = builder.result();
   } else {
@@ -753,7 +753,7 @@ Node *ImmutableConverterImpl::Lookup(const int begin_pos, const int end_pos,
       NodeListBuilderWithCacheEnabled builder(
           lattice->node_allocator(), lattice->cache_info(begin_pos) + 1,
           GetSpatialCostParams(request));
-      dictionary_->LookupPrefix(absl::string_view(begin, len), request,
+      dictionary_->LookupPrefix(std::string_view(begin, len), request,
                                 &builder);
       result_node = builder.result();
       lattice->SetCacheInfo(begin_pos, len);
@@ -762,7 +762,7 @@ Node *ImmutableConverterImpl::Lookup(const int begin_pos, const int end_pos,
       BaseNodeListBuilder builder(lattice->node_allocator(),
                                   lattice->node_allocator()->max_nodes_size(),
                                   GetSpatialCostParams(request));
-      dictionary_->LookupPrefix(absl::string_view(begin, len), request,
+      dictionary_->LookupPrefix(std::string_view(begin, len), request,
                                 &builder);
       result_node = builder.result();
     }
@@ -1233,7 +1233,7 @@ class NodeListBuilderForPredictiveNodes : public BaseNodeListBuilder {
 
   ~NodeListBuilderForPredictiveNodes() override = default;
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override {
     Node *node = NewNodeFromToken(token);
     constexpr int kPredictiveNodeDefaultPenalty = 900;  // ~= -500 * log(1/6)
@@ -1310,7 +1310,7 @@ void ImmutableConverterImpl::MakeLatticeNodesForPredictiveNodes(
           lattice->node_allocator()->max_nodes_size(),
           GetSpatialCostParams(request), pos_matcher_);
       suffix_dictionary_->LookupPredictive(
-          absl::string_view(key.data() + pos, key.size() - pos), request,
+          std::string_view(key.data() + pos, key.size() - pos), request,
           &builder);
       if (builder.result() != nullptr) {
         lattice->Insert(pos, builder.result());
@@ -1341,7 +1341,7 @@ void ImmutableConverterImpl::MakeLatticeNodesForPredictiveNodes(
           lattice->node_allocator()->max_nodes_size(),
           GetSpatialCostParams(request), pos_matcher_);
       dictionary_->LookupPredictive(
-          absl::string_view(key.data() + pos, key.size() - pos), request,
+          std::string_view(key.data() + pos, key.size() - pos), request,
           &builder);
       if (builder.result() != nullptr) {
         lattice->Insert(pos, builder.result());

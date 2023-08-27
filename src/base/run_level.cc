@@ -45,7 +45,7 @@
 #include "base/win32/wide_char.h"
 #include "base/win32/win_sandbox.h"
 #include "base/win32/win_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #else  // _WIN32
 #include <unistd.h>
 #endif  // _WIN32
@@ -75,10 +75,10 @@ bool IsDifferentUser(const HANDLE hToken) {
   //  Vista SP1 (Normal)                     "User32 \0"
   //  ->  Vista SP1 (RunAs):                 "seclogo\0"
   //  ->  Vista SP1 (Over-the-shoulder UAC): "CredPro\0"
-  constexpr absl::string_view kSeclogo("seclogo", TOKEN_SOURCE_LENGTH);
-  constexpr absl::string_view kCredPro("CredPro", TOKEN_SOURCE_LENGTH);
+  constexpr std::string_view kSeclogo("seclogo", TOKEN_SOURCE_LENGTH);
+  constexpr std::string_view kCredPro("CredPro", TOKEN_SOURCE_LENGTH);
 
-  absl::string_view source_name(src.SourceName, TOKEN_SOURCE_LENGTH);
+  std::string_view source_name(src.SourceName, TOKEN_SOURCE_LENGTH);
 
   return source_name == kSeclogo || source_name == kCredPro;
 }

@@ -49,7 +49,7 @@
 #include "absl/random/random.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace jni {
@@ -172,7 +172,7 @@ jboolean JNICALL onPostLoad(JNIEnv *env, jclass clazz,
 jstring JNICALL getDataVersion(JNIEnv *env) {
   std::string version = "";
   if (g_session_handler) {
-    const absl::string_view version_sp = g_session_handler->GetDataVersion();
+    const std::string_view version_sp = g_session_handler->GetDataVersion();
     version.assign(version_sp.begin(), version_sp.end());
   }
   return env->NewStringUTF(version.c_str());

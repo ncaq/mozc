@@ -43,7 +43,7 @@
 #include "session/session_stress_test_data.h"
 #include "absl/random/distributions.h"
 #include "absl/random/random.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -87,14 +87,14 @@ void RandomKeyEventsGenerator::PrepareForMemoryLeakTest() {
   // Read all kTestSentences and load these to memory.
   const int size = std::size(kTestSentences);
   for (int i = 0; i < size; ++i) {
-    const absl::string_view sentence = kTestSentences[i];
+    const std::string_view sentence = kTestSentences[i];
     CHECK(!sentence.empty());
   }
 }
 
 // Generates KeyEvent instances based on |romaji| and stores into |keys|.
 void RandomKeyEventsGenerator::TypeRawKeys(
-    absl::string_view romaji, bool create_probable_key_events,
+    std::string_view romaji, bool create_probable_key_events,
     std::vector<commands::KeyEvent> *keys) {
   for (ConstChar32Iterator iter(romaji); !iter.Done(); iter.Next()) {
     const uint32_t ucs4 = iter.Get();
@@ -121,7 +121,7 @@ void RandomKeyEventsGenerator::TypeRawKeys(
 }
 
 // Converts from Hiragana to Romaji.
-std::string ToRomaji(absl::string_view hiragana) {
+std::string ToRomaji(std::string_view hiragana) {
   std::string tmp, result;
   japanese_util::HiraganaToRomanji(hiragana, &tmp);
   japanese_util::FullWidthToHalfWidth(tmp, &result);
@@ -132,7 +132,7 @@ std::string ToRomaji(absl::string_view hiragana) {
 // And Enter key event is appended at the tail.
 // The instances have ProbableKeyEvent if |create_probable_key_events| is set.
 void RandomKeyEventsGenerator::GenerateMobileSequenceInternal(
-    absl::string_view sentence, bool create_probable_key_events,
+    std::string_view sentence, bool create_probable_key_events,
     std::vector<commands::KeyEvent> *keys) {
   const std::string input = ToRomaji(sentence);
   VLOG(1) << input;
@@ -150,7 +150,7 @@ void RandomKeyEventsGenerator::GenerateMobileSequence(
   CHECK(keys);
   keys->clear();
 
-  const absl::string_view sentence = kTestSentences[absl::Uniform<size_t>(
+  const std::string_view sentence = kTestSentences[absl::Uniform<size_t>(
       bitgen_, 0, std::size(kTestSentences))];
   CHECK(!sentence.empty());
   for (size_t i = 0; i < sentence.size();) {
@@ -170,7 +170,7 @@ void RandomKeyEventsGenerator::GenerateSequence(
   CHECK(keys);
   keys->clear();
 
-  const absl::string_view sentence = kTestSentences[absl::Uniform<size_t>(
+  const std::string_view sentence = kTestSentences[absl::Uniform<size_t>(
       bitgen_, 0, std::size(kTestSentences))];
   CHECK(!sentence.empty());
 

@@ -38,7 +38,7 @@
 #include "ipc/ipc.h"
 #include "session/session_handler_interface.h"
 #include "session/session_usage_observer.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -60,7 +60,7 @@ class SessionServer : public IPCServer {
 
   bool Connected() const;
 
-  bool Process(absl::string_view request, std::string *response) override;
+  bool Process(std::string_view request, std::string *response) override;
 
  private:
   std::unique_ptr<session::SessionUsageObserver> usage_observer_;

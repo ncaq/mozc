@@ -36,7 +36,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace commands {
@@ -54,11 +54,11 @@ class StringUtil {
   // http://msdn.microsoft.com/en-us/library/ms629017(VS.85).aspx
   // This function only supports conversion of Japanese characters (characters
   // covered by code page 932).
-  static std::wstring KeyToReading(absl::string_view key);
+  static std::wstring KeyToReading(std::string_view key);
 
   // Returns a UTF8 string converted from the result of KeyToReading.
   // This function is mainly for unittest.
-  static std::string KeyToReadingA(absl::string_view key);
+  static std::string KeyToReadingA(std::string_view key);
 
   // Joins all segment strings in |preedit| and returns it.
   static std::wstring ComposePreeditText(

@@ -34,7 +34,7 @@
 #include <string>
 
 #include "protocol/user_dictionary_storage.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -110,7 +110,7 @@ class UserDictionaryImporter {
   // string until this iterator is destroyed.
   class StringTextLineIterator : public TextLineIteratorInterface {
    public:
-    explicit StringTextLineIterator(absl::string_view data);
+    explicit StringTextLineIterator(std::string_view data);
     StringTextLineIterator(const StringTextLineIterator &) = delete;
     StringTextLineIterator &operator=(const StringTextLineIterator &) = delete;
     ~StringTextLineIterator() override;
@@ -120,7 +120,7 @@ class UserDictionaryImporter {
     void Reset() override;
 
    private:
-    const absl::string_view data_;
+    const std::string_view data_;
     size_t position_;
   };
 
@@ -136,7 +136,7 @@ class UserDictionaryImporter {
 
   // Guess IME type from the first line of IME file.
   // Return "NUM_IMES" if the format is unknown.
-  static IMEType GuessIMEType(absl::string_view line);
+  static IMEType GuessIMEType(std::string_view line);
 
   // Return the final IME type from user_ime_type and guessed_ime_type.
   static IMEType DetermineFinalIMEType(IMEType user_ime_type,
@@ -152,7 +152,7 @@ class UserDictionaryImporter {
   };
 
   // Guess encoding type of a string.
-  static EncodingType GuessEncodingType(absl::string_view str);
+  static EncodingType GuessEncodingType(std::string_view str);
 
   // Guess encoding type of a file.
   static EncodingType GuessFileEncodingType(const std::string &filename);

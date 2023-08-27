@@ -40,7 +40,7 @@
 
 #include "dictionary/dictionary_interface.h"
 #include "storage/louds/louds_trie.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -60,18 +60,18 @@ class ValueDictionary : public DictionaryInterface {
   ~ValueDictionary() override;
 
   // Implementation of DictionaryInterface
-  bool HasKey(absl::string_view key) const override;
-  bool HasValue(absl::string_view value) const override;
-  void LookupPredictive(absl::string_view key,
+  bool HasKey(std::string_view key) const override;
+  bool HasValue(std::string_view value) const override;
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override;
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override;
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override;
-  void LookupReverse(absl::string_view str,
+  void LookupReverse(std::string_view str,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override;
 

@@ -38,7 +38,7 @@ namespace mozc::prediction {
 class MockRescorer : public RescorerInterface {
  public:
   MOCK_METHOD(void, RescoreResults,
-              (const ConversionRequest &request, absl::string_view history,
+              (const ConversionRequest &request, std::string_view history,
                absl::Span<Result> results),
               (const override));
 };

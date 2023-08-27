@@ -40,7 +40,7 @@
 #include <vector>
 
 #include "base/container/serialized_string_array.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -123,7 +123,7 @@ class SerializedDictionary {
   static constexpr size_t kTokenByteLength = 24;
 
   class iterator : public std::iterator<std::random_access_iterator_tag,
-                                        absl::string_view> {
+                                        std::string_view> {
    public:
     iterator() : token_ptr_(nullptr), string_array_(nullptr) {}
     iterator(const char *token_ptr, const SerializedStringArray *string_array)
@@ -136,8 +136,8 @@ class SerializedDictionary {
     uint32_t key_index() const {
       return *reinterpret_cast<const uint32_t *>(token_ptr_);
     }
-    absl::string_view key() { return (*string_array_)[key_index()]; }
-    absl::string_view key() const { return (*string_array_)[key_index()]; }
+    std::string_view key() { return (*string_array_)[key_index()]; }
+    std::string_view key() const { return (*string_array_)[key_index()]; }
 
     uint32_t value_index() {
       return *reinterpret_cast<const uint32_t *>(token_ptr_ + 4);
@@ -145,8 +145,8 @@ class SerializedDictionary {
     uint32_t value_index() const {
       return *reinterpret_cast<const uint32_t *>(token_ptr_ + 4);
     }
-    absl::string_view value() { return (*string_array_)[value_index()]; }
-    absl::string_view value() const { return (*string_array_)[value_index()]; }
+    std::string_view value() { return (*string_array_)[value_index()]; }
+    std::string_view value() const { return (*string_array_)[value_index()]; }
 
     uint32_t description_index() {
       return *reinterpret_cast<const uint32_t *>(token_ptr_ + 8);
@@ -155,10 +155,10 @@ class SerializedDictionary {
       return *reinterpret_cast<const uint32_t *>(token_ptr_ + 8);
     }
 
-    absl::string_view description() {
+    std::string_view description() {
       return (*string_array_)[description_index()];
     }
-    absl::string_view description() const {
+    std::string_view description() const {
       return (*string_array_)[description_index()];
     }
 
@@ -168,11 +168,11 @@ class SerializedDictionary {
     uint32_t additional_description_index() const {
       return *reinterpret_cast<const uint32_t *>(token_ptr_ + 12);
     }
-    absl::string_view additional_description() {
+    std::string_view additional_description() {
       return (*string_array_)[additional_description_index()];
     }
 
-    absl::string_view additional_description() const {
+    std::string_view additional_description() const {
       return (*string_array_)[additional_description_index()];
     }
 
@@ -197,8 +197,8 @@ class SerializedDictionary {
       return *reinterpret_cast<const uint16_t *>(token_ptr_ + 20);
     }
 
-    absl::string_view operator*() { return key(); }
-    absl::string_view operator*() const { return key(); }
+    std::string_view operator*() { return key(); }
+    std::string_view operator*() const { return key(); }
 
     void swap(iterator &x) {
       using std::swap;
@@ -301,10 +301,10 @@ class SerializedDictionary {
   // returned value points to memory block for token array and string array,
   // respectively.  The input stream should supply TSV file of Mozc's dctionary
   // format; see, e.g., data/symbol/symbol.tsv.
-  static std::pair<absl::string_view, absl::string_view> Compile(
+  static std::pair<std::string_view, std::string_view> Compile(
       std::istream *input, std::unique_ptr<uint32_t[]> *output_token_array_buf,
       std::unique_ptr<uint32_t[]> *output_string_array_buf);
-  static std::pair<absl::string_view, absl::string_view> Compile(
+  static std::pair<std::string_view, std::string_view> Compile(
       const std::map<std::string, TokenList> &dic,
       std::unique_ptr<uint32_t[]> *output_token_array_buf,
       std::unique_ptr<uint32_t[]> *output_string_array_buf);
@@ -318,13 +318,13 @@ class SerializedDictionary {
                              const std::string &output_string_array);
 
   // Validates the serialized data.
-  static bool VerifyData(absl::string_view token_array_data,
-                         absl::string_view string_array_data);
+  static bool VerifyData(std::string_view token_array_data,
+                         std::string_view string_array_data);
 
   // Both |token_array| and |string_array_data| must be aligned at 4-byte
   // boundary.
-  SerializedDictionary(absl::string_view token_array,
-                       absl::string_view string_array_data);
+  SerializedDictionary(std::string_view token_array,
+                       std::string_view string_array_data);
   ~SerializedDictionary() = default;
 
   std::size_t size() const { return token_array_.size() / kTokenByteLength; }
@@ -343,10 +343,10 @@ class SerializedDictionary {
 
   // Returns the range of iterators whose keys match the given key.  The range
   // is sorted in ascending order of cost.
-  IterRange equal_range(absl::string_view key) const;
+  IterRange equal_range(std::string_view key) const;
 
  private:
-  absl::string_view token_array_;
+  std::string_view token_array_;
   SerializedStringArray string_array_;
 };
 

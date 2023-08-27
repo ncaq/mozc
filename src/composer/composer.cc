@@ -61,7 +61,7 @@
 #include "transliteration/transliteration.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 // Use flags instead of constant for performance evaluation.
@@ -129,7 +129,7 @@ transliteration::TransliterationType GetTransliterationType(
 }
 
 void Transliterate(const transliteration::TransliterationType mode,
-                   const absl::string_view input, std::string *output) {
+                   const std::string_view input, std::string *output) {
   // When the mode is HALF_KATAKANA, Full width ASCII is also
   // transformed.
   if (mode == transliteration::HALF_KATAKANA) {
@@ -217,8 +217,8 @@ transliteration::TransliterationType GetTransliterationTypeFromCompositionMode(
 // character explicitly (e.g., we don't want to suggest words starting with
 // "さ" when one typed "ざ" with modified key).
 using ModifierRemovalMap =
-    std::unordered_multimap<absl::string_view, absl::string_view,
-                            absl::Hash<absl::string_view>>;
+    std::unordered_multimap<std::string_view, std::string_view,
+                            absl::Hash<std::string_view>>;
 
 const ModifierRemovalMap *GetModifierRemovalMap() {
   static const ModifierRemovalMap *const removal_map = new ModifierRemovalMap{
@@ -236,15 +236,15 @@ const ModifierRemovalMap *GetModifierRemovalMap() {
   return removal_map;
 }
 
-void RemoveExpandedCharsForModifier(absl::string_view asis,
-                                    absl::string_view base,
+void RemoveExpandedCharsForModifier(std::string_view asis,
+                                    std::string_view base,
                                     std::set<std::string> *expanded) {
   if (!absl::StartsWith(asis, base)) {
     LOG(DFATAL) << "base is not a prefix of asis.";
     return;
   }
 
-  const absl::string_view trailing(asis.substr(base.size()));
+  const std::string_view trailing(asis.substr(base.size()));
   for (auto [iter, end] = GetModifierRemovalMap()->equal_range(trailing);
        iter != end; ++iter) {
     expanded->erase(std::string(iter->second));
@@ -392,7 +392,7 @@ void Composer::SetOutputMode(transliteration::TransliterationType mode) {
   position_ = composition_.GetLength();
 }
 
-void Composer::ApplyTemporaryInputMode(const absl::string_view input,
+void Composer::ApplyTemporaryInputMode(const std::string_view input,
                                        bool caps_locked) {
   DCHECK(!input.empty());
 
@@ -490,12 +490,12 @@ void Composer::InsertCommandCharacter(const InternalCommand internal_command) {
   }
 }
 
-void Composer::InsertCharacterPreedit(const absl::string_view input) {
+void Composer::InsertCharacterPreedit(const std::string_view input) {
   size_t begin = 0;
   const size_t end = input.size();
   while (begin < end) {
     const size_t mblen = OneCharLen(input[begin]);
-    const absl::string_view character(input.substr(begin, mblen));
+    const std::string_view character(input.substr(begin, mblen));
     if (!InsertCharacterKeyAndPreedit(character, character)) {
       return;
     }
@@ -505,7 +505,7 @@ void Composer::InsertCharacterPreedit(const absl::string_view input) {
 }
 
 // Note: This method is only for test.
-void Composer::SetPreeditTextForTestOnly(const absl::string_view input) {
+void Composer::SetPreeditTextForTestOnly(const std::string_view input) {
   composition_.SetInputMode(Transliterators::RAW_STRING);
   size_t begin = 0;
   const size_t end = input.size();
@@ -530,8 +530,8 @@ void Composer::SetPreeditTextForTestOnly(const absl::string_view input) {
   }
 }
 
-bool Composer::InsertCharacterKeyAndPreedit(const absl::string_view key,
-                                            const absl::string_view preedit) {
+bool Composer::InsertCharacterKeyAndPreedit(const std::string_view key,
+                                            const std::string_view preedit) {
   CompositionInput input;
   input.InitFromRawAndConv(std::string(key), std::string(preedit),
                            is_new_input_);
@@ -816,7 +816,7 @@ std::string *GetBaseQueryForPrediction(std::string *asis_query,
   // We assume "もzk" is user's intentional query, but "もずk" is not.
   // So our results are:
   // ("もzk", "もz") => "もzk" and ("もずk", "もず") => "もず".
-  const absl::string_view trimed_tail = Util::Utf8SubString(
+  const std::string_view trimed_tail = Util::Utf8SubString(
       *trimed_query, Util::CharsLen(*trimed_query) - 1, std::string::npos);
   DCHECK(!trimed_tail.empty());
   const Util::ScriptType trimed_tail_type = Util::GetScriptType(trimed_tail);
@@ -891,7 +891,7 @@ void Composer::GetQueriesForPrediction(std::string *base,
 }
 
 std::optional<std::vector<TypeCorrectedQuery>>
-Composer::GetTypeCorrectedQueries(absl::string_view context) const {
+Composer::GetTypeCorrectedQueries(std::string_view context) const {
 
   return std::nullopt;
 }
@@ -1266,7 +1266,7 @@ size_t Composer::shifted_sequence_count() const {
 
 const std::string &Composer::source_text() const { return source_text_; }
 std::string *Composer::mutable_source_text() { return &source_text_; }
-void Composer::set_source_text(const absl::string_view source_text) {
+void Composer::set_source_text(const std::string_view source_text) {
   strings::Assign(source_text_, source_text);
 }
 

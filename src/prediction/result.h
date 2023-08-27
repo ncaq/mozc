@@ -42,7 +42,7 @@
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace prediction {
@@ -146,7 +146,7 @@ struct Result {
                  r.removed);
 #ifndef NDEBUG
     sink.Append(", log:\n");
-    for (absl::string_view line : absl::StrSplit(r.log, '\n')) {
+    for (std::string_view line : absl::StrSplit(r.log, '\n')) {
       absl::Format(&sink, "    %s\n", line);
     }
 #endif  // NDEBUG
@@ -161,7 +161,7 @@ namespace result_internal {
 //  "ん" < "あいうえお"
 //  "あいうえお" < "かきくけこ"
 //  "テスト1" < "テスト00"
-bool ValueLess(absl::string_view lhs, absl::string_view rhs);
+bool ValueLess(std::string_view lhs, std::string_view rhs);
 
 }  // namespace result_internal
 

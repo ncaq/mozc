@@ -34,7 +34,7 @@
 
 #include "engine/engine_interface.h"
 #include "protocol/engine_builder.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 

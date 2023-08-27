@@ -42,7 +42,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -61,7 +61,7 @@ class SingleKanjiRewriterTest : public testing::TestWithTempUserProfile {
 
   const PosMatcher &pos_matcher() { return pos_matcher_; }
 
-  static void InitSegments(absl::string_view key, absl::string_view value,
+  static void InitSegments(std::string_view key, std::string_view value,
                            Segments *segments) {
     Segment *segment = segments->add_segment();
     segment->set_key(key);
@@ -73,7 +73,7 @@ class SingleKanjiRewriterTest : public testing::TestWithTempUserProfile {
     candidate->content_value.assign(value.data(), value.size());
   }
 
-  static bool Contains(const Segments &segments, absl::string_view word) {
+  static bool Contains(const Segments &segments, std::string_view word) {
     const Segment &segment = segments.segment(0);
     for (int i = 0; i < segment.candidates_size(); ++i) {
       if (segment.candidate(i).value == word) {

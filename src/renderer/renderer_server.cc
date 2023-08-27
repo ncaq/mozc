@@ -47,7 +47,7 @@
 #include "protocol/renderer_command.pb.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 #include "renderer/renderer_interface.h"
 
@@ -218,7 +218,7 @@ int RendererServer::StartServer() {
   return StartMessageLoop();
 }
 
-bool RendererServer::Process(absl::string_view request, std::string *response) {
+bool RendererServer::Process(std::string_view request, std::string *response) {
   // No need to set the result code.
   response->clear();
 

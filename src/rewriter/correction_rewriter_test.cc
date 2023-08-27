@@ -41,21 +41,21 @@
 #include "protocol/config.pb.h"
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-Segment *AddSegment(const absl::string_view key, Segments *segments) {
+Segment *AddSegment(const std::string_view key, Segments *segments) {
   Segment *segment = segments->push_back_segment();
   segment->set_key(key);
   return segment;
 }
 
-Segment::Candidate *AddCandidate(const absl::string_view key,
-                                 const absl::string_view value,
-                                 const absl::string_view content_key,
-                                 const absl::string_view content_value,
+Segment::Candidate *AddCandidate(const std::string_view key,
+                                 const std::string_view value,
+                                 const std::string_view content_key,
+                                 const std::string_view content_value,
                                  Segment *segment) {
   Segment::Candidate *candidate = segment->add_candidate();
   candidate->key = std::string(key);
@@ -75,9 +75,9 @@ class CorrectionRewriterTest : public testing::Test {
 
   void SetUp() override {
     // Create a rewriter with one entry: (TSUKIGIME, gekkyoku, tsukigime)
-    const std::vector<absl::string_view> values = {"TSUKIGIME"};
-    const std::vector<absl::string_view> errors = {"gekkyoku"};
-    const std::vector<absl::string_view> corrections = {"tsukigime"};
+    const std::vector<std::string_view> values = {"TSUKIGIME"};
+    const std::vector<std::string_view> errors = {"gekkyoku"};
+    const std::vector<std::string_view> corrections = {"tsukigime"};
     rewriter_ = std::make_unique<CorrectionRewriter>(
         SerializedStringArray::SerializeToBuffer(values, &values_buf_),
         SerializedStringArray::SerializeToBuffer(errors, &errors_buf_),

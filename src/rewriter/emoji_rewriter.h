@@ -39,7 +39,7 @@
 #include "data_manager/emoji_data.h"
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -114,9 +114,9 @@ class EmojiRewriter : public RewriterInterface {
   // Returns true if emoji candidates are added in any segment.
   bool RewriteCandidates(Segments *segments) const;
 
-  IteratorRange LookUpToken(absl::string_view key) const;
+  IteratorRange LookUpToken(std::string_view key) const;
 
-  absl::string_view token_array_data_;
+  std::string_view token_array_data_;
   SerializedStringArray string_array_;
 };
 

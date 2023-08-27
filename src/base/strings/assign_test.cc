@@ -33,7 +33,7 @@
 #include <string_view>
 
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::strings {
 namespace {
@@ -52,8 +52,8 @@ TEST(AssignTest, Assign) {
   EXPECT_EQ(Assign(s, 'A'), "A");
   // initializer_list
   EXPECT_EQ(Assign(s, {'a', 'b', 'c'}), "abc");
-  // absl::string_view
-  constexpr absl::string_view kView = "日本語入力";
+  // std::string_view
+  constexpr std::string_view kView = "日本語入力";
   EXPECT_EQ(Assign(s, kView), kView);
   // std::string_view (to be future proof).
   constexpr std::string_view kStdView = "std::string_view";

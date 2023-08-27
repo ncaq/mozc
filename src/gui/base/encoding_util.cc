@@ -33,7 +33,7 @@
 #include <string>
 
 #include "base/util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -99,7 +99,7 @@ size_t ComputeIndex(uint8_t first, uint8_t second) {
   return first_index * width + second_index;
 }
 
-bool SjisToUtf8Internal(absl::string_view input, std::string *output) {
+bool SjisToUtf8Internal(std::string_view input, std::string *output) {
   bool expect_first_byte = true;
   uint8_t first_byte = 0;
   for (const char c : input) {

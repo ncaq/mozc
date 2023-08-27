@@ -40,7 +40,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/ascii.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -49,7 +49,7 @@ namespace {
 // based on array will not work in the future. In order to avoid that,
 // std::map is chosen.
 const auto *kSuperscriptTable =
-    new absl::flat_hash_map<char, absl::string_view>({
+    new absl::flat_hash_map<char, std::string_view>({
         {'0', "⁰"},
         {'1', "¹"},
         {'2', "²"},
@@ -67,7 +67,7 @@ const auto *kSuperscriptTable =
         {')', "⁾"},
     });
 
-const auto *kSubscriptTable = new absl::flat_hash_map<char, absl::string_view>({
+const auto *kSubscriptTable = new absl::flat_hash_map<char, std::string_view>({
     {'0', "₀"},
     {'1', "₁"},
     {'2', "₂"},
@@ -105,7 +105,7 @@ enum ParserState : char {
 // This function allows conversion of digits sequence. For example, _123 will be
 // converted into ₁₂₃. Other symbols requires prefix as `^+` or `_(` for each
 // occurrence. `^()` does not mean ⁽⁾ but means ⁽).
-bool ConvertExpressions(const absl::string_view input, std::string *value) {
+bool ConvertExpressions(const std::string_view input, std::string *value) {
   // Check preconditions
   if (input.empty()) {
     return false;
@@ -195,7 +195,7 @@ bool ConvertExpressions(const absl::string_view input, std::string *value) {
 // segment size is 1 after resize.
 bool EnsureSingleSegment(const ConversionRequest &request, Segments *segments,
                          const ConverterInterface *parent_converter,
-                         const absl::string_view key) {
+                         const std::string_view key) {
   if (segments->conversion_segments_size() == 1) {
     return true;
   }

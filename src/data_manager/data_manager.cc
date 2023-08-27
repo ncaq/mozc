@@ -48,24 +48,24 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
 namespace {
 
 #ifdef GOOGLE_JAPANESE_INPUT_BUILD
-constexpr absl::string_view kDataSetMagicNumber = "\xEFMOZC\r\n"
+constexpr std::string_view kDataSetMagicNumber = "\xEFMOZC\r\n"
 #else   // GOOGLE_JAPANESE_INPUT_BUILD
-constexpr absl::string_view kDataSetMagicNumber = "\xEFMOZC\r\n";
+constexpr std::string_view kDataSetMagicNumber = "\xEFMOZC\r\n";
 #endif  // GOOGLE_JAPANESE_INPUT_BUILD
 
-constexpr absl::string_view kDataSetMagicNumberOss = "\xEFMOZC\r\n";
+constexpr std::string_view kDataSetMagicNumberOss = "\xEFMOZC\r\n";
 
 DataManager::Status InitUserPosManagerDataFromReader(
-    const DataSetReader &reader, absl::string_view *pos_matcher_data,
-    absl::string_view *user_pos_token_array_data,
-    absl::string_view *user_pos_string_array_data) {
+    const DataSetReader &reader, std::string_view *pos_matcher_data,
+    std::string_view *user_pos_token_array_data,
+    std::string_view *user_pos_string_array_data) {
   if (!reader.Get("pos_matcher", pos_matcher_data)) {
     LOG(ERROR) << "Cannot find POS matcher rule ID table";
     return DataManager::Status::DATA_MISSING;
@@ -89,7 +89,7 @@ DataManager::Status InitUserPosManagerDataFromReader(
 }
 
 template <typename T>
-absl::Span<const T> MakeSpanFromAlignedBuffer(const absl::string_view buf) {
+absl::Span<const T> MakeSpanFromAlignedBuffer(const std::string_view buf) {
   return absl::MakeSpan(std::launder(reinterpret_cast<const T *>(buf.data())),
                         buf.size() / sizeof(T));
 }
@@ -124,7 +124,7 @@ std::string DataManager::StatusCodeToString(Status code) {
 }
 
 // static
-absl::string_view DataManager::GetDataSetMagicNumber(absl::string_view type) {
+std::string_view DataManager::GetDataSetMagicNumber(std::string_view type) {
   if (type == "oss") {
     return kDataSetMagicNumberOss;
   }
@@ -137,7 +137,7 @@ absl::StatusOr<std::unique_ptr<DataManager>> DataManager::CreateFromFile(
 }
 
 absl::StatusOr<std::unique_ptr<DataManager>> DataManager::CreateFromFile(
-    const std::string &path, absl::string_view magic) {
+    const std::string &path, std::string_view magic) {
   auto data_manager = std::make_unique<DataManager>();
   const Status status = data_manager->InitFromFile(path, magic);
   if (status != DataManager::Status::OK) {
@@ -148,12 +148,12 @@ absl::StatusOr<std::unique_ptr<DataManager>> DataManager::CreateFromFile(
   return data_manager;
 }
 
-DataManager::Status DataManager::InitFromArray(absl::string_view array) {
+DataManager::Status DataManager::InitFromArray(std::string_view array) {
   return InitFromArray(array, kDataSetMagicNumber);
 }
 
-DataManager::Status DataManager::InitFromArray(absl::string_view array,
-                                               absl::string_view magic) {
+DataManager::Status DataManager::InitFromArray(std::string_view array,
+                                               std::string_view magic) {
   DataSetReader reader;
   if (!reader.Init(array, magic)) {
     LOG(ERROR) << "Binary data of size " << array.size() << " is broken";
@@ -199,7 +199,7 @@ DataManager::Status DataManager::InitFromReader(const DataSetReader &reader) {
     return Status::DATA_MISSING;
   }
   {
-    absl::string_view memblock;
+    std::string_view memblock;
     if (!reader.Get("segmenter_sizeinfo", &memblock)) {
       LOG(ERROR) << "Cannot find a segmenter size info";
       return Status::DATA_MISSING;
@@ -408,8 +408,8 @@ DataManager::Status DataManager::InitFromReader(const DataSetReader &reader) {
     typing_model_data_.push_back(kv);
   }
   std::sort(typing_model_data_.begin(), typing_model_data_.end(),
-            [](const std::pair<std::string, absl::string_view> &l,
-               const std::pair<std::string, absl::string_view> &r) {
+            [](const std::pair<std::string, std::string_view> &l,
+               const std::pair<std::string, std::string_view> &r) {
               return l.first < r.first;
             });
 
@@ -418,7 +418,7 @@ DataManager::Status DataManager::InitFromReader(const DataSetReader &reader) {
     return Status::DATA_MISSING;
   }
   {
-    std::vector<absl::string_view> components =
+    std::vector<std::string_view> components =
         absl::StrSplit(data_version_, '.', absl::SkipEmpty());
     if (components.size() != 3) {
       LOG(ERROR) << "Invalid version format: " << data_version_;
@@ -439,7 +439,7 @@ DataManager::Status DataManager::InitFromFile(const std::string &path) {
 }
 
 DataManager::Status DataManager::InitFromFile(const std::string &path,
-                                              absl::string_view magic) {
+                                              std::string_view magic) {
   absl::StatusOr<Mmap> mmap = Mmap::Map(path, Mmap::READ_ONLY);
   if (!mmap.ok()) {
     LOG(ERROR) << mmap.status();
@@ -447,12 +447,12 @@ DataManager::Status DataManager::InitFromFile(const std::string &path,
   }
   filename_ = path;
   mmap_ = *std::move(mmap);
-  const absl::string_view data(mmap_.begin(), mmap_.size());
+  const std::string_view data(mmap_.begin(), mmap_.size());
   return InitFromArray(data, magic);
 }
 
 DataManager::Status DataManager::InitUserPosManagerDataFromArray(
-    absl::string_view array, absl::string_view magic) {
+    std::string_view array, std::string_view magic) {
   DataSetReader reader;
   if (!reader.Init(array, magic)) {
     LOG(ERROR) << "Binary data of size " << array.size() << " is broken";
@@ -466,14 +466,14 @@ DataManager::Status DataManager::InitUserPosManagerDataFromArray(
 }
 
 DataManager::Status DataManager::InitUserPosManagerDataFromFile(
-    const std::string &path, absl::string_view magic) {
+    const std::string &path, std::string_view magic) {
   absl::StatusOr<Mmap> mmap = Mmap::Map(path, Mmap::READ_ONLY);
   if (!mmap.ok()) {
     LOG(ERROR) << mmap.status();
     return Status::MMAP_FAILURE;
   }
   mmap_ = *std::move(mmap);
-  const absl::string_view data(mmap_.begin(), mmap_.size());
+  const std::string_view data(mmap_.begin(), mmap_.size());
   return InitUserPosManagerDataFromArray(data, magic);
 }
 
@@ -499,8 +499,8 @@ absl::Span<const uint32_t> DataManager::GetSuggestionFilterData() const {
   return MakeSpanFromAlignedBuffer<uint32_t>(suggestion_filter_data_);
 }
 
-void DataManager::GetUserPosData(absl::string_view *token_array_data,
-                                 absl::string_view *string_array_data) const {
+void DataManager::GetUserPosData(std::string_view *token_array_data,
+                                 std::string_view *string_array_data) const {
   *token_array_data = user_pos_token_array_data_;
   *string_array_data = user_pos_string_array_data_;
 }
@@ -526,8 +526,8 @@ void DataManager::GetSegmenterData(
   *boundary_data = reinterpret_cast<const uint16_t *>(boundary_data_.data());
 }
 
-void DataManager::GetSuffixDictionaryData(absl::string_view *key_array_data,
-                                          absl::string_view *value_array_data,
+void DataManager::GetSuffixDictionaryData(std::string_view *key_array_data,
+                                          std::string_view *value_array_data,
                                           const uint32_t **token_array) const {
   *key_array_data = suffix_key_array_data_;
   *value_array_data = suffix_value_array_data_;
@@ -536,41 +536,41 @@ void DataManager::GetSuffixDictionaryData(absl::string_view *key_array_data,
 }
 
 void DataManager::GetReadingCorrectionData(
-    absl::string_view *value_array_data, absl::string_view *error_array_data,
-    absl::string_view *correction_array_data) const {
+    std::string_view *value_array_data, std::string_view *error_array_data,
+    std::string_view *correction_array_data) const {
   *value_array_data = reading_correction_value_array_data_;
   *error_array_data = reading_correction_error_array_data_;
   *correction_array_data = reading_correction_correction_array_data_;
 }
 
 void DataManager::GetSymbolRewriterData(
-    absl::string_view *token_array_data,
-    absl::string_view *string_array_data) const {
+    std::string_view *token_array_data,
+    std::string_view *string_array_data) const {
   *token_array_data = symbol_token_array_data_;
   *string_array_data = symbol_string_array_data_;
 }
 
 void DataManager::GetEmoticonRewriterData(
-    absl::string_view *token_array_data,
-    absl::string_view *string_array_data) const {
+    std::string_view *token_array_data,
+    std::string_view *string_array_data) const {
   *token_array_data = emoticon_token_array_data_;
   *string_array_data = emoticon_string_array_data_;
 }
 
 void DataManager::GetEmojiRewriterData(
-    absl::string_view *token_array_data,
-    absl::string_view *string_array_data) const {
+    std::string_view *token_array_data,
+    std::string_view *string_array_data) const {
   *token_array_data = emoji_token_array_data_;
   *string_array_data = emoji_string_array_data_;
 }
 
 void DataManager::GetSingleKanjiRewriterData(
-    absl::string_view *token_array_data, absl::string_view *string_array_data,
-    absl::string_view *variant_type_array_data,
-    absl::string_view *variant_token_array_data,
-    absl::string_view *variant_string_array_data,
-    absl::string_view *noun_prefix_token_array_data,
-    absl::string_view *noun_prefix_string_array_data) const {
+    std::string_view *token_array_data, std::string_view *string_array_data,
+    std::string_view *variant_type_array_data,
+    std::string_view *variant_token_array_data,
+    std::string_view *variant_string_array_data,
+    std::string_view *noun_prefix_token_array_data,
+    std::string_view *noun_prefix_string_array_data) const {
   *token_array_data = single_kanji_token_array_data_;
   *string_array_data = single_kanji_string_array_data_;
   *variant_type_array_data = single_kanji_variant_type_data_;
@@ -581,8 +581,8 @@ void DataManager::GetSingleKanjiRewriterData(
 }
 
 void DataManager::GetA11yDescriptionRewriterData(
-    absl::string_view *token_array_data,
-    absl::string_view *string_array_data) const {
+    std::string_view *token_array_data,
+    std::string_view *string_array_data) const {
   *token_array_data = a11y_description_token_array_data_;
   *string_array_data = a11y_description_string_array_data_;
 }
@@ -594,10 +594,10 @@ void DataManager::GetCounterSuffixSortedArray(const char **array,
 }
 
 void DataManager::GetZeroQueryData(
-    absl::string_view *zero_query_token_array_data,
-    absl::string_view *zero_query_string_array_data,
-    absl::string_view *zero_query_number_token_array_data,
-    absl::string_view *zero_query_number_string_array_data) const {
+    std::string_view *zero_query_token_array_data,
+    std::string_view *zero_query_string_array_data,
+    std::string_view *zero_query_number_token_array_data,
+    std::string_view *zero_query_number_string_array_data) const {
   *zero_query_token_array_data = zero_query_token_array_data_;
   *zero_query_string_array_data = zero_query_string_array_data_;
   *zero_query_number_token_array_data = zero_query_number_token_array_data_;
@@ -606,11 +606,11 @@ void DataManager::GetZeroQueryData(
 
 #ifndef NO_USAGE_REWRITER
 void DataManager::GetUsageRewriterData(
-    absl::string_view *base_conjugation_suffix_data,
-    absl::string_view *conjugation_suffix_data,
-    absl::string_view *conjugation_index_data,
-    absl::string_view *usage_items_data,
-    absl::string_view *string_array_data) const {
+    std::string_view *base_conjugation_suffix_data,
+    std::string_view *conjugation_suffix_data,
+    std::string_view *conjugation_index_data,
+    std::string_view *usage_items_data,
+    std::string_view *string_array_data) const {
   *base_conjugation_suffix_data = usage_base_conjugation_suffix_data_;
   *conjugation_suffix_data = usage_conjugation_suffix_data_;
   *conjugation_index_data = usage_conjugation_index_data_;
@@ -619,21 +619,21 @@ void DataManager::GetUsageRewriterData(
 }
 #endif  // NO_USAGE_REWRITER
 
-absl::string_view DataManager::GetTypingModel(const std::string &name) const {
+std::string_view DataManager::GetTypingModel(const std::string &name) const {
   const auto iter = std::lower_bound(
       typing_model_data_.begin(), typing_model_data_.end(), name,
-      [](const std::pair<std::string, absl::string_view> &elem,
+      [](const std::pair<std::string, std::string_view> &elem,
          const std::string &key) { return elem.first < key; });
   if (iter == typing_model_data_.end() || iter->first != name) {
-    return absl::string_view();
+    return std::string_view();
   }
   return iter->second;
 }
 
-absl::string_view DataManager::GetDataVersion() const { return data_version_; }
+std::string_view DataManager::GetDataVersion() const { return data_version_; }
 
 std::optional<std::pair<size_t, size_t>> DataManager::GetOffsetAndSize(
-    absl::string_view name) const {
+    std::string_view name) const {
   if (const auto iter = offset_and_size_.find(name);
       iter != offset_and_size_.end()) {
     return iter->second;

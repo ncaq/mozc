@@ -51,7 +51,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace client {
@@ -97,7 +97,7 @@ class TestServerLauncher : public ServerLauncherInterface {
     return start_server_result_;
   }
 
-  bool ForceTerminateServer(const absl::string_view name) override {
+  bool ForceTerminateServer(const std::string_view name) override {
     force_terminate_server_called_ = true;
     return force_terminate_server_result_;
   }
@@ -127,7 +127,7 @@ class TestServerLauncher : public ServerLauncherInterface {
     force_terminate_server_called_ = force_terminate_server_called;
   }
 
-  void set_server_program(const absl::string_view server_path) override {}
+  void set_server_program(const std::string_view server_path) override {}
 
   const std::string &server_program() const override {
     return placeholder_server_program_path_;
@@ -153,7 +153,7 @@ class TestServerLauncher : public ServerLauncherInterface {
     mock_output.SerializeToString(&response_);
   }
 
-  void set_product_version_after_start_server(const absl::string_view version) {
+  void set_product_version_after_start_server(const std::string_view version) {
     strings::Assign(product_version_after_start_server_, version);
   }
 
@@ -916,7 +916,7 @@ class SessionPlaybackTestServerLauncher : public ServerLauncherInterface {
     return start_server_result_;
   }
 
-  bool ForceTerminateServer(const absl::string_view name) override {
+  bool ForceTerminateServer(const std::string_view name) override {
     force_terminate_server_called_ = true;
     return force_terminate_server_result_;
   }
@@ -925,7 +925,7 @@ class SessionPlaybackTestServerLauncher : public ServerLauncherInterface {
 
   void OnFatal(ServerLauncherInterface::ServerErrorType type) override {}
 
-  void set_server_program(const absl::string_view server_path) override {}
+  void set_server_program(const std::string_view server_path) override {}
 
   void set_restricted(bool restricted) override {}
 

@@ -65,7 +65,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/ascii.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -73,22 +73,22 @@ namespace dictionary {
 namespace {
 
 struct OrderByKey {
-  bool operator()(const UserPos::Token &token, absl::string_view key) const {
+  bool operator()(const UserPos::Token &token, std::string_view key) const {
     return token.key < key;
   }
 
-  bool operator()(absl::string_view key, const UserPos::Token &token) const {
+  bool operator()(std::string_view key, const UserPos::Token &token) const {
     return key < token.key;
   }
 };
 
 struct OrderByKeyPrefix {
-  bool operator()(const UserPos::Token &token, absl::string_view prefix) const {
-    return absl::string_view(token.key).substr(0, prefix.size()) < prefix;
+  bool operator()(const UserPos::Token &token, std::string_view prefix) const {
+    return std::string_view(token.key).substr(0, prefix.size()) < prefix;
   }
 
-  bool operator()(absl::string_view prefix, const UserPos::Token &token) const {
-    return prefix < absl::string_view(token.key).substr(0, prefix.size());
+  bool operator()(std::string_view prefix, const UserPos::Token &token) const {
+    return prefix < std::string_view(token.key).substr(0, prefix.size());
   }
 };
 
@@ -116,7 +116,7 @@ class UserDictionaryFileManager {
     }
   }
 
-  void SetFileName(const absl::string_view filename)
+  void SetFileName(const std::string_view filename)
       ABSL_LOCKS_EXCLUDED(mutex_) {
     absl::MutexLock l(&mutex_);
     strings::Assign(filename_, filename);
@@ -196,7 +196,7 @@ class UserDictionary::TokensIndex {
           user_pos_->GetTokens(
               reading, entry.value(),
               UserDictionaryUtil::GetStringPosType(entry.pos()), &tokens);
-          const absl::string_view comment =
+          const std::string_view comment =
               absl::StripAsciiWhitespace(entry.comment());
           for (auto &token : tokens) {
             strings::Assign(token.comment, comment);
@@ -329,14 +329,14 @@ UserDictionary::UserDictionary(std::unique_ptr<const UserPosInterface> user_pos,
 
 UserDictionary::~UserDictionary() = default;
 
-bool UserDictionary::HasKey(absl::string_view key) const {
+bool UserDictionary::HasKey(std::string_view key) const {
   // TODO(noriyukit): Currently, we don't support HasKey() for user dictionary
   // because we need to search tokens linearly, which might be slow in extreme
   // cases where 100K entries exist.
   return false;
 }
 
-bool UserDictionary::HasValue(absl::string_view value) const {
+bool UserDictionary::HasValue(std::string_view value) const {
   // TODO(noriyukit): Currently, we don't support HasValue() for user dictionary
   // because we need to search tokens linearly, which might be slow in extreme
   // cases where 100K entries exist.  Note: HasValue() method is used only in
@@ -345,7 +345,7 @@ bool UserDictionary::HasValue(absl::string_view value) const {
 }
 
 void UserDictionary::LookupPredictive(
-    absl::string_view key, const ConversionRequest &conversion_request,
+    std::string_view key, const ConversionRequest &conversion_request,
     Callback *callback) const {
   absl::ReaderMutexLock l(&mutex_);
 
@@ -384,7 +384,7 @@ void UserDictionary::LookupPredictive(
 }
 
 // UserDictionary doesn't support kana modifier insensitive lookup.
-void UserDictionary::LookupPrefix(absl::string_view key,
+void UserDictionary::LookupPrefix(std::string_view key,
                                   const ConversionRequest &conversion_request,
                                   Callback *callback) const {
   absl::ReaderMutexLock l(&mutex_);
@@ -401,7 +401,7 @@ void UserDictionary::LookupPrefix(absl::string_view key,
   }
 
   // Find the starting point for iteration over dictionary contents.
-  const absl::string_view first_char =
+  const std::string_view first_char =
       key.substr(0, Util::OneCharLen(key.data()));
   Token token;
   for (auto it = std::lower_bound(tokens_->begin(), tokens_->end(), first_char,
@@ -441,7 +441,7 @@ void UserDictionary::LookupPrefix(absl::string_view key,
   }
 }
 
-void UserDictionary::LookupExact(absl::string_view key,
+void UserDictionary::LookupExact(std::string_view key,
                                  const ConversionRequest &conversion_request,
                                  Callback *callback) const {
   absl::ReaderMutexLock l(&mutex_);
@@ -471,12 +471,12 @@ void UserDictionary::LookupExact(absl::string_view key,
   }
 }
 
-void UserDictionary::LookupReverse(absl::string_view key,
+void UserDictionary::LookupReverse(std::string_view key,
                                    const ConversionRequest &conversion_request,
                                    Callback *callback) const {}
 
-bool UserDictionary::LookupComment(absl::string_view key,
-                                   absl::string_view value,
+bool UserDictionary::LookupComment(std::string_view key,
+                                   std::string_view value,
                                    const ConversionRequest &conversion_request,
                                    std::string *comment) const {
   if (key.empty() || conversion_request.config().incognito_mode()) {
@@ -512,11 +512,11 @@ namespace {
 
 class FindValueCallback : public DictionaryInterface::Callback {
  public:
-  explicit FindValueCallback(absl::string_view value)
+  explicit FindValueCallback(std::string_view value)
       : value_(value), found_(false) {}
 
-  ResultType OnToken(absl::string_view,  // key
-                     absl::string_view,  // actual_key
+  ResultType OnToken(std::string_view,  // key
+                     std::string_view,  // actual_key
                      const Token &token) override {
     if (token.value == value_) {
       found_ = true;
@@ -528,7 +528,7 @@ class FindValueCallback : public DictionaryInterface::Callback {
   bool found() const { return found_; }
 
  private:
-  const absl::string_view value_;
+  const std::string_view value_;
   bool found_;
 };
 
@@ -577,7 +577,7 @@ std::vector<std::string> UserDictionary::GetPosList() const {
   return pos_list;
 }
 
-void UserDictionary::SetUserDictionaryName(const absl::string_view filename) {
+void UserDictionary::SetUserDictionaryName(const std::string_view filename) {
   Singleton<UserDictionaryFileManager>::get()->SetFileName(filename);
 }
 

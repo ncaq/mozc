@@ -51,7 +51,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 ABSL_FLAG(bool, use_collocation, true, "use collocation rewrite");
@@ -70,8 +70,8 @@ absl::StatusOr<CollocationFilter> CollocationFilter::Create(
   return CollocationFilter(*std::move(filter));
 }
 
-bool CollocationFilter::Exists(const absl::string_view left,
-                               const absl::string_view right) const {
+bool CollocationFilter::Exists(const std::string_view left,
+                               const std::string_view right) const {
   if (left.empty() || right.empty()) {
     return false;
   }
@@ -113,7 +113,7 @@ enum SegmentLookupType {
 };
 
 // returns true if the given string contains number including Kanji.
-bool ContainsNumber(const absl::string_view str) {
+bool ContainsNumber(const std::string_view str) {
   for (ConstChar32Iterator iter(str); !iter.Done(); iter.Next()) {
     if (CollocationUtil::IsNumber(iter.Get())) {
       return true;
@@ -127,27 +127,27 @@ bool ContainsNumber(const absl::string_view str) {
 // one Kanji character. In the value matches the pattern, XXX and YYY are
 // substituted to |first_content| and |second|, respectively. Returns false if
 // the value isn't of the form XXXPPPYYY.
-bool ParseCompound(const absl::string_view value,
-                   const absl::string_view pattern,
-                   absl::string_view *first_content,
-                   absl::string_view *second) {
+bool ParseCompound(const std::string_view value,
+                   const std::string_view pattern,
+                   std::string_view *first_content,
+                   std::string_view *second) {
   DCHECK(!value.empty());
   DCHECK(!pattern.empty());
 
   // Find the |first_content| candidate and check if it consists of Kanji only.
-  absl::string_view::const_iterator pattern_begin =
+  std::string_view::const_iterator pattern_begin =
       std::find(value.begin(), value.end(), pattern[0]);
   if (pattern_begin == value.end()) {
     return false;
   }
-  *first_content = absl::string_view(
+  *first_content = std::string_view(
       value.data(), std::distance(value.begin(), pattern_begin));
   if (!Util::IsScriptType(*first_content, Util::KANJI)) {
     return false;
   }
 
   // Check if the middle part matches |pattern|.
-  const absl::string_view remaining_value =
+  const std::string_view remaining_value =
       absl::ClippedSubstr(value, first_content->size());
   if (!absl::StartsWith(remaining_value, pattern)) {
     return false;
@@ -166,7 +166,7 @@ bool ParseCompound(const absl::string_view value,
 }
 
 // A helper function to push back a string view to a vector.
-inline void PushBackStringView(const absl::string_view s,
+inline void PushBackStringView(const std::string_view s,
                                std::vector<std::string> *v) {
   v->emplace_back(s.data(), s.size());
 }
@@ -174,8 +174,8 @@ inline void PushBackStringView(const absl::string_view s,
 // Handles compound such as "本を読む"(one segment)
 // we want to rewrite using it as if it was "<本|を><読む>"
 // so that we can use collocation data like "厚い本"
-void ResolveCompoundSegment(const absl::string_view top_value,
-                            const absl::string_view value,
+void ResolveCompoundSegment(const std::string_view top_value,
+                            const std::string_view value,
                             const SegmentLookupType type,
                             std::vector<std::string> *output) {
   // see "http://ja.wikipedia.org/wiki/助詞"
@@ -205,8 +205,8 @@ void ResolveCompoundSegment(const absl::string_view top_value,
                     {nullptr, 0}};
 
   for (size_t i = 0; kParticles[i].pat != nullptr; ++i) {
-    const absl::string_view particle(kParticles[i].pat, kParticles[i].len);
-    absl::string_view first_content, second;
+    const std::string_view particle(kParticles[i].pat, kParticles[i].len);
+    std::string_view first_content, second;
     if (!ParseCompound(top_value, particle, &first_content, &second)) {
       continue;
     }
@@ -246,7 +246,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
     // "舞って" workaround
     // V+"て" is often treated as one compound.
     static constexpr char kPat[] = "て";
-    if (absl::EndsWith(content, absl::string_view(kPat, std::size(kPat) - 1))) {
+    if (absl::EndsWith(content, std::string_view(kPat, std::size(kPat) - 1))) {
       PushBackStringView(Util::Utf8SubString(content, 0, content_len - 1),
                          output);
     }
@@ -257,7 +257,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
     return false;
   }
 
-  const absl::string_view top_aux_value =
+  const std::string_view top_aux_value =
       Util::Utf8SubString(top_value, top_content_len, std::string::npos);
   const size_t top_aux_value_len = Util::CharsLen(top_aux_value);
   const Util::ScriptType top_value_script_type = Util::GetScriptType(top_value);
@@ -286,7 +286,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
     }
   }
 
-  const absl::string_view aux_value =
+  const std::string_view aux_value =
       Util::Utf8SubString(value, content_len, std::string::npos);
 
   // Remove number in normalization for the left segment.
@@ -313,7 +313,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // "<XXいる|>" can be rewrote to "<YY|いる>" and vice versa
   {
     static constexpr char kPat[] = "いる";  // "いる"
-    const absl::string_view kSuffix(kPat, std::size(kPat) - 1);
+    const std::string_view kSuffix(kPat, std::size(kPat) - 1);
     if (top_aux_value_len == 0 && aux_value_len == 2 &&
         absl::EndsWith(top_value, kSuffix) &&
         absl::EndsWith(aux_value, kSuffix)) {
@@ -338,7 +338,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // "<XXせる|>" can be rewrote to "<YY|せる>" and vice versa
   {
     constexpr char kPat[] = "せる";
-    const absl::string_view kSuffix(kPat, std::size(kPat) - 1);
+    const std::string_view kSuffix(kPat, std::size(kPat) - 1);
     if (top_aux_value_len == 0 && aux_value_len == 2 &&
         absl::EndsWith(top_value, kSuffix) &&
         absl::EndsWith(aux_value, kSuffix)) {
@@ -366,7 +366,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // in "<XX|する>", XX must be single script type
   {
     static constexpr char kPat[] = "する";
-    const absl::string_view kSuffix(kPat, std::size(kPat) - 1);
+    const std::string_view kSuffix(kPat, std::size(kPat) - 1);
     if (aux_value_len == 2 && absl::EndsWith(aux_value, kSuffix)) {
       if (content_script_type != Util::KATAKANA &&
           content_script_type != Util::HIRAGANA &&
@@ -387,7 +387,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // "まとめる", "衰える"
   {
     static constexpr char kPat[] = "る";
-    const absl::string_view kSuffix(kPat, std::size(kPat) - 1);
+    const std::string_view kSuffix(kPat, std::size(kPat) - 1);
     if (aux_value_len == 0 && absl::EndsWith(value, kSuffix)) {
       if (type == RIGHT) {
         // "YY" in addition to "YYる"
@@ -401,7 +401,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // "<XXす>" can be rewrote using "XXする"
   {
     static constexpr char kPat[] = "す";
-    const absl::string_view kSuffix(kPat, std::size(kPat) - 1);
+    const std::string_view kSuffix(kPat, std::size(kPat) - 1);
     if (absl::EndsWith(value, kSuffix) &&
         Util::IsScriptType(Util::Utf8SubString(value, 0, value_len - 1),
                            Util::KANJI)) {
@@ -409,7 +409,7 @@ bool IsNaturalContent(const Segment::Candidate &cand,
         constexpr char kRu[] = "る";
         // "YYする" in addition to "YY"
         output->push_back(
-            absl::StrCat(value, absl::string_view(kRu, std::size(kRu) - 1)));
+            absl::StrCat(value, std::string_view(kRu, std::size(kRu) - 1)));
       }
       return true;
     }
@@ -418,11 +418,11 @@ bool IsNaturalContent(const Segment::Candidate &cand,
   // "<XXし|た>" can be rewrote using "<XX|した>"
   {
     static constexpr char kPat[] = "した";
-    const absl::string_view kShi(kPat, 3), kTa(kPat + 3, 3);
+    const std::string_view kShi(kPat, 3), kTa(kPat + 3, 3);
     if (absl::EndsWith(content, kShi) && aux_value == kTa &&
         absl::EndsWith(top_content, kShi) && top_aux_value == kTa) {
       if (type == RIGHT) {
-        const absl::string_view val =
+        const std::string_view val =
             Util::Utf8SubString(content, 0, content_len - 1);
         // XX must be KANJI
         if (Util::IsScriptType(val, Util::KANJI)) {

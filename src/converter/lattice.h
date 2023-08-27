@@ -37,7 +37,7 @@
 #include "base/logging.h"
 #include "converter/node.h"
 #include "converter/node_allocator.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -90,10 +90,10 @@ class Lattice {
   bool has_lattice() const { return !begin_nodes_.empty(); }
 
   // set key with cache information kept
-  void UpdateKey(absl::string_view new_key);
+  void UpdateKey(std::string_view new_key);
 
   // add suffix_key to the end of a current key
-  void AddSuffix(absl::string_view suffix_key);
+  void AddSuffix(std::string_view suffix_key);
 
   // erase the suffix of a key so that the length of the key becomes new_len
   void ShrinkKey(size_t new_len);

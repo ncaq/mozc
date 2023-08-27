@@ -37,12 +37,12 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddSegment(const absl::string_view key, const absl::string_view value,
+void AddSegment(const std::string_view key, const std::string_view value,
                 Segments *segments) {
   segments->Clear();
   Segment *seg = segments->push_back_segment();

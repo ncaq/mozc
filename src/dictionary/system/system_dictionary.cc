@@ -71,7 +71,7 @@
 #include "storage/louds/bit_vector_based_array.h"
 #include "storage/louds/louds_trie.h"
 #include "absl/container/btree_set.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -115,7 +115,7 @@ const char *kHiraganaExpansionTable[] = {
     "へへべぺ", "ほほぼぽ", "ややゃ",   "ゆゆゅ",   "よよょ",   "わわゎ",
 };
 
-void SetKeyExpansion(const char key, const absl::string_view expansion,
+void SetKeyExpansion(const char key, const std::string_view expansion,
                      KeyExpansionTable *key_expansion_table) {
   key_expansion_table->Add(key, expansion);
 }
@@ -367,7 +367,7 @@ struct SystemDictionary::PredictiveLookupSearchState {
   int num_expanded;
 };
 
-SystemDictionary::Builder::Builder(absl::string_view filename)
+SystemDictionary::Builder::Builder(std::string_view filename)
     : spec_(new Specification(Specification::FILENAME, filename, nullptr, -1,
                               NONE, nullptr, nullptr)) {}
 
@@ -493,13 +493,13 @@ void SystemDictionary::InitReverseLookupIndex() {
       std::make_unique<ReverseLookupIndex>(codec_, token_array_);
 }
 
-bool SystemDictionary::HasKey(absl::string_view key) const {
+bool SystemDictionary::HasKey(std::string_view key) const {
   std::string encoded_key;
   codec_->EncodeKey(key, &encoded_key);
   return key_trie_.HasKey(encoded_key);
 }
 
-bool SystemDictionary::HasValue(absl::string_view value) const {
+bool SystemDictionary::HasValue(std::string_view value) const {
   std::string encoded_value;
   codec_->EncodeValue(value, &encoded_value);
   if (value_trie_.HasKey(encoded_value)) {
@@ -551,7 +551,7 @@ bool SystemDictionary::HasValue(absl::string_view value) const {
 }
 
 void SystemDictionary::CollectPredictiveNodesInBfsOrder(
-    absl::string_view encoded_key, const KeyExpansionTable &table, size_t limit,
+    std::string_view encoded_key, const KeyExpansionTable &table, size_t limit,
     std::vector<PredictiveLookupSearchState> *result) const {
   std::queue<PredictiveLookupSearchState> queue;
   queue.push(PredictiveLookupSearchState(LoudsTrie::Node(), 0, false));
@@ -616,7 +616,7 @@ void SystemDictionary::CollectPredictiveNodesInBfsOrder(
 }
 
 void SystemDictionary::LookupPredictive(
-    absl::string_view key, const ConversionRequest &conversion_request,
+    std::string_view key, const ConversionRequest &conversion_request,
     Callback *callback) const {
   // Do nothing for empty key, although looking up all the entries with empty
   // string seems natural.
@@ -656,9 +656,9 @@ void SystemDictionary::LookupPredictive(
     // key = "くー"
     // encoded_actual_key = encode("ぐーぐる")  [expanded]
     // encoded_actual_key_prediction_suffix = encode("ぐる")
-    const absl::string_view encoded_actual_key =
+    const std::string_view encoded_actual_key =
         key_trie_.RestoreKeyString(state.node, encoded_actual_key_buffer);
-    const absl::string_view encoded_actual_key_prediction_suffix =
+    const std::string_view encoded_actual_key_prediction_suffix =
         absl::ClippedSubstr(encoded_actual_key, encoded_key.size(),
                             encoded_actual_key.size() - encoded_key.size());
 
@@ -677,7 +677,7 @@ void SystemDictionary::LookupPredictive(
         break;
     }
 
-    absl::string_view actual_key;
+    std::string_view actual_key;
     if (state.num_expanded > 0) {
       actual_key_str.clear();
       codec_->DecodeKey(encoded_actual_key, &actual_key_str);
@@ -738,12 +738,12 @@ void RunCallbackOnEachPrefix(const LoudsTrie &key_trie,
                              const BitVectorBasedArray &token_array,
                              const SystemDictionaryCodecInterface *codec,
                              const uint32_t *frequent_pos, const char *key,
-                             absl::string_view encoded_key,
+                             std::string_view encoded_key,
                              DictionaryInterface::Callback *callback,
                              Func token_filter) {
   typedef DictionaryInterface::Callback Callback;
   LoudsTrie::Node node;
-  for (absl::string_view::size_type i = 0; i < encoded_key.size();) {
+  for (std::string_view::size_type i = 0; i < encoded_key.size();) {
     if (!key_trie.MoveToChildByLabel(encoded_key[i], &node)) {
       return;
     }
@@ -751,8 +751,8 @@ void RunCallbackOnEachPrefix(const LoudsTrie &key_trie,
     if (!key_trie.IsTerminalNode(node)) {
       continue;
     }
-    const absl::string_view encoded_prefix = encoded_key.substr(0, i);
-    const absl::string_view prefix(key,
+    const std::string_view encoded_prefix = encoded_key.substr(0, i);
+    const std::string_view prefix(key,
                                    codec->GetDecodedKeyLength(encoded_prefix));
 
     switch (callback->OnKey(prefix)) {
@@ -804,8 +804,8 @@ class ReverseLookupCallbackWrapper : public DictionaryInterface::Callback {
   explicit ReverseLookupCallbackWrapper(DictionaryInterface::Callback *callback)
       : callback_(callback) {}
   ~ReverseLookupCallbackWrapper() override = default;
-  SystemDictionary::Callback::ResultType OnToken(absl::string_view key,
-                                                 absl::string_view actual_key,
+  SystemDictionary::Callback::ResultType OnToken(std::string_view key,
+                                                 std::string_view actual_key,
                                                  const Token &token) override {
     Token modified_token = token;
     modified_token.key.swap(modified_token.value);
@@ -837,16 +837,16 @@ class ReverseLookupCallbackWrapper : public DictionaryInterface::Callback {
 //     the number of chharacters expanded. if non zero, characters are expanded.
 //   actual_key_buffer:
 //     Buffer for storing actually used characters to reach this node, i.e.,
-//     absl::string_view(actual_key_buffer, key_pos) is the matched prefix using
+//     std::string_view(actual_key_buffer, key_pos) is the matched prefix using
 //     key expansion.
 //   actual_prefix:
 //     A reused string for decoded actual key.  This is just for performance
 //     purpose.
 DictionaryInterface::Callback::ResultType
 SystemDictionary::LookupPrefixWithKeyExpansionImpl(
-    const char *key, absl::string_view encoded_key,
+    const char *key, std::string_view encoded_key,
     const KeyExpansionTable &table, Callback *callback, LoudsTrie::Node node,
-    absl::string_view::size_type key_pos, int num_expanded,
+    std::string_view::size_type key_pos, int num_expanded,
     char *actual_key_buffer, std::string *actual_prefix) const {
   // This do-block handles a terminal node and callback.  do-block is used to
   // break the block and continue to the subsequent traversal phase.
@@ -855,8 +855,8 @@ SystemDictionary::LookupPrefixWithKeyExpansionImpl(
       break;
     }
 
-    const absl::string_view encoded_prefix = encoded_key.substr(0, key_pos);
-    const absl::string_view prefix(key,
+    const std::string_view encoded_prefix = encoded_key.substr(0, key_pos);
+    const std::string_view prefix(key,
                                    codec_->GetDecodedKeyLength(encoded_prefix));
     Callback::ResultType result = callback->OnKey(prefix);
     if (result == Callback::TRAVERSE_DONE ||
@@ -867,7 +867,7 @@ SystemDictionary::LookupPrefixWithKeyExpansionImpl(
       break;  // Go to the traversal phase.
     }
 
-    const absl::string_view encoded_actual_prefix(actual_key_buffer, key_pos);
+    const std::string_view encoded_actual_prefix(actual_key_buffer, key_pos);
     actual_prefix->clear();
     codec_->DecodeKey(encoded_actual_prefix, actual_prefix);
     result = callback->OnActualKey(prefix, *actual_prefix, num_expanded);
@@ -921,7 +921,7 @@ SystemDictionary::LookupPrefixWithKeyExpansionImpl(
   return Callback::TRAVERSE_CONTINUE;
 }
 
-void SystemDictionary::LookupPrefix(absl::string_view key,
+void SystemDictionary::LookupPrefix(std::string_view key,
                                     const ConversionRequest &conversion_request,
                                     Callback *callback) const {
   std::string encoded_key;
@@ -942,7 +942,7 @@ void SystemDictionary::LookupPrefix(absl::string_view key,
       LoudsTrie::Node(), 0, false, actual_key_buffer, &actual_prefix);
 }
 
-void SystemDictionary::LookupExact(absl::string_view key,
+void SystemDictionary::LookupExact(std::string_view key,
                                    const ConversionRequest &conversion_request,
                                    Callback *callback) const {
   // Find the key in the key trie.
@@ -968,7 +968,7 @@ void SystemDictionary::LookupExact(absl::string_view key,
 }
 
 void SystemDictionary::LookupReverse(
-    absl::string_view str, const ConversionRequest &conversion_request,
+    std::string_view str, const ConversionRequest &conversion_request,
     Callback *callback) const {
   // 1st step: Hiragana/Katakana are not in the value trie
   // 2nd step: Reverse lookup in value trie
@@ -983,7 +983,7 @@ class AddKeyIdsToSet {
  public:
   explicit AddKeyIdsToSet(absl::btree_set<int> *output) : output_(output) {}
 
-  void operator()(absl::string_view key, size_t prefix_len,
+  void operator()(std::string_view key, size_t prefix_len,
                   const LoudsTrie &trie, LoudsTrie::Node node) {
     output_->insert(trie.GetKeyIdOfTerminalNode(node));
   }
@@ -992,14 +992,14 @@ class AddKeyIdsToSet {
   absl::btree_set<int> *output_;
 };
 
-inline void AddKeyIdsOfAllPrefixes(const LoudsTrie &trie, absl::string_view key,
+inline void AddKeyIdsOfAllPrefixes(const LoudsTrie &trie, std::string_view key,
                                    absl::btree_set<int> *key_ids) {
   trie.PrefixSearch(key, AddKeyIdsToSet(key_ids));
 }
 
 }  // namespace
 
-void SystemDictionary::PopulateReverseLookupCache(absl::string_view str) const {
+void SystemDictionary::PopulateReverseLookupCache(std::string_view str) const {
   if (reverse_lookup_index_ != nullptr) {
     // We don't need to prepare cache for the current reverse conversion,
     // as we have already built the index for reverse lookup.
@@ -1014,7 +1014,7 @@ void SystemDictionary::PopulateReverseLookupCache(absl::string_view str) const {
   std::string lookup_key;
   lookup_key.reserve(str.size());
   while (pos < str.size()) {
-    const absl::string_view suffix = absl::ClippedSubstr(str, pos);
+    const std::string_view suffix = absl::ClippedSubstr(str, pos);
     lookup_key.clear();
     codec_->EncodeValue(suffix, &lookup_key);
     AddKeyIdsOfAllPrefixes(value_trie_, lookup_key, &id_set);
@@ -1060,7 +1060,7 @@ class FilterTokenForRegisterReverseLookupTokensForT13N {
 }  // namespace
 
 void SystemDictionary::RegisterReverseLookupTokensForT13N(
-    absl::string_view value, Callback *callback) const {
+    std::string_view value, Callback *callback) const {
   std::string hiragana_value, encoded_key;
   japanese_util::KatakanaToHiragana(value, &hiragana_value);
   codec_->EncodeKey(hiragana_value, &encoded_key);
@@ -1071,7 +1071,7 @@ void SystemDictionary::RegisterReverseLookupTokensForT13N(
 }
 
 void SystemDictionary::RegisterReverseLookupTokensForValue(
-    absl::string_view value, Callback *callback) const {
+    std::string_view value, Callback *callback) const {
   std::string lookup_key;
   codec_->EncodeValue(value, &lookup_key);
 
@@ -1124,7 +1124,7 @@ void SystemDictionary::RegisterReverseLookupResults(
          ++result_itr) {
       const ReverseLookupResult &reverse_result = result_itr->second;
 
-      const absl::string_view encoded_key =
+      const std::string_view encoded_key =
           key_trie_.RestoreKeyString(reverse_result.id_in_key_trie, buffer);
       std::string tokens_key;
       codec_->DecodeKey(encoded_key, &tokens_key);

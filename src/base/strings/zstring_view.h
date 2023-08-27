@@ -40,7 +40,7 @@
 #include "base/logging.h"
 #include "base/strings/pfchar.h"
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -51,7 +51,7 @@ namespace mozc {
 // and mutable operations.
 //
 // Use operator->() and view() to access the underlying string_view. Notably,
-// t's required to explicitly convert to absl::string_view when using
+// t's required to explicitly convert to std::string_view when using
 // absl::StrCat() and absl::StrAppend(). AbslStringify() is intentionally not
 // implemented because it creates a copy of the string.
 //
@@ -83,8 +83,8 @@ class basic_zstring_view {
   constexpr basic_zstring_view() noexcept = default;
 
   // Implicit constructor from const CharT * (C-style null-terminated string).
-  // Unlike absl::string_view (when ABSL_OPTION_USE_STD_STRING_VIEW is set to
-  // 0), passing nullptr is an undefined behavior. Note that absl::string_view
+  // Unlike std::string_view (when ABSL_OPTION_USE_STD_STRING_VIEW is set to
+  // 0), passing nullptr is an undefined behavior. Note that std::string_view
   // is just an alias of std::string_view in most cases, so passing a nullptr is
   // probably a bad idea anyway.
   //
@@ -243,11 +243,11 @@ operator<<(
   return os;
 }
 
-using zstring_view = basic_zstring_view<absl::string_view>;
+using zstring_view = basic_zstring_view<std::string_view>;
 using zwstring_view = basic_zstring_view<std::wstring_view>;
 using zpfstring_view = basic_zstring_view<pfstring_view>;
 
-static_assert(std::is_convertible_v<zstring_view, absl::string_view>);
+static_assert(std::is_convertible_v<zstring_view, std::string_view>);
 
 }  // namespace mozc
 

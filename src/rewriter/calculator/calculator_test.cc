@@ -38,15 +38,15 @@
 #include "rewriter/calculator/calculator_interface.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
 // Runs calculation with |expression| and compares the result and |expect|.
 void VerifyCalculation(const CalculatorInterface *calculator,
-                       const absl::string_view expression,
-                       const absl::string_view expected) {
+                       const std::string_view expression,
+                       const std::string_view expected) {
   std::string result;
   EXPECT_TRUE(calculator->CalculateString(expression, &result))
       << expression << "  expected = " << expected;
@@ -65,8 +65,8 @@ void VerifyCalculation(const CalculatorInterface *calculator,
 
 // Runs calculation and compare results in PRINTED string.
 void VerifyCalculationInString(const CalculatorInterface *calculator,
-                               const absl::string_view expression,
-                               const absl::string_view expected) {
+                               const std::string_view expression,
+                               const std::string_view expected) {
   std::string result;
   EXPECT_TRUE(calculator->CalculateString(expression, &result))
       << expression << "  expected = " << expected;
@@ -75,7 +75,7 @@ void VerifyCalculationInString(const CalculatorInterface *calculator,
 
 // Tries to calculate |wrong_key| and returns true if it fails.
 void VerifyRejection(const CalculatorInterface *calculator,
-                     const absl::string_view wrong_key) {
+                     const std::string_view wrong_key) {
   std::string result;
   EXPECT_FALSE(calculator->CalculateString(wrong_key, &result))
       << "expression: " << wrong_key << std::endl;

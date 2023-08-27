@@ -58,7 +58,7 @@
 #include "testing/googletest.h"
 #include "testing/gunit.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -72,7 +72,7 @@ using dictionary::SystemDictionary;
 using dictionary::UserDictionaryStub;
 using dictionary::ValueDictionary;
 
-void SetCandidate(absl::string_view key, absl::string_view value,
+void SetCandidate(std::string_view key, std::string_view value,
                   Segment *segment) {
   segment->set_key(key);
   Segment::Candidate *candidate = segment->add_candidate();
@@ -125,7 +125,7 @@ class MockDataAndImmutableConverter {
     CHECK(dictionary_.get());
 
     if (!suffix_dictionary) {
-      absl::string_view suffix_key_array_data, suffix_value_array_data;
+      std::string_view suffix_key_array_data, suffix_value_array_data;
       const uint32_t *token_array;
       data_manager_->GetSuffixDictionaryData(
           &suffix_key_array_data, &suffix_value_array_data, &token_array);
@@ -220,31 +220,31 @@ TEST(ImmutableConverterTest, DummyCandidatesInnerSegmentBoundary) {
 namespace {
 class KeyCheckDictionary : public DictionaryInterface {
  public:
-  explicit KeyCheckDictionary(absl::string_view query)
+  explicit KeyCheckDictionary(std::string_view query)
       : target_query_(query), received_target_query_(false) {}
   ~KeyCheckDictionary() override = default;
 
-  bool HasKey(absl::string_view key) const override { return false; }
-  bool HasValue(absl::string_view value) const override { return false; }
+  bool HasKey(std::string_view key) const override { return false; }
+  bool HasValue(std::string_view value) const override { return false; }
 
-  void LookupPredictive(absl::string_view key, const ConversionRequest &convreq,
+  void LookupPredictive(std::string_view key, const ConversionRequest &convreq,
                         Callback *callback) const override {
     if (key == target_query_) {
       received_target_query_ = true;
     }
   }
 
-  void LookupPrefix(absl::string_view key, const ConversionRequest &convreq,
+  void LookupPrefix(std::string_view key, const ConversionRequest &convreq,
                     Callback *callback) const override {
     // No check
   }
 
-  void LookupExact(absl::string_view key, const ConversionRequest &convreq,
+  void LookupExact(std::string_view key, const ConversionRequest &convreq,
                    Callback *callback) const override {
     // No check
   }
 
-  void LookupReverse(absl::string_view str, const ConversionRequest &convreq,
+  void LookupReverse(std::string_view str, const ConversionRequest &convreq,
                      Callback *callback) const override {
     // No check
   }
@@ -331,7 +331,7 @@ TEST(ImmutableConverterTest, InnerSegmenBoundaryForPrediction) {
   // Result will be, "私の|名前は|中ノです" with mock dictionary.
   const Segment::Candidate &cand = segments.segment(0).candidate(0);
   EXPECT_TRUE(cand.IsValid());
-  std::vector<absl::string_view> keys, values, content_keys, content_values;
+  std::vector<std::string_view> keys, values, content_keys, content_values;
   for (Segment::Candidate::InnerSegmentIterator iter(&cand); !iter.Done();
        iter.Next()) {
     keys.push_back(iter.GetKey());

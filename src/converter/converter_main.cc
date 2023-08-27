@@ -67,7 +67,7 @@
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifndef NDEBUG
 #define MOZC_DEBUG
@@ -115,7 +115,7 @@ class PosIdPrintUtil {
       : pos_id_printer_(InputFileStream(absl::GetFlag(FLAGS_id_def))) {}
 
   std::string IdToStringInternal(int id) const {
-    const absl::string_view pos_string = pos_id_printer_.IdToString(id);
+    const std::string_view pos_string = pos_id_printer_.IdToString(id);
     if (pos_string.empty()) {
       return absl::StrCat(id);
     }
@@ -233,7 +233,7 @@ void PrintCandidate(const Segment &parent, size_t candidates_size, int num,
 #ifdef MOZC_DEBUG
   if (!cand.log.empty()) {
     lines.push_back("log:");
-    for (absl::string_view line : absl::StrSplit(cand.log, '\n')) {
+    for (std::string_view line : absl::StrSplit(cand.log, '\n')) {
       if (line.empty()) continue;
       lines.push_back(absl::StrCat("    ", line));
     }

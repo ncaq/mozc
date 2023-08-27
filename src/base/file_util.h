@@ -37,7 +37,7 @@
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -149,11 +149,11 @@ class FileUtil {
                                      const std::string &to);
 
   // Joins the give path components using the OS-specific path delimiter.
-  static std::string JoinPath(const std::vector<absl::string_view> &components);
+  static std::string JoinPath(const std::vector<std::string_view> &components);
 
   // Joins the given two path components using the OS-specific path delimiter.
-  static std::string JoinPath(const absl::string_view path1,
-                              const absl::string_view path2) {
+  static std::string JoinPath(const std::string_view path1,
+                              const std::string_view path2) {
     return JoinPath({path1, path2});
   }
 
@@ -182,7 +182,7 @@ class FileUtil {
   // Writes the data provided in `content` to the file `filename`, overwriting
   // any existing content.
   static absl::Status SetContents(
-      const std::string &filename, absl::string_view content,
+      const std::string &filename, std::string_view content,
       std::ios_base::openmode mode = std::ios::binary);
 
   // Sets a mock for unittest.

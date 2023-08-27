@@ -47,7 +47,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -62,7 +62,7 @@ constexpr size_t kMaxValueSize = 4096;            // 4k for key/value
 // so 10Mbyte data is reasonable upper bound for file size
 constexpr size_t kMaxFileSize = 1024 * 1024 * 10;  // 10Mbyte
 
-bool IsInvalid(const absl::string_view key, const absl::string_view value,
+bool IsInvalid(const std::string_view key, const std::string_view value,
                const size_t size) {
   if (size >= kMaxElementSize) {
     LOG(ERROR) << "too many elements";
@@ -164,7 +164,7 @@ bool TinyStorageImpl::Open(const std::string &filename) {
       return false;
     }
 
-    const absl::string_view key(begin, key_size);
+    const std::string_view key(begin, key_size);
     begin += key_size;
 
     if (std::distance(begin, end) < sizeof(uint32_t)) {
@@ -177,7 +177,7 @@ bool TinyStorageImpl::Open(const std::string &filename) {
       return false;
     }
 
-    const absl::string_view value(begin, value_size);
+    const std::string_view value(begin, value_size);
     begin += value_size;
 
     if (IsInvalid(key, value, dic_.size())) {

@@ -39,13 +39,13 @@
 #include "base/util.h"
 #include "dictionary/dictionary_token.h"
 #include "dictionary/system/words_info.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
 namespace {
-void EncodeDecodeKeyImpl(absl::string_view src, std::string *dst);
-size_t GetEncodedDecodedKeyLengthImpl(absl::string_view src);
+void EncodeDecodeKeyImpl(std::string_view src, std::string *dst);
+size_t GetEncodedDecodedKeyLengthImpl(std::string_view src);
 
 uint8_t GetFlagsForToken(const std::vector<TokenInfo> &tokens, int index);
 
@@ -212,23 +212,23 @@ std::string SystemDictionaryCodec::GetSectionNameForPos() const {
   return kPosSectionName;
 }
 
-void SystemDictionaryCodec::EncodeKey(const absl::string_view src,
+void SystemDictionaryCodec::EncodeKey(const std::string_view src,
                                       std::string *dst) const {
   EncodeDecodeKeyImpl(src, dst);
 }
 
-void SystemDictionaryCodec::DecodeKey(const absl::string_view src,
+void SystemDictionaryCodec::DecodeKey(const std::string_view src,
                                       std::string *dst) const {
   EncodeDecodeKeyImpl(src, dst);
 }
 
 size_t SystemDictionaryCodec::GetEncodedKeyLength(
-    const absl::string_view src) const {
+    const std::string_view src) const {
   return GetEncodedDecodedKeyLengthImpl(src);
 }
 
 size_t SystemDictionaryCodec::GetDecodedKeyLength(
-    const absl::string_view src) const {
+    const std::string_view src) const {
   return GetEncodedDecodedKeyLengthImpl(src);
 }
 
@@ -244,7 +244,7 @@ size_t SystemDictionaryCodec::GetDecodedKeyLength(
 //  Other 0x?? ?? -> VALUE_CHAR_MARK_OTHER ?? ??
 //  0x?????? -> VALUE_CHAR_MARK_BIG ?? ?? ??
 
-void SystemDictionaryCodec::EncodeValue(const absl::string_view src,
+void SystemDictionaryCodec::EncodeValue(const std::string_view src,
                                         std::string *dst) const {
   DCHECK(dst);
   for (ConstChar32Iterator iter(src); !iter.Done(); iter.Next()) {
@@ -301,7 +301,7 @@ void SystemDictionaryCodec::EncodeValue(const absl::string_view src,
   }
 }
 
-void SystemDictionaryCodec::DecodeValue(const absl::string_view src,
+void SystemDictionaryCodec::DecodeValue(const std::string_view src,
                                         std::string *dst) const {
   DCHECK(dst);
   const uint8_t *p = reinterpret_cast<const uint8_t *>(src.data());
@@ -483,7 +483,7 @@ namespace {
 // U+30FB - U+30FC ("・" - "ー") <=> U+0076 - U+0077
 //
 // U+0020 - U+003F are left intact to represent numbers and hyphen in 1 byte.
-void EncodeDecodeKeyImpl(const absl::string_view src, std::string *dst) {
+void EncodeDecodeKeyImpl(const std::string_view src, std::string *dst) {
   for (ConstChar32Iterator iter(src); !iter.Done(); iter.Next()) {
     static_assert(sizeof(uint32_t) == sizeof(char32_t),
                   "char32 must be 32-bit integer size.");
@@ -509,7 +509,7 @@ void EncodeDecodeKeyImpl(const absl::string_view src, std::string *dst) {
   }
 }
 
-size_t GetEncodedDecodedKeyLengthImpl(const absl::string_view src) {
+size_t GetEncodedDecodedKeyLengthImpl(const std::string_view src) {
   size_t size = src.size();
   for (ConstChar32Iterator iter(src); !iter.Done(); iter.Next()) {
     static_assert(sizeof(uint32_t) == sizeof(char32_t),

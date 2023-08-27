@@ -38,7 +38,7 @@
 #include "dictionary/pos_matcher.h"
 #include "dictionary/single_kanji_dictionary.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -57,7 +57,7 @@ class SingleKanjiRewriter : public RewriterInterface {
   bool InsertCandidate(bool is_single_segment, uint16_t single_kanji_id,
                        const std::vector<std::string> &kanji_list,
                        Segment *segment) const;
-  void FillCandidate(absl::string_view key, absl::string_view value, int cost,
+  void FillCandidate(std::string_view key, std::string_view value, int cost,
                      uint16_t single_kanji_id, Segment::Candidate *cand) const;
 
   const dictionary::PosMatcher pos_matcher_;

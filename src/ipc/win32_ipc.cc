@@ -53,7 +53,7 @@
 #include "ipc/ipc.h"
 #include "ipc/ipc_path_manager.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
@@ -100,7 +100,7 @@ bool InitOverlapped(OVERLAPPED *overlapped, HANDLE wait_handle) {
 
 class IPCClientMutexBase {
  public:
-  explicit IPCClientMutexBase(const absl::string_view ipc_channel_name) {
+  explicit IPCClientMutexBase(const std::string_view ipc_channel_name) {
     // Make a kernel mutex object so that multiple ipc connections are
     // serialized here. In Windows, there is no useful way to serialize
     // the multiple connections to the single-thread named pipe server.
@@ -181,7 +181,7 @@ class FallbackClientMutex : public IPCClientMutexBase {
 // serialize each client. Currently |ipc_name| starts with "session" and
 // "renderer" are expected.
 const wil::unique_mutex_nothrow &GetClientMutex(
-    const absl::string_view ipc_name) {
+    const std::string_view ipc_name) {
   if (absl::StartsWith(ipc_name, "session")) {
     return Singleton<ConverterClientMutex>::get()->mutex();
   }
@@ -616,7 +616,7 @@ void IPCServer::Loop() {
 }
 
 // old interface
-IPCClient::IPCClient(const absl::string_view name)
+IPCClient::IPCClient(const std::string_view name)
     : pipe_event_(CreateManualResetEvent()),
       connected_(false),
       ipc_path_manager_(nullptr),
@@ -624,8 +624,8 @@ IPCClient::IPCClient(const absl::string_view name)
   Init(name, "");
 }
 
-IPCClient::IPCClient(const absl::string_view name,
-                     const absl::string_view server_path)
+IPCClient::IPCClient(const std::string_view name,
+                     const std::string_view server_path)
     : pipe_event_(CreateManualResetEvent()),
       connected_(false),
       ipc_path_manager_(nullptr),
@@ -633,8 +633,8 @@ IPCClient::IPCClient(const absl::string_view name,
   Init(name, server_path);
 }
 
-void IPCClient::Init(const absl::string_view name,
-                     const absl::string_view server_path) {
+void IPCClient::Init(const std::string_view name,
+                     const std::string_view server_path) {
   last_ipc_error_ = IPC_NO_CONNECTION;
 
   // We should change the mutex based on which IPC server we will talk with.

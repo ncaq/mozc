@@ -39,7 +39,7 @@
 #include "base/process_mutex.h"
 #include "ipc/ipc.pb.h"
 #include "testing/gunit_prod.h"  // For FRIEND_TEST
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 #ifdef _WIN32
@@ -59,7 +59,7 @@ class IPCPathManager {
   virtual ~IPCPathManager() = default;
 
   // return singleton instance corresponding to "name"
-  static IPCPathManager *GetIPCPathManager(absl::string_view name);
+  static IPCPathManager *GetIPCPathManager(std::string_view name);
 
   // Brief summary of CreateNew / Save / Load / Get PathName().
   // CreateNewPathName: Generates a pathname and save it into the heap.
@@ -107,7 +107,7 @@ class IPCPathManager {
   // returns false.
   // To keep backward compatibility and other operating system
   // having no support of getting peer's pid, you can set 0 pid.
-  bool IsValidServer(uint32_t pid, absl::string_view server_path);
+  bool IsValidServer(uint32_t pid, std::string_view server_path);
 
   // clear ipc_key;
   void Clear();
@@ -135,7 +135,7 @@ class IPCPathManager {
   time_t last_modified_;
 #ifdef _WIN32
   // std::less<> is a transparent comparator that's necessary to pass
-  // absl::string_view to map::find(), etc.
+  // std::string_view to map::find(), etc.
   absl::flat_hash_map<std::string, std::wstring> expected_server_ntpath_cache_;
 #endif  // _WIN32
 };

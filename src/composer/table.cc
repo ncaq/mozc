@@ -53,7 +53,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -110,8 +110,8 @@ constexpr char kNewChunkPrefix[] = "\t";
 // ========================================
 // Entry
 // ========================================
-Entry::Entry(const absl::string_view input, const absl::string_view result,
-             const absl::string_view pending, const TableAttributes attributes)
+Entry::Entry(const std::string_view input, const std::string_view result,
+             const std::string_view pending, const TableAttributes attributes)
     : input_(input),
       result_(result),
       pending_(pending),
@@ -324,8 +324,8 @@ bool Table::InitializeWithRequestAndConfig(
   return result;
 }
 
-bool Table::IsLoopingEntry(const absl::string_view input,
-                           const absl::string_view pending) const {
+bool Table::IsLoopingEntry(const std::string_view input,
+                           const std::string_view pending) const {
   if (input.empty() || pending.empty()) {
     return false;
   }
@@ -351,15 +351,15 @@ bool Table::IsLoopingEntry(const absl::string_view input,
   return false;
 }
 
-const Entry *Table::AddRule(const absl::string_view input,
-                            const absl::string_view output,
-                            const absl::string_view pending) {
+const Entry *Table::AddRule(const std::string_view input,
+                            const std::string_view output,
+                            const std::string_view pending) {
   return AddRuleWithAttributes(input, output, pending, NO_TABLE_ATTRIBUTE);
 }
 
 const Entry *Table::AddRuleWithAttributes(
-    const absl::string_view escaped_input, const absl::string_view output,
-    const absl::string_view escaped_pending, const TableAttributes attributes) {
+    const std::string_view escaped_input, const std::string_view output,
+    const std::string_view escaped_pending, const TableAttributes attributes) {
   if (attributes & NEW_CHUNK) {
     // TODO(komatsu): Make a new trie tree for checking the new chunk
     // attribute rather than reusing the conversion trie.
@@ -408,7 +408,7 @@ const Entry *Table::AddRuleWithAttributes(
   return entry;
 }
 
-void Table::DeleteRule(const absl::string_view input) {
+void Table::DeleteRule(const std::string_view input) {
   // NOTE : If this method is called and an entry is deleted,
   //     case_sensitive_ turns to be invalid
   //     because it is not updated.
@@ -442,7 +442,7 @@ const TypingModel *Table::typing_model() const { return typing_model_.get(); }
 namespace {
 constexpr char kAttributeDelimiter = ' ';
 
-TableAttributes ParseAttributes(const absl::string_view input) {
+TableAttributes ParseAttributes(const std::string_view input) {
   TableAttributes attributes = NO_TABLE_ATTRIBUTE;
 
   std::vector<std::string> attribute_strings =
@@ -494,7 +494,7 @@ bool Table::LoadFromStream(std::istream *is) {
   return true;
 }
 
-const Entry *Table::LookUp(const absl::string_view input) const {
+const Entry *Table::LookUp(const std::string_view input) const {
   const Entry *entry = nullptr;
   if (case_sensitive_) {
     entries_.LookUp(input, &entry);
@@ -506,7 +506,7 @@ const Entry *Table::LookUp(const absl::string_view input) const {
   return entry;
 }
 
-const Entry *Table::LookUpPrefix(const absl::string_view input,
+const Entry *Table::LookUpPrefix(const std::string_view input,
                                  size_t *key_length, bool *fixed) const {
   const Entry *entry = nullptr;
   if (case_sensitive_) {
@@ -519,7 +519,7 @@ const Entry *Table::LookUpPrefix(const absl::string_view input,
   return entry;
 }
 
-void Table::LookUpPredictiveAll(const absl::string_view input,
+void Table::LookUpPredictiveAll(const std::string_view input,
                                 std::vector<const Entry *> *results) const {
   if (case_sensitive_) {
     entries_.LookUpPredictiveAll(input, results);
@@ -530,7 +530,7 @@ void Table::LookUpPredictiveAll(const absl::string_view input,
   }
 }
 
-bool Table::HasNewChunkEntry(const absl::string_view input) const {
+bool Table::HasNewChunkEntry(const std::string_view input) const {
   if (input.empty()) {
     return false;
   }
@@ -546,7 +546,7 @@ bool Table::HasNewChunkEntry(const absl::string_view input) const {
   return false;
 }
 
-bool Table::HasSubRules(const absl::string_view input) const {
+bool Table::HasSubRules(const std::string_view input) const {
   if (case_sensitive_) {
     return entries_.HasSubTrie(input);
   } else {

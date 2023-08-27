@@ -38,12 +38,12 @@
 #include "absl/strings/ascii.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::win32 {
 namespace {
 
-absl::string_view CommonCodeToString(HRESULT hr) {
+std::string_view CommonCodeToString(HRESULT hr) {
   switch (hr) {
     case S_OK:
       return "S_OK";
@@ -79,7 +79,7 @@ absl::string_view CommonCodeToString(HRESULT hr) {
 }  // namespace
 
 std::string HResult::ToStringSlow() const {
-  absl::string_view code_str = CommonCodeToString(hr_);
+  std::string_view code_str = CommonCodeToString(hr_);
   if (!code_str.empty()) {
     // Return well-known codes as it is.
     return absl::StrCat(Succeeded() ? "Success: " : "Failure: ", code_str);

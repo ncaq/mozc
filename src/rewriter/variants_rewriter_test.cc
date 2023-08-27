@@ -44,7 +44,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -68,7 +68,7 @@ class VariantsRewriterTest : public testing::TestWithTempUserProfile {
     CharacterFormManager::GetCharacterFormManager()->ClearHistory();
   }
 
-  static void InitSegmentsForAlphabetRewrite(const absl::string_view value,
+  static void InitSegmentsForAlphabetRewrite(const std::string_view value,
                                              Segments *segments) {
     Segment *segment = segments->push_back_segment();
     CHECK(segment);
@@ -383,7 +383,7 @@ TEST_F(VariantsRewriterTest, SetDescriptionForCandidate) {
     candidate.content_value = candidate.value;
     candidate.content_key = "えん";
     VariantsRewriter::SetDescriptionForCandidate(pos_matcher_, &candidate);
-    constexpr absl::string_view kExpected = "[半] バックスラッシュ";
+    constexpr std::string_view kExpected = "[半] バックスラッシュ";
     EXPECT_EQ(candidate.description, kExpected);
   }
   {
@@ -392,7 +392,7 @@ TEST_F(VariantsRewriterTest, SetDescriptionForCandidate) {
     candidate.content_value = candidate.value;
     candidate.content_key = "ばっくすらっしゅ";
     VariantsRewriter::SetDescriptionForCandidate(pos_matcher_, &candidate);
-    constexpr absl::string_view kExpected = "[全] バックスラッシュ";
+    constexpr std::string_view kExpected = "[全] バックスラッシュ";
     EXPECT_EQ(candidate.description, kExpected);
   }
   {
@@ -410,7 +410,7 @@ TEST_F(VariantsRewriterTest, SetDescriptionForCandidate) {
     candidate.content_value = candidate.value;
     candidate.content_key = "えん";
     VariantsRewriter::SetDescriptionForCandidate(pos_matcher_, &candidate);
-    constexpr absl::string_view kExpected = "[全] 円記号";
+    constexpr std::string_view kExpected = "[全] 円記号";
     EXPECT_EQ(candidate.description, kExpected);
   }
   {

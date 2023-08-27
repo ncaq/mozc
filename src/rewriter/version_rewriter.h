@@ -37,14 +37,14 @@
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
 // A very simple rewriter to put version candidates for some segments.
 class VersionRewriter : public RewriterInterface {
  public:
-  explicit VersionRewriter(absl::string_view data_version);
+  explicit VersionRewriter(std::string_view data_version);
 
   int capability(const ConversionRequest &request) const override {
     if (request.request().mixed_conversion()) {

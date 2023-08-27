@@ -36,7 +36,7 @@
 #include <string>
 #include <utility>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -56,8 +56,8 @@ class DataManagerInterface {
   }
 
   // Returns data set for UserPos.
-  virtual void GetUserPosData(absl::string_view *token_array_data,
-                              absl::string_view *string_array_data) const = 0;
+  virtual void GetUserPosData(std::string_view *token_array_data,
+                              std::string_view *string_array_data) const = 0;
 
   // Returns a reference to PosMatcher class handling POS rules. Don't
   // delete the returned pointer, which is owned by the manager.
@@ -81,14 +81,14 @@ class DataManagerInterface {
   virtual void GetSystemDictionaryData(const char **data, int *size) const = 0;
 
   // Returns the array containing keys, values, and token (lid, rid, cost).
-  virtual void GetSuffixDictionaryData(absl::string_view *key_array,
-                                       absl::string_view *value_array,
+  virtual void GetSuffixDictionaryData(std::string_view *key_array,
+                                       std::string_view *value_array,
                                        const uint32_t **token_array) const = 0;
 
   // Gets a reference to reading correction data array and its size.
   virtual void GetReadingCorrectionData(
-      absl::string_view *value_array_data, absl::string_view *error_array_data,
-      absl::string_view *correction_array_data) const = 0;
+      std::string_view *value_array_data, std::string_view *error_array_data,
+      std::string_view *correction_array_data) const = 0;
 
   // Gets the address of collocation data array and its size.
   virtual absl::Span<const uint32_t> GetCollocationData() const = 0;
@@ -101,41 +101,41 @@ class DataManagerInterface {
 
   // Gets an address of symbol rewriter data array and its size.
   virtual void GetSymbolRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const = 0;
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const = 0;
 
   // Gets an address of symbol rewriter data array and its size.
   virtual void GetEmoticonRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const = 0;
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const = 0;
 
   // Gets EmojiRewriter data.
   virtual void GetEmojiRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const = 0;
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const = 0;
 
   // Gets SingleKanjiRewriter data.
   virtual void GetSingleKanjiRewriterData(
-      absl::string_view *token_array_data, absl::string_view *string_array_data,
-      absl::string_view *variant_type_array_data,
-      absl::string_view *variant_token_array_data,
-      absl::string_view *variant_string_array_data,
-      absl::string_view *noun_prefix_token_array_data,
-      absl::string_view *noun_prefix_string_array_data) const = 0;
+      std::string_view *token_array_data, std::string_view *string_array_data,
+      std::string_view *variant_type_array_data,
+      std::string_view *variant_token_array_data,
+      std::string_view *variant_string_array_data,
+      std::string_view *noun_prefix_token_array_data,
+      std::string_view *noun_prefix_string_array_data) const = 0;
 
   // Gets A11yDescriptionRewriter data.
   virtual void GetA11yDescriptionRewriterData(
-      absl::string_view *token_array_data,
-      absl::string_view *string_array_data) const = 0;
+      std::string_view *token_array_data,
+      std::string_view *string_array_data) const = 0;
 
 #ifndef NO_USAGE_REWRITER
   // Gets the usage rewriter data.
   virtual void GetUsageRewriterData(
-      absl::string_view *base_conjugation_suffix_data,
-      absl::string_view *conjugation_suffix_data,
-      absl::string_view *conjugation_suffix_index_data,
-      absl::string_view *usage_items_data,
-      absl::string_view *string_array_data) const = 0;
+      std::string_view *base_conjugation_suffix_data,
+      std::string_view *conjugation_suffix_data,
+      std::string_view *conjugation_suffix_index_data,
+      std::string_view *usage_items_data,
+      std::string_view *string_array_data) const = 0;
 #endif  // NO_USAGE_REWRITER
 
   // Gets the address and size of a sorted array of counter suffix values.
@@ -144,20 +144,20 @@ class DataManagerInterface {
 
   // Gets the zero query prediction data.
   virtual void GetZeroQueryData(
-      absl::string_view *zero_query_token_array_data,
-      absl::string_view *zero_query_string_array_data,
-      absl::string_view *zero_query_number_token_array_data,
-      absl::string_view *zero_query_number_string_array_data) const = 0;
+      std::string_view *zero_query_token_array_data,
+      std::string_view *zero_query_string_array_data,
+      std::string_view *zero_query_number_token_array_data,
+      std::string_view *zero_query_number_string_array_data) const = 0;
 
   // Gets the typing model binary data for the specified name.
-  virtual absl::string_view GetTypingModel(const std::string &name) const = 0;
+  virtual std::string_view GetTypingModel(const std::string &name) const = 0;
 
   // Gets the data version string.
-  virtual absl::string_view GetDataVersion() const = 0;
+  virtual std::string_view GetDataVersion() const = 0;
 
   // Gets the offset and size of the given data section.
   virtual std::optional<std::pair<size_t, size_t>> GetOffsetAndSize(
-      absl::string_view name) const {
+      std::string_view name) const {
     return std::nullopt;
   }
 

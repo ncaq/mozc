@@ -43,7 +43,7 @@
 #include "session/session_handler_interface.h"
 #include "session/session_observer_interface.h"
 #include "absl/status/status.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -110,9 +110,9 @@ class SessionHandlerInterpreter {
   void ClearUsageStats();
   const commands::Output &LastOutput() const;
   const commands::CandidateWord &GetCandidateByValue(
-      absl::string_view value) const;
-  bool GetCandidateIdByValue(absl::string_view value, uint32_t *id) const;
-  std::vector<uint32_t> GetCandidateIdsByValue(absl::string_view value) const;
+      std::string_view value) const;
+  bool GetCandidateIdByValue(std::string_view value, uint32_t *id) const;
+  std::vector<uint32_t> GetCandidateIdsByValue(std::string_view value) const;
   std::vector<std::string> Parse(const std::string &line);
   absl::Status Eval(const std::vector<std::string> &args);
   void SetRequest(const commands::Request &request);

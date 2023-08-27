@@ -30,7 +30,7 @@
 #include "base/clock_mock.h"
 
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/civil_time.h"
 #include "absl/time/time.h"
 

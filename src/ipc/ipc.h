@@ -35,7 +35,7 @@
 #include <string>
 
 #include "base/thread2.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/notification.h"
 #include "absl/time/time.h"
 
@@ -116,11 +116,11 @@ class IPCClient : public IPCClientInterface {
   // the client is connecting a valid server.
   // If server_path is empty, no validation is executed.
   // Note: "server_path" will be ignored on Mac (MachIPC).
-  IPCClient(absl::string_view name, absl::string_view server_path);
+  IPCClient(std::string_view name, std::string_view server_path);
 
   // old interface
   // same as IPCClient(name, "");
-  explicit IPCClient(absl::string_view name);
+  explicit IPCClient(std::string_view name);
 
   ~IPCClient() override;
 
@@ -149,7 +149,7 @@ class IPCClient : public IPCClientInterface {
 
   // terminate the server process named |name|
   // Do not use it unless version mismatch happens
-  static bool TerminateServer(absl::string_view name);
+  static bool TerminateServer(std::string_view name);
 
 #ifdef __APPLE__
   void SetMachPortManager(MachPortManagerInterface *manager) {
@@ -158,7 +158,7 @@ class IPCClient : public IPCClientInterface {
 #endif  // __APPLE__
 
  private:
-  void Init(absl::string_view name, absl::string_view server_path);
+  void Init(std::string_view name, std::string_view server_path);
 
 #ifdef _WIN32
   // Windows
@@ -207,7 +207,7 @@ class IPCClientFactory : public IPCClientFactoryInterface {
 // Usage:
 // class MyEchoServer: public IPCServer {
 //  public:
-//   virtual bool Process(absl::string_view request std::string *response) {
+//   virtual bool Process(std::string_view request std::string *response) {
 //      implement a logic in Process
 //      return true;
 //   }
@@ -234,7 +234,7 @@ class IPCServer {
 
   // Implement a server algorithm in subclass.
   // If 'Process' return false, server finishes select loop
-  virtual bool Process(absl::string_view request, std::string *response) = 0;
+  virtual bool Process(std::string_view request, std::string *response) = 0;
 
   // Start select loop. It goes into infinite loop.
   void Loop();

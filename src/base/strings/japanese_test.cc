@@ -196,7 +196,7 @@ TEST(JapaneseUtilTest, FullWidthAndHalfWidth) {
 }
 
 TEST(JapaneseUtilTest, AlignTest) {
-  using V = std::vector<std::pair<absl::string_view, absl::string_view>>;
+  using V = std::vector<std::pair<std::string_view, std::string_view>>;
 
   EXPECT_EQ(V({{"ga", "が"}, {"k", "っ"}, {"ko", "こ"}, {"u", "う"}}),
             AlignRomanjiToHiragana("gakkou"));

@@ -54,7 +54,7 @@
 #include "testing/mozctest.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
@@ -95,7 +95,7 @@ void InitSegments(Segments *segments, size_t size) {
 }
 
 void AppendCandidateSuffix(Segment *segment, size_t index,
-                           const absl::string_view suffix, uint16_t lid,
+                           const std::string_view suffix, uint16_t lid,
                            uint16_t rid) {
   segment->set_key(absl::StrCat(segment->key(), suffix));
   absl::StrAppend(&segment->mutable_candidate(index)->value, suffix);
@@ -104,7 +104,7 @@ void AppendCandidateSuffix(Segment *segment, size_t index,
 }
 
 void AppendCandidateSuffixWithLid(Segment *segment, size_t index,
-                                  const absl::string_view suffix,
+                                  const std::string_view suffix,
                                   uint16_t lid) {
   // if lid == 0 and rid == 0, we assume that candidate is t13n.
   // we set 1 as rid to avoid this.

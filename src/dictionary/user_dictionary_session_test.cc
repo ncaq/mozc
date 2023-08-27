@@ -41,7 +41,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "testing/testing_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::user_dictionary {
 namespace {
@@ -58,7 +58,7 @@ class UserDictionarySessionTest : public testing::TestWithTempUserProfile {
     return FileUtil::JoinPath(SystemUtil::GetUserProfileDirectory(), "test.db");
   }
 
-  void ResetEntry(const absl::string_view key, const absl::string_view value,
+  void ResetEntry(const std::string_view key, const std::string_view value,
                   const UserDictionary::PosType pos,
                   UserDictionary::Entry *entry) {
     entry->Clear();

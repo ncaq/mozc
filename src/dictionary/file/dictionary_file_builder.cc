@@ -37,7 +37,7 @@
 #include "base/logging.h"
 #include "dictionary/file/codec_interface.h"
 #include "dictionary/file/section.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -56,7 +56,7 @@ DictionaryFileBuilder::~DictionaryFileBuilder() {
 }
 
 bool DictionaryFileBuilder::AddSectionFromFile(
-    const absl::string_view section_name, const std::string &file_name) {
+    const std::string_view section_name, const std::string &file_name) {
   if (added_.find(section_name) != added_.end()) {
     DLOG(INFO) << "Already added: " << section_name;
     return false;

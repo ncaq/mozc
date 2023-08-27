@@ -34,7 +34,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {

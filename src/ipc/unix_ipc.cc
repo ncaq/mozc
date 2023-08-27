@@ -50,7 +50,7 @@
 #include "ipc/ipc_path_manager.h"
 #include "absl/status/status.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 #ifndef UNIX_PATH_MAX
@@ -212,7 +212,7 @@ bool IsAbstractSocket(const std::string &address) {
 }  // namespace
 
 // Client
-IPCClient::IPCClient(const absl::string_view name)
+IPCClient::IPCClient(const std::string_view name)
     : socket_(kInvalidSocket),
       connected_(false),
       ipc_path_manager_(nullptr),
@@ -220,8 +220,8 @@ IPCClient::IPCClient(const absl::string_view name)
   Init(name, "");
 }
 
-IPCClient::IPCClient(const absl::string_view name,
-                     const absl::string_view server_path)
+IPCClient::IPCClient(const std::string_view name,
+                     const std::string_view server_path)
     : socket_(kInvalidSocket),
       connected_(false),
       ipc_path_manager_(nullptr),
@@ -229,8 +229,8 @@ IPCClient::IPCClient(const absl::string_view name,
   Init(name, server_path);
 }
 
-void IPCClient::Init(const absl::string_view name,
-                     const absl::string_view server_path) {
+void IPCClient::Init(const std::string_view name,
+                     const std::string_view server_path) {
   last_ipc_error_ = IPC_NO_CONNECTION;
 
   // Try twice, because key may be changed.

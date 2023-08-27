@@ -50,7 +50,7 @@
 #include "spelling/spellchecker_service_interface.h"
 #include "testing/gunit_prod.h"  // for FRIEND_TEST()
 #include "transliteration/transliteration.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -140,7 +140,7 @@ class Composer final {
   // Returns std::nullopt when the underlying composition spellchecker is not
   // available/enabled.
   std::optional<std::vector<TypeCorrectedQuery>> GetTypeCorrectedQueries(
-      absl::string_view context = "") const;
+      std::string_view context = "") const;
 
   // Returns a type-corrected prediction queries.
   void GetTypeCorrectedQueriesForPrediction(
@@ -164,7 +164,7 @@ class Composer final {
   // you should use SetPreeditTextForTestOnly().
   // With the current implementation, prediction queries can be transliterated
   // and you will not be able to get right candidates.
-  void InsertCharacterPreedit(absl::string_view input);
+  void InsertCharacterPreedit(std::string_view input);
 
   // TEST ONLY: Set preedit text to composer.
   //
@@ -178,10 +178,10 @@ class Composer final {
   //
   // If the input is ascii characters, input mode will be set as HALF_ASCII.
   // This is useful to test the behavior of alphabet keyboard.
-  void SetPreeditTextForTestOnly(absl::string_view input);
+  void SetPreeditTextForTestOnly(std::string_view input);
 
-  bool InsertCharacterKeyAndPreedit(absl::string_view key,
-                                    absl::string_view preedit);
+  bool InsertCharacterKeyAndPreedit(std::string_view key,
+                                    std::string_view preedit);
   bool InsertCharacterKeyEvent(const commands::KeyEvent &key);
   void InsertCommandCharacter(InternalCommand internal_command);
   void Delete();
@@ -253,7 +253,7 @@ class Composer final {
   size_t shifted_sequence_count() const;
   const std::string &source_text() const;
   std::string *mutable_source_text();
-  void set_source_text(absl::string_view source_text);
+  void set_source_text(std::string_view source_text);
   size_t max_length() const;
   void set_max_length(size_t length);
 
@@ -274,7 +274,7 @@ class Composer final {
   // This function have a bug when key has characters input with Preedit.
   // Expected behavior: InsertPreedit("A") + InsertKey("a") -> "Aあ"
   // Actual behavior:   InsertPreedit("A") + InsertKey("a") -> "Aa"
-  void ApplyTemporaryInputMode(absl::string_view input, bool caps_locked);
+  void ApplyTemporaryInputMode(std::string_view input, bool caps_locked);
 
   // Generate transliterated substrings.
   void GetTransliteratedText(Transliterators::Transliterator t12r,

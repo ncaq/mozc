@@ -37,7 +37,7 @@
 #include "base/file_stream.h"
 #include "absl/base/attributes.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace internal {
@@ -58,7 +58,7 @@ class PosIdPrinter {
 
   // Returns a string_view to the POS string for the given id.
   // For an invalid id, returns empty string.
-  absl::string_view IdToString(int id) const ABSL_ATTRIBUTE_LIFETIME_BOUND;
+  std::string_view IdToString(int id) const ABSL_ATTRIBUTE_LIFETIME_BOUND;
 
  private:
   absl::flat_hash_map<int, std::string> id_to_pos_map_;

@@ -37,7 +37,7 @@
 #include "converter/segments.h"
 #include "request/conversion_request.h"
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -63,12 +63,12 @@ class ConverterInterface {
   // key is a request written in Hiragana sequence
   ABSL_MUST_USE_RESULT
   virtual bool StartConversion(Segments *segments,
-                               absl::string_view key) const = 0;
+                               std::string_view key) const = 0;
 
   // Start reverse conversion with key.
   ABSL_MUST_USE_RESULT
   virtual bool StartReverseConversion(Segments *segments,
-                                      absl::string_view key) const = 0;
+                                      std::string_view key) const = 0;
 
   // Starts prediction for given request.
   ABSL_MUST_USE_RESULT
@@ -78,7 +78,7 @@ class ConverterInterface {
   // Start prediction with key (request_type = PREDICTION)
   ABSL_MUST_USE_RESULT
   virtual bool StartPrediction(Segments *segments,
-                               absl::string_view key) const = 0;
+                               std::string_view key) const = 0;
 
   // Starts suggestion for given request.
   ABSL_MUST_USE_RESULT
@@ -88,7 +88,7 @@ class ConverterInterface {
   // Start suggestion with key (request_type = SUGGESTION)
   ABSL_MUST_USE_RESULT
   virtual bool StartSuggestion(Segments *segments,
-                               absl::string_view key) const = 0;
+                               std::string_view key) const = 0;
 
   // Starts partial prediction for given request.
   ABSL_MUST_USE_RESULT
@@ -98,7 +98,7 @@ class ConverterInterface {
   // Start prediction with key (request_type = PARTIAL_PREDICTION)
   ABSL_MUST_USE_RESULT
   virtual bool StartPartialPrediction(Segments *segments,
-                                      absl::string_view key) const = 0;
+                                      std::string_view key) const = 0;
 
   // Starts partial suggestion for given request.
   ABSL_MUST_USE_RESULT
@@ -108,7 +108,7 @@ class ConverterInterface {
   // Start suggestion with key (request_type = PARTIAL_SUGGESTION)
   ABSL_MUST_USE_RESULT
   virtual bool StartPartialSuggestion(Segments *segments,
-                                      absl::string_view key) const = 0;
+                                      std::string_view key) const = 0;
 
   // Finish conversion.
   // Segments are cleared. Context is not cleared
@@ -127,7 +127,7 @@ class ConverterInterface {
   // Reconstruct history segments from given preceding text.
   ABSL_MUST_USE_RESULT
   virtual bool ReconstructHistory(Segments *segments,
-                                  absl::string_view preceding_text) const = 0;
+                                  std::string_view preceding_text) const = 0;
 
   // Commit candidate
   ABSL_MUST_USE_RESULT
@@ -146,8 +146,8 @@ class ConverterInterface {
   ABSL_MUST_USE_RESULT
   virtual bool CommitPartialSuggestionSegmentValue(
       Segments *segments, size_t segment_index, int candidate_index,
-      absl::string_view current_segment_key,
-      absl::string_view new_segment_key) const = 0;
+      std::string_view current_segment_key,
+      std::string_view new_segment_key) const = 0;
 
   // Focus the candidate.
   // This method is mainly called when user puts SPACE key

@@ -37,7 +37,7 @@
 #include "base/util.h"
 #include "data_manager/serialized_dictionary.h"
 #include "protocol/commands.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -170,7 +170,7 @@ A11yDescriptionRewriter::A11yDescriptionRewriter(
           {U'ｮ', U'ﾖ'},
           {U'ｯ', U'ﾂ'},
       }) {
-  absl::string_view token_array_data, string_array_data;
+  std::string_view token_array_data, string_array_data;
   data_manager->GetA11yDescriptionRewriterData(&token_array_data,
                                                &string_array_data);
   description_map_ = (token_array_data.empty() || string_array_data.empty())

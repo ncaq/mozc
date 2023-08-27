@@ -33,10 +33,10 @@
 
 #include "base/util.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
-void CollocationUtil::GetNormalizedScript(const absl::string_view str,
+void CollocationUtil::GetNormalizedScript(const std::string_view str,
                                           bool remove_number,
                                           std::string *output) {
   output->clear();
@@ -73,7 +73,7 @@ bool CollocationUtil::IsNumber(char32_t c) {
   return false;
 }
 
-void CollocationUtil::RemoveExtraCharacters(const absl::string_view input,
+void CollocationUtil::RemoveExtraCharacters(const std::string_view input,
                                             bool remove_number,
                                             std::string *output) {
   for (ConstChar32Iterator iter(input); !iter.Done(); iter.Next()) {

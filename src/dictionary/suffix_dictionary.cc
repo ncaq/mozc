@@ -37,7 +37,7 @@
 #include "base/container/serialized_string_array.h"
 #include "base/logging.h"
 #include "dictionary/dictionary_token.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -47,7 +47,7 @@ class ComparePrefix {
  public:
   explicit ComparePrefix(size_t max_len) : max_len_(max_len) {}
 
-  bool operator()(absl::string_view x, absl::string_view y) const {
+  bool operator()(std::string_view x, std::string_view y) const {
     return x.substr(0, max_len_) < y.substr(0, max_len_);
   }
 
@@ -57,8 +57,8 @@ class ComparePrefix {
 
 }  // namespace
 
-SuffixDictionary::SuffixDictionary(absl::string_view key_array_data,
-                                   absl::string_view value_array_data,
+SuffixDictionary::SuffixDictionary(std::string_view key_array_data,
+                                   std::string_view value_array_data,
                                    const uint32_t *token_array)
     : token_array_(token_array) {
   DCHECK(SerializedStringArray::VerifyData(key_array_data));
@@ -68,7 +68,7 @@ SuffixDictionary::SuffixDictionary(absl::string_view key_array_data,
   value_array_.Set(value_array_data);
 }
 
-bool SuffixDictionary::HasKey(absl::string_view key) const {
+bool SuffixDictionary::HasKey(std::string_view key) const {
   // SuffixDictionary::HasKey() is never called and unnecessary to
   // implement. To avoid accidental calls of this method, the method simply dies
   // so that we can immediately notice this unimplemented method during
@@ -77,7 +77,7 @@ bool SuffixDictionary::HasKey(absl::string_view key) const {
   return false;
 }
 
-bool SuffixDictionary::HasValue(absl::string_view value) const {
+bool SuffixDictionary::HasValue(std::string_view value) const {
   // SuffixDictionary::HasValue() is never called and unnecessary to
   // implement. To avoid accidental calls of this method, the method simply dies
   // so that we can immediately notice this unimplemented method during
@@ -87,7 +87,7 @@ bool SuffixDictionary::HasValue(absl::string_view value) const {
 }
 
 void SuffixDictionary::LookupPredictive(
-    absl::string_view key, const ConversionRequest &conversion_request,
+    std::string_view key, const ConversionRequest &conversion_request,
     Callback *callback) const {
   using Iter = SerializedStringArray::const_iterator;
   std::pair<Iter, Iter> range = std::equal_range(

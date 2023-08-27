@@ -47,7 +47,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "testing/gunit_prod.h"  // for FRIEND_TEST()
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -68,34 +68,34 @@ class ConverterImpl final : public ConverterInterface {
                                  Segments *segments) const override;
   ABSL_MUST_USE_RESULT
   bool StartConversion(Segments *segments,
-                       absl::string_view key) const override;
+                       std::string_view key) const override;
   ABSL_MUST_USE_RESULT
   bool StartReverseConversion(Segments *segments,
-                              absl::string_view key) const override;
+                              std::string_view key) const override;
   ABSL_MUST_USE_RESULT
   bool StartPredictionForRequest(const ConversionRequest &request,
                                  Segments *segments) const override;
   ABSL_MUST_USE_RESULT
   bool StartPrediction(Segments *segments,
-                       absl::string_view key) const override;
+                       std::string_view key) const override;
   ABSL_MUST_USE_RESULT
   bool StartSuggestionForRequest(const ConversionRequest &request,
                                  Segments *segments) const override;
   ABSL_MUST_USE_RESULT
   bool StartSuggestion(Segments *segments,
-                       absl::string_view key) const override;
+                       std::string_view key) const override;
   ABSL_MUST_USE_RESULT
   bool StartPartialPredictionForRequest(const ConversionRequest &request,
                                         Segments *segments) const override;
   ABSL_MUST_USE_RESULT
   bool StartPartialPrediction(Segments *segments,
-                              absl::string_view key) const override;
+                              std::string_view key) const override;
   ABSL_MUST_USE_RESULT
   bool StartPartialSuggestionForRequest(const ConversionRequest &request,
                                         Segments *segments) const override;
   ABSL_MUST_USE_RESULT
   bool StartPartialSuggestion(Segments *segments,
-                              absl::string_view key) const override;
+                              std::string_view key) const override;
 
   void FinishConversion(const ConversionRequest &request,
                         Segments *segments) const override;
@@ -105,7 +105,7 @@ class ConverterImpl final : public ConverterInterface {
 
   ABSL_MUST_USE_RESULT
   bool ReconstructHistory(Segments *segments,
-                          absl::string_view preceding_text) const override;
+                          std::string_view preceding_text) const override;
 
   ABSL_MUST_USE_RESULT
   bool CommitSegmentValue(Segments *segments, size_t segment_index,
@@ -113,8 +113,8 @@ class ConverterImpl final : public ConverterInterface {
   ABSL_MUST_USE_RESULT
   bool CommitPartialSuggestionSegmentValue(
       Segments *segments, size_t segment_index, int candidate_index,
-      absl::string_view current_segment_key,
-      absl::string_view new_segment_key) const override;
+      std::string_view current_segment_key,
+      std::string_view new_segment_key) const override;
   ABSL_MUST_USE_RESULT
   bool FocusSegmentValue(Segments *segments, size_t segment_index,
                          int candidate_index) const override;
@@ -176,15 +176,15 @@ class ConverterImpl final : public ConverterInterface {
 
   // Returns the substring of |str|. This substring consists of similar script
   // type and you can use it as preceding text for conversion.
-  bool GetLastConnectivePart(absl::string_view preceding_text, std::string *key,
+  bool GetLastConnectivePart(std::string_view preceding_text, std::string *key,
                              std::string *value, uint16_t *id) const;
 
   ABSL_MUST_USE_RESULT bool Predict(const ConversionRequest &request,
-                                    absl::string_view key,
+                                    std::string_view key,
                                     Segments *segments) const;
 
   ABSL_MUST_USE_RESULT bool Convert(const ConversionRequest &request,
-                                    absl::string_view key,
+                                    std::string_view key,
                                     Segments *segments) const;
 
   const dictionary::PosMatcher *pos_matcher_ = nullptr;

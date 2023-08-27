@@ -34,7 +34,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <string_view>
@@ -54,13 +54,13 @@ using pfstring_view = std::wstring_view;
 #else   // _WIN32
 using pfchar_t = char;
 using pfstring = std::string;
-using pfstring_view = absl::string_view;
+using pfstring_view = std::string_view;
 #endif  // !_WIN32
 
 // to_pfstring converts a utf-8 string string to pfstring.
 // On Windows, it converts the string to utf-16. On other platforms, it passes
 // through std::string as a reference, or creates a new std::string object from
-// absl::string_view.
+// std::string_view.
 inline pfstring to_pfstring(std::string &&str) {
 #ifdef _WIN32
   return win32::Utf8ToWide(str);
@@ -77,7 +77,7 @@ inline const pfstring &to_pfstring(const std::string &str) {
   return str;
 }
 
-inline pfstring to_pfstring(const absl::string_view str) {
+inline pfstring to_pfstring(const std::string_view str) {
 #ifdef _WIN32
   return win32::Utf8ToWide(str);
 #else   // _WIN32
@@ -88,7 +88,7 @@ inline pfstring to_pfstring(const absl::string_view str) {
 // ToString converts a pfchar_t strings to a utf-8 std::string.
 // On Windows, it converts the string from utf-16. On other platforms, it passes
 // through std::string as a reference, or creates a new std::string object from
-// absl::string_view.
+// std::string_view.
 inline std::string to_string(pfstring &&str) {
 #ifdef _WIN32
   return win32::WideToUtf8(str);

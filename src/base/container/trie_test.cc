@@ -37,7 +37,7 @@
 
 #include "testing/gunit.h"
 #include "absl/algorithm/container.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -290,7 +290,7 @@ TEST(TrieTest, UTF8LongestMatch) {
 }
 
 bool HasData(const std::vector<std::string> &values,
-             const absl::string_view value) {
+             const std::string_view value) {
   return absl::c_find(values, value) != values.end();
 }
 

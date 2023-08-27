@@ -43,7 +43,7 @@
 #include "rewriter/calculator/calculator_interface.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -122,7 +122,7 @@ bool CalculatorRewriter::Rewrite(const ConversionRequest &request,
   return true;
 }
 
-bool CalculatorRewriter::InsertCandidate(const absl::string_view value,
+bool CalculatorRewriter::InsertCandidate(const std::string_view value,
                                          const size_t insert_pos,
                                          Segment *segment) const {
   if (segment->candidates_size() == 0) {

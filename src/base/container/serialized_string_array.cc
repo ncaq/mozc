@@ -38,7 +38,7 @@
 #include "base/logging.h"
 #include "base/status.h"
 #include "absl/base/config.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -46,7 +46,7 @@ namespace mozc {
 static_assert(ABSL_IS_LITTLE_ENDIAN, "Little endian is assumed");
 
 bool SerializedStringArray::Init(
-    absl::string_view data_aligned_at_4byte_boundary) {
+    std::string_view data_aligned_at_4byte_boundary) {
   if (VerifyData(data_aligned_at_4byte_boundary)) {
     data_ = data_aligned_at_4byte_boundary;
     return true;
@@ -56,12 +56,12 @@ bool SerializedStringArray::Init(
 }
 
 void SerializedStringArray::Set(
-    absl::string_view data_aligned_at_4byte_boundary) {
+    std::string_view data_aligned_at_4byte_boundary) {
   DCHECK(VerifyData(data_aligned_at_4byte_boundary));
   data_ = data_aligned_at_4byte_boundary;
 }
 
-bool SerializedStringArray::VerifyData(absl::string_view data) {
+bool SerializedStringArray::VerifyData(std::string_view data) {
   if (data.size() < 4) {
     LOG(ERROR) << "Array size is missing";
     return false;
@@ -100,8 +100,8 @@ bool SerializedStringArray::VerifyData(absl::string_view data) {
   return true;
 }
 
-absl::string_view SerializedStringArray::SerializeToBuffer(
-    const absl::Span<const absl::string_view> strs,
+std::string_view SerializedStringArray::SerializeToBuffer(
+    const absl::Span<const std::string_view> strs,
     std::unique_ptr<uint32_t[]> *buffer) {
   const size_type header_byte_size = 4 * (1 + 2 * strs.size());
 
@@ -133,15 +133,15 @@ absl::string_view SerializedStringArray::SerializeToBuffer(
     dest[strs[i].size()] = '\0';
   }
 
-  return absl::string_view(reinterpret_cast<const char *>(buffer->get()),
+  return std::string_view(reinterpret_cast<const char *>(buffer->get()),
                            current_offset);
 }
 
 void SerializedStringArray::SerializeToFile(
-    const absl::Span<const absl::string_view> strs,
+    const absl::Span<const std::string_view> strs,
     const std::string &filepath) {
   std::unique_ptr<uint32_t[]> buffer;
-  const absl::string_view data = SerializeToBuffer(strs, &buffer);
+  const std::string_view data = SerializeToBuffer(strs, &buffer);
   CHECK_OK(FileUtil::SetContents(filepath, data));
 }
 

@@ -43,7 +43,7 @@
 #include "client/client_interface.h"
 #include "ipc/ipc.h"
 #include "ipc/named_event.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 
@@ -231,7 +231,7 @@ bool ServerLauncher::StartServer(ClientInterface *client) {
   return false;
 }
 
-bool ServerLauncher::ForceTerminateServer(const absl::string_view name) {
+bool ServerLauncher::ForceTerminateServer(const std::string_view name) {
   return IPCClient::TerminateServer(name);
 }
 

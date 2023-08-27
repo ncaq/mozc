@@ -35,7 +35,7 @@
 #include "converter/segments.h"
 #include "request/conversion_request.h"
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::prediction {
 
@@ -65,8 +65,8 @@ class PredictorInterface {
   virtual bool ClearUnusedHistory() { return true; }
 
   // Clears a specific history data of UserHistoryPredictor.
-  virtual bool ClearHistoryEntry(const absl::string_view key,
-                                 const absl::string_view value) {
+  virtual bool ClearHistoryEntry(const std::string_view key,
+                                 const std::string_view value) {
     return true;
   }
 

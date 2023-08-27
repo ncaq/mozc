@@ -67,7 +67,7 @@ class SpellCheckerServiceInterface {
   // Returns std::nullopt when the composition spellchecker is not
   // enabled/available.
   virtual std::optional<std::vector<composer::TypeCorrectedQuery>>
-  CheckCompositionSpelling(absl::string_view query, absl::string_view context,
+  CheckCompositionSpelling(std::string_view query, std::string_view context,
                            const commands::Request &request) const = 0;
 
   // Performs homonym spelling correction. Since the reading of the corrected
@@ -80,8 +80,8 @@ class SpellCheckerServiceInterface {
   //   query:   [言った, 逝った]
   //   output:  [(行った, 1.0), (行った, 5.0)]
   virtual std::optional<std::vector<HomonymCorrection>> CheckHomonymSpelling(
-      absl::Span<const absl::string_view> queries,
-      absl::string_view context) const = 0;
+      absl::Span<const std::string_view> queries,
+      std::string_view context) const = 0;
 
   // Loads spellchecker model asynchronously defined in the `request`.
   // Returns false if the LoadAsync is already running.

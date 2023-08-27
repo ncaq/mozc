@@ -39,7 +39,7 @@
 #include "testing/gunit.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace rewriter {
@@ -86,10 +86,10 @@ TEST(TokenTest, MergeFrom) {
   EXPECT_NE(token_to, token_from);
 }
 
-std::string MakeExpectedRaw(absl::string_view key, absl::string_view value,
+std::string MakeExpectedRaw(std::string_view key, std::string_view value,
                             absl::AlphaNum pos, absl::AlphaNum cost,
-                            absl::string_view description,
-                            absl::string_view additional_description) {
+                            std::string_view description,
+                            std::string_view additional_description) {
   return absl::StrJoin({key, pos.Piece(), pos.Piece(), cost.Piece(), value,
                         description, additional_description},
                        "\t");

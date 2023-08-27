@@ -34,7 +34,7 @@
 
 #include "testing/gmock.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -73,7 +73,7 @@ TEST(PFCharTest, GetHostName) {
 }
 
 TEST(PFCharTest, ToString) {
-  constexpr absl::string_view expected = "test string";
+  constexpr std::string_view expected = "test string";
   const pfstring ps = PF_STRING("test string");
   EXPECT_EQ(to_string(ps), expected);
   EXPECT_EQ(to_string(std::move(ps)), expected);

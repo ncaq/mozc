@@ -53,7 +53,7 @@ class CollocationFilter {
   static absl::StatusOr<CollocationFilter> Create(
       absl::Span<const uint32_t> data);
 
-  bool Exists(absl::string_view left, absl::string_view right) const;
+  bool Exists(std::string_view left, std::string_view right) const;
 
  private:
   storage::ExistenceFilter filter_;

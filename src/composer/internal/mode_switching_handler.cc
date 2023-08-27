@@ -38,7 +38,7 @@
 #include "base/singleton.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/ascii.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -58,7 +58,7 @@ ModeSwitchingHandler::ModeSwitchingHandler() {
 }
 
 ModeSwitchingHandler::Rule ModeSwitchingHandler::GetModeSwitchingRule(
-    absl::string_view key) const {
+    std::string_view key) const {
   const auto it = patterns_.find(key);
   if (it != patterns_.end()) {
     return it->second;
@@ -71,12 +71,12 @@ ModeSwitchingHandler::Rule ModeSwitchingHandler::GetModeSwitchingRule(
   return {NO_CHANGE, NO_CHANGE};
 }
 
-bool ModeSwitchingHandler::IsDriveLetter(absl::string_view key) {
+bool ModeSwitchingHandler::IsDriveLetter(std::string_view key) {
   return key.size() == 3 && absl::ascii_isalpha(key[0]) && key[1] == ':' &&
          key[2] == '\\';
 }
 
-void ModeSwitchingHandler::AddRule(absl::string_view key, const Rule rule) {
+void ModeSwitchingHandler::AddRule(std::string_view key, const Rule rule) {
   patterns_.emplace(key, rule);
 }
 

@@ -33,7 +33,7 @@
 #include <string>
 
 #include "composer/internal/transliterator_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -70,13 +70,13 @@ class Transliterators {
   static const TransliteratorInterface *GetTransliterator(
       Transliterator transliterator);
 
-  static bool SplitRaw(size_t position, absl::string_view raw,
-                       absl::string_view converted, std::string *raw_lhs,
+  static bool SplitRaw(size_t position, std::string_view raw,
+                       std::string_view converted, std::string *raw_lhs,
                        std::string *raw_rhs, std::string *converted_lhs,
                        std::string *converted_rhs);
 
-  static bool SplitConverted(size_t position, absl::string_view raw,
-                             absl::string_view converted,
+  static bool SplitConverted(size_t position, std::string_view raw,
+                             std::string_view converted,
                              std::string *raw_lhs, std::string *raw_rhs,
                              std::string *converted_lhs,
                              std::string *converted_rhs);

@@ -45,7 +45,7 @@
 #include "base/system_util.h"
 #include "base/version.h"
 #include "protocol/config.pb.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 #include "absl/time/time.h"
 
@@ -90,7 +90,7 @@ class ConfigHandlerImpl {
   const Config &DefaultConfig() const;
   void SetConfig(const Config &config);
   void Reload();
-  void SetConfigFileName(absl::string_view filename);
+  void SetConfigFileName(std::string_view filename);
   std::string GetConfigFileName();
 
  private:
@@ -211,7 +211,7 @@ void ConfigHandlerImpl::ReloadUnlocked() {
   SetConfigInternal(input_proto);
 }
 
-void ConfigHandlerImpl::SetConfigFileName(const absl::string_view filename) {
+void ConfigHandlerImpl::SetConfigFileName(const std::string_view filename) {
   absl::MutexLock lock(&mutex_);
   VLOG(1) << "set new config file name: " << filename;
   strings::Assign(filename_, filename);
@@ -278,7 +278,7 @@ const Config &ConfigHandler::DefaultConfig() {
 // Reload from file
 void ConfigHandler::Reload() { GetConfigHandlerImpl()->Reload(); }
 
-void ConfigHandler::SetConfigFileName(const absl::string_view filename) {
+void ConfigHandler::SetConfigFileName(const std::string_view filename) {
   GetConfigHandlerImpl()->SetConfigFileName(filename);
 }
 

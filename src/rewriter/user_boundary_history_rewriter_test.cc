@@ -41,7 +41,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -55,7 +55,7 @@ using ::testing::Return;
 using ::testing::SetArgPointee;
 
 // Creates a simple candidate whose key and value are set to `text`.
-Segment::Candidate MakeCandidate(absl::string_view text) {
+Segment::Candidate MakeCandidate(std::string_view text) {
   Segment::Candidate cand;
   cand.key = std::string(text);
   cand.content_key = cand.key;
@@ -66,7 +66,7 @@ Segment::Candidate MakeCandidate(absl::string_view text) {
 
 // Creates a segment that contains a single candidate created by
 // MakeCandidate().
-Segment MakeSegment(absl::string_view text, Segment::SegmentType type) {
+Segment MakeSegment(std::string_view text, Segment::SegmentType type) {
   Segment segment;
   segment.set_key(text);
   segment.set_segment_type(type);
@@ -75,10 +75,10 @@ Segment MakeSegment(absl::string_view text, Segment::SegmentType type) {
 }
 
 // Creates a simple segments.
-Segments MakeSegments(absl::Span<const absl::string_view> segments_texts,
+Segments MakeSegments(absl::Span<const std::string_view> segments_texts,
                       Segment::SegmentType type) {
   Segments segments;
-  for (absl::string_view text : segments_texts) {
+  for (std::string_view text : segments_texts) {
     *segments.add_segment() = MakeSegment(text, type);
   }
   return segments;

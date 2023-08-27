@@ -62,7 +62,7 @@
 #include "base/singleton.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 ABSL_FLAG(bool, colored_log, true,
@@ -420,7 +420,7 @@ void WorkingLogStream::Append(size_t count, const char ch) {
   }
 }
 
-void WorkingLogStream::Append(const absl::string_view v) {
+void WorkingLogStream::Append(const std::string_view v) {
   os_.write(v.data(), v.size());
 }
 

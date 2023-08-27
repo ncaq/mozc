@@ -36,7 +36,7 @@
 #include <string>
 
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -65,7 +65,7 @@ class ModeSwitchingHandler {
   // Returns a Rule for the current preedit. |key| is the string which the user
   // actually typed. display_mode and input_mode are stored rules controlling
   // the composer. Returns NO_CHANGE if the key doesn't match the stored rules.
-  Rule GetModeSwitchingRule(absl::string_view key) const;
+  Rule GetModeSwitchingRule(std::string_view key) const;
 
   // Gets the singleton instance of this class.
   static ModeSwitchingHandler *GetModeSwitchingHandler();
@@ -73,11 +73,11 @@ class ModeSwitchingHandler {
   // Matcher to Windows drive letters like "C:\".
   // TODO(team): This static method is internal use only.  It's public for
   // testing purpose.
-  static bool IsDriveLetter(absl::string_view key);
+  static bool IsDriveLetter(std::string_view key);
 
  private:
   // Adds a rule for mode switching. The rule is passed by value as it's small.
-  void AddRule(absl::string_view key, Rule rule);
+  void AddRule(std::string_view key, Rule rule);
 
   absl::flat_hash_map<std::string, Rule> patterns_;
 };

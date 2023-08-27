@@ -38,7 +38,7 @@
 #include "protocol/config.pb.h"
 #include "request/conversion_request.h"
 #include "absl/algorithm/container.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -55,26 +55,26 @@ constexpr char kDisableAllSuggestionOff[] = "サジェスト機能を元に戻�
 
 // Trigger CommandRewriter if and only if the Segment::key is one of
 // kTriggerKeys[]
-constexpr absl::string_view kTriggerKeys[] = {
+constexpr std::string_view kTriggerKeys[] = {
     "こまんど",      "しーくれっと", "しーくれっともーど", "ひみつ",
     "ぷらいばしー",  "ぷらいべーと", "さじぇすと",         "ぷれぜんてーしょん",
     "ぷれぜん",      "よそく",       "よそくにゅうりょく", "よそくへんかん",
     "すいそくこうほ"};
 
 // Trigger Values for all commands
-constexpr absl::string_view kCommandValues[] = {"コマンド"};
+constexpr std::string_view kCommandValues[] = {"コマンド"};
 
 // Trigger Values for Incoginito Mode.
-constexpr absl::string_view kIncognitoModeValues[] = {
+constexpr std::string_view kIncognitoModeValues[] = {
     "秘密", "シークレット", "シークレットモード", "プライバシー",
     "プライベート"};
 
-constexpr absl::string_view kDisableAllSuggestionValues[] = {
+constexpr std::string_view kDisableAllSuggestionValues[] = {
     "サジェスト",         "予測",    "予測入力", "予測変換",
     "プレゼンテーション", "プレゼン"};
 
-bool FindString(const absl::string_view query,
-                const absl::Span<const absl::string_view> values) {
+bool FindString(const std::string_view query,
+                const absl::Span<const std::string_view> values) {
   return absl::c_find(values, query) != values.end();
 }
 

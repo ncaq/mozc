@@ -33,7 +33,7 @@
 #include <cstdint>
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -57,8 +57,8 @@ struct Token {
   };
 
   Token() = default;
-  Token(absl::string_view k, absl::string_view v) : key(k), value(v) {}
-  Token(absl::string_view k, absl::string_view v, int c, int l, int r,
+  Token(std::string_view k, std::string_view v) : key(k), value(v) {}
+  Token(std::string_view k, std::string_view v, int c, int l, int r,
         AttributesBitfield a)
       : key(k), value(v), cost(c), lid(l), rid(r), attributes(a) {}
 

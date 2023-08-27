@@ -41,7 +41,7 @@
 #include <vector>
 
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef __ANDROID__
 // This is used only for code generation, so shouldn't be used from android
@@ -64,7 +64,7 @@ class BasicCodeGenByteArrayStreamBuf : public std::streambuf {
       default;
 
   // Writes the beginning of a variable definition.
-  bool OpenVarDef(absl::string_view var_name_base);
+  bool OpenVarDef(std::string_view var_name_base);
 
   // Writes the end of a variable definition.
   bool CloseVarDef();
@@ -122,7 +122,7 @@ class CodeGenByteArrayOutputStream : public std::ostream {
 
   // Writes the beginning of a variable definition.
   // A call to |OpenVarDef| must precede any output to the instance.
-  void OpenVarDef(absl::string_view var_name_base);
+  void OpenVarDef(std::string_view var_name_base);
 
   // Writes the end of a variable definition.
   // An output to the instance after a call to |CloseVarDef| is not allowed

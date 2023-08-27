@@ -50,7 +50,7 @@
 #include "session/internal/candidate_list.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace session {
@@ -85,7 +85,7 @@ bool FillAnnotation(const Segment::Candidate &candidate_value,
 
 void FillCandidateWord(const Segment::Candidate &segment_candidate,
                        const int id, const int index,
-                       const absl::string_view base_key,
+                       const std::string_view base_key,
                        commands::CandidateWord *candidate_word_proto) {
   candidate_word_proto->set_id(id);
   candidate_word_proto->set_index(index);
@@ -319,7 +319,7 @@ void SessionOutput::FillUsages(const Segment &segment,
 }
 
 // static
-void SessionOutput::FillShortcuts(absl::string_view shortcuts,
+void SessionOutput::FillShortcuts(std::string_view shortcuts,
                                   commands::Candidates *candidates_proto) {
   const size_t num_loop =
       std::min<size_t>(candidates_proto->candidate_size(), shortcuts.size());
@@ -360,7 +360,7 @@ bool SessionOutput::FillFooter(const commands::Category category,
   commands::Footer *footer = candidates->mutable_footer();
   if (category == commands::SUGGESTION) {
     // TODO(komatsu): Enable to localized the message.
-    constexpr absl::string_view kLabel = "Tabキーで選択";
+    constexpr std::string_view kLabel = "Tabキーで選択";
     // TODO(komatsu): Need to check if Tab is not changed to other key binding.
     footer->set_label(kLabel);
   } else {
@@ -379,13 +379,13 @@ bool SessionOutput::FillFooter(const commands::Category category,
         if (cand.has_annotation() && cand.annotation().deletable()) {
           // TODO(noriyukit): Change the message depending on user's keymap.
 #if defined(__APPLE__)
-          constexpr absl::string_view kDeleteInstruction =
+          constexpr std::string_view kDeleteInstruction =
               "control+fn+deleteで履歴から削除";
 #elif defined(OS_CHROMEOS)
-          constexpr absl::string_view kDeleteInstruction =
+          constexpr std::string_view kDeleteInstruction =
               "ctrl+alt+backspaceで履歴から削除";
 #else   // !__APPLE__ && !OS_CHROMEOS
-          constexpr absl::string_view kDeleteInstruction =
+          constexpr std::string_view kDeleteInstruction =
               "Ctrl+Delで履歴から削除";
 #endif  // __APPLE__ || OS_CHROMEOS
           footer->set_label(kDeleteInstruction);
@@ -408,8 +408,8 @@ bool SessionOutput::FillFooter(const commands::Category category,
 }
 
 // static
-bool SessionOutput::AddSegment(const absl::string_view key,
-                               const absl::string_view value,
+bool SessionOutput::AddSegment(const std::string_view key,
+                               const std::string_view value,
                                const uint32_t segment_type_mask,
                                commands::Preedit *preedit) {
   // Key is always normalized as a preedit text.
@@ -489,7 +489,7 @@ void SessionOutput::FillConversionResultWithoutNormalization(
 }
 
 // static
-void SessionOutput::FillConversionResult(const absl::string_view key,
+void SessionOutput::FillConversionResult(const std::string_view key,
                                          std::string result,
                                          commands::Result *result_proto) {
   // Key should be normalized as a preedit text.
@@ -501,7 +501,7 @@ void SessionOutput::FillConversionResult(const absl::string_view key,
 }
 
 // static
-void SessionOutput::FillPreeditResult(const absl::string_view preedit,
+void SessionOutput::FillPreeditResult(const std::string_view preedit,
                                       commands::Result *result_proto) {
   std::string normalized_preedit = TextNormalizer::NormalizeText(preedit);
   // Copy before passing the value to FillConversionResultWithoutNormalization.

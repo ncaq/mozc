@@ -42,7 +42,7 @@
 #include "dictionary/file/codec_util.h"
 #include "dictionary/file/section.h"
 #include "absl/status/status.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -97,7 +97,7 @@ void DictionaryFileCodec::WriteSection(const DictionaryFileSection &section,
 }
 
 std::string DictionaryFileCodec::GetSectionName(
-    const absl::string_view name) const {
+    const std::string_view name) const {
   VLOG(1) << "seed\t" << seed_;
   const uint64_t name_fp = FingerprintWithSeed(name, seed_);
   const std::string fp_string(reinterpret_cast<const char *>(&name_fp),
@@ -165,7 +165,7 @@ absl::Status DictionaryFileCodec::ReadSections(
           ": Read pointer will pass the end: offset=", section_end - image,
           ", image_size=", length));
     }
-    const absl::string_view fingerprint(ptr, kFingerprintByteLength);
+    const std::string_view fingerprint(ptr, kFingerprintByteLength);
     ptr += kFingerprintByteLength;
     if (VLOG_IS_ON(1)) {
       std::string escaped;

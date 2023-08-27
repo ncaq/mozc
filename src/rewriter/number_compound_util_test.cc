@@ -37,7 +37,7 @@
 #include "data_manager/testing/mock_data_manager.h"
 #include "dictionary/pos_matcher.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 using mozc::dictionary::PosMatcher;
 
@@ -46,7 +46,7 @@ namespace number_compound_util {
 
 TEST(NumberCompoundUtilTest, SplitStringIntoNumberAndCounterSuffix) {
   std::unique_ptr<uint32_t[]> buf;
-  const absl::string_view data = SerializedStringArray::SerializeToBuffer(
+  const std::string_view data = SerializedStringArray::SerializeToBuffer(
       {
           "デシベル",
           "回",
@@ -104,7 +104,7 @@ TEST(NumberCompoundUtilTest, SplitStringIntoNumberAndCounterSuffix) {
       },
   };
   for (size_t i = 0; i < std::size(kSplittableCases); ++i) {
-    absl::string_view actual_number, actual_suffix;
+    std::string_view actual_number, actual_suffix;
     uint32_t actual_script_type = 0;
     EXPECT_TRUE(SplitStringIntoNumberAndCounterSuffix(
         suffix_array, kSplittableCases[i].input, &actual_number, &actual_suffix,
@@ -122,7 +122,7 @@ TEST(NumberCompoundUtilTest, SplitStringIntoNumberAndCounterSuffix) {
       "八億九千万600七十４デシベル",
   };
   for (size_t i = 0; i < std::size(kUnsplittableCases); ++i) {
-    absl::string_view actual_number, actual_suffix;
+    std::string_view actual_number, actual_suffix;
     uint32_t actual_script_type = 0;
     EXPECT_FALSE(SplitStringIntoNumberAndCounterSuffix(
         suffix_array, kUnsplittableCases[i], &actual_number, &actual_suffix,
@@ -132,7 +132,7 @@ TEST(NumberCompoundUtilTest, SplitStringIntoNumberAndCounterSuffix) {
 
 TEST(NumberCompoundUtilTest, IsNumber) {
   std::unique_ptr<uint32_t[]> buf;
-  const absl::string_view data = SerializedStringArray::SerializeToBuffer(
+  const std::string_view data = SerializedStringArray::SerializeToBuffer(
       {
           "回",
           "階",

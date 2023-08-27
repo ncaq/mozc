@@ -45,7 +45,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 namespace mozc {
@@ -254,7 +254,7 @@ bool UserDictionaryStorage::ExportDictionary(const uint64_t dic_id,
   return true;
 }
 
-bool UserDictionaryStorage::CreateDictionary(const absl::string_view dic_name,
+bool UserDictionaryStorage::CreateDictionary(const std::string_view dic_name,
                                              uint64_t *new_dic_id) {
   UserDictionaryCommandStatus::Status status =
       UserDictionaryUtil::CreateDictionary(&proto_, dic_name, new_dic_id);
@@ -300,7 +300,7 @@ bool UserDictionaryStorage::DeleteDictionary(uint64_t dic_id) {
 }
 
 bool UserDictionaryStorage::RenameDictionary(const uint64_t dic_id,
-                                             const absl::string_view dic_name) {
+                                             const std::string_view dic_name) {
   last_error_type_ = USER_DICTIONARY_STORAGE_NO_ERROR;
 
   if (!UserDictionaryStorage::IsValidDictionaryName(dic_name)) {
@@ -338,7 +338,7 @@ int UserDictionaryStorage::GetUserDictionaryIndex(uint64_t dic_id) const {
 }
 
 bool UserDictionaryStorage::GetUserDictionaryId(
-    const absl::string_view dic_name, uint64_t *dic_id) {
+    const std::string_view dic_name, uint64_t *dic_id) {
   for (size_t i = 0; i < proto_.dictionaries_size(); ++i) {
     if (dic_name == proto_.dictionaries(i).name()) {
       *dic_id = proto_.dictionaries(i).id();
@@ -435,7 +435,7 @@ size_t UserDictionaryStorage::max_dictionary_size() {
 }
 
 bool UserDictionaryStorage::IsValidDictionaryName(
-    const absl::string_view name) {
+    const std::string_view name) {
   UserDictionaryCommandStatus::Status status =
       UserDictionaryUtil::ValidateDictionaryName(
           user_dictionary::UserDictionaryStorage::default_instance(), name);

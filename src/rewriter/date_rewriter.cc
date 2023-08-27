@@ -65,7 +65,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/civil_time.h"
 #include "absl/time/time.h"
 
@@ -138,16 +138,16 @@ constexpr DateRewriter::DateData kDateData[] = {
     {"にちじ", "日時", "現在の日時", 0, DATE_AND_CURRENT_TIME}};
 
 // Absl::Weekday starts from Monday, while std::tm.tm_wday starts from Sunday.
-constexpr absl::string_view kWeekDayString[] = {"月", "火", "水", "木",
+constexpr std::string_view kWeekDayString[] = {"月", "火", "水", "木",
                                                 "金", "土", "日"};
 
-constexpr absl::string_view kDateDescription = "日付";
-constexpr absl::string_view kTimeDescription = "時刻";
+constexpr std::string_view kDateDescription = "日付";
+constexpr std::string_view kTimeDescription = "時刻";
 
 struct YearData {
   int ad;                 // AD year
-  absl::string_view era;  // Japanese year a.k.a., GENGO
-  absl::string_view key;  // reading of the `era`
+  std::string_view era;  // Japanese year a.k.a., GENGO
+  std::string_view key;  // reading of the `era`
 };
 
 constexpr YearData kEraData[] = {
@@ -469,7 +469,7 @@ void GenerateGozenGogoTimeFormats(const char *hour_format,
 //      - output "result" : will be stored candidate strings
 // If the input year is invalid ( accept only [ 1 - 99 ] ) , this function
 // returns false and clear output vector.
-bool ExpandYear(const absl::string_view prefix, int year,
+bool ExpandYear(const std::string_view prefix, int year,
                 std::vector<std::string> *result) {
   DCHECK(result);
   if (year <= 0 || year >= 100) {
@@ -543,13 +543,13 @@ bool AdToEraForCourt(const YearData *data, int size, int year,
   return false;
 }
 
-constexpr absl::string_view kNenKey = "ねん";
-constexpr absl::string_view kNenValue = "年";
+constexpr std::string_view kNenKey = "ねん";
+constexpr std::string_view kNenValue = "年";
 
-bool ExtractYearFromKey(const YearData &year_data, const absl::string_view key,
+bool ExtractYearFromKey(const YearData &year_data, const std::string_view key,
                         int *year, std::string *description) {
-  constexpr absl::string_view kGanKey = "がん";
-  constexpr absl::string_view kGanValue = "元";
+  constexpr std::string_view kGanKey = "がん";
+  constexpr std::string_view kGanValue = "元";
 
   // absl::EndsWith(key, kNenKey) is expected to always return true
   DCHECK(absl::EndsWith(key, kNenKey));
@@ -561,7 +561,7 @@ bool ExtractYearFromKey(const YearData &year_data, const absl::string_view key,
   const size_t year_start = Util::CharsLen(year_data.key);
   const size_t year_length =
       Util::CharsLen(key) - year_start - Util::CharsLen(kNenKey);
-  const absl::string_view era_year_str =
+  const std::string_view era_year_str =
       Util::Utf8SubString(key, year_start, year_length);
 
   if (era_year_str == kGanKey) {
@@ -583,7 +583,7 @@ bool ExtractYearFromKey(const YearData &year_data, const absl::string_view key,
 }
 
 bool EraToAdForCourt(const YearData *data, size_t size,
-                     const absl::string_view key,
+                     const std::string_view key,
                      std::vector<std::string> *results,
                      std::vector<std::string> *descriptions) {
   if (!absl::EndsWith(key, kNenKey)) {
@@ -779,7 +779,7 @@ std::vector<std::string> DateRewriter::AdToEra(int year, int month) {
   return results;
 }
 
-bool DateRewriter::EraToAd(const absl::string_view key,
+bool DateRewriter::EraToAd(const std::string_view key,
                            std::vector<std::string> *results,
                            std::vector<std::string> *descriptions) {
   bool ret = false;
@@ -878,7 +878,7 @@ absl::CivilMinute GetCivilMinuteWithDiff(int type, int diff) {
 }
 
 std::vector<std::string> GetConversions(const DateRewriter::DateData &data,
-                                        const absl::string_view extra_format) {
+                                        const std::string_view extra_format) {
   std::vector<std::string> results;
   const absl::CivilMinute cm = GetCivilMinuteWithDiff(data.type, data.diff);
 
@@ -946,7 +946,7 @@ std::vector<std::string> GetConversions(const DateRewriter::DateData &data,
 }  // namespace
 
 bool DateRewriter::RewriteDate(Segment *segment,
-                               const absl::string_view extra_format) {
+                               const std::string_view extra_format) {
   const std::string &key = segment->key();
   auto rit = std::find_if(std::begin(kDateData), std::end(kDateData),
                           [&key](auto data) { return key == data.key; });
@@ -1029,7 +1029,7 @@ bool DateRewriter::RewriteEra(Segment *current_segment,
     return false;
   }
 
-  constexpr absl::string_view kDescription = "和暦";
+  constexpr std::string_view kDescription = "和暦";
   const Segment::Candidate &base_cand = current_segment->candidate(0);
   std::vector<std::unique_ptr<Segment::Candidate>> candidates;
   candidates.reserve(results.size());
@@ -1073,7 +1073,7 @@ bool DateRewriter::RewriteAd(Segment *segment) {
 }
 
 namespace {
-bool IsNDigits(const absl::string_view value, int n) {
+bool IsNDigits(const std::string_view value, int n) {
   return Util::CharsLen(value) == n &&
          Util::GetScriptType(value) == Util::NUMBER;
 }
@@ -1187,7 +1187,7 @@ bool DateRewriter::RewriteConsecutiveDigits(const composer::Composer &composer,
 }
 
 bool DateRewriter::RewriteConsecutiveTwoDigits(
-    absl::string_view str, std::vector<DateCandidate> *results) {
+    std::string_view str, std::vector<DateCandidate> *results) {
   DCHECK_EQ(2, str.size());
   const auto orig_size = results->size();
   const uint32_t high = static_cast<uint32_t>(str[0] - '0');
@@ -1208,7 +1208,7 @@ bool DateRewriter::RewriteConsecutiveTwoDigits(
 }
 
 bool DateRewriter::RewriteConsecutiveThreeDigits(
-    absl::string_view str, std::vector<DateCandidate> *results) {
+    std::string_view str, std::vector<DateCandidate> *results) {
   DCHECK_EQ(3, str.size());
   const auto orig_size = results->size();
 
@@ -1276,7 +1276,7 @@ bool DateRewriter::RewriteConsecutiveThreeDigits(
 }
 
 bool DateRewriter::RewriteConsecutiveFourDigits(
-    absl::string_view str, std::vector<DateCandidate> *results) {
+    std::string_view str, std::vector<DateCandidate> *results) {
   DCHECK_EQ(4, str.size());
   const auto orig_size = results->size();
 
@@ -1329,7 +1329,7 @@ int DateRewriter::capability(const ConversionRequest &request) const {
 }
 
 namespace {
-std::string ConvertExtraFormat(const absl::string_view base) {
+std::string ConvertExtraFormat(const std::string_view base) {
   return absl::StrReplaceAll(base, {{"%", "%%"},
                                     {"{YEAR}", "%Y"},
                                     {"{MONTH}", "%m"},
@@ -1345,7 +1345,7 @@ std::string GetExtraFormat(const dictionary::DictionaryInterface *dictionary) {
   class EntryCollector : public dictionary::DictionaryInterface::Callback {
    public:
     explicit EntryCollector(std::string *token) : token_(token) {}
-    ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+    ResultType OnToken(std::string_view key, std::string_view actual_key,
                        const dictionary::Token &token) override {
       if (token.attributes != dictionary::Token::USER_DICTIONARY) {
         return TRAVERSE_CONTINUE;

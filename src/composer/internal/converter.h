@@ -34,7 +34,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -48,7 +48,7 @@ class Converter {
   Converter(const Converter&) = delete;
   Converter& operator=(const Converter&) = delete;
 
-  void Convert(absl::string_view input, std::string* output) const;
+  void Convert(std::string_view input, std::string* output) const;
 
  private:
   const Table& table_;

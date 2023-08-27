@@ -56,7 +56,7 @@ TEST(DatasetWriterTest, Write) {
   // Create a dummy file to be packed.
   const std::string &in =
       FileUtil::JoinPath({absl::GetFlag(FLAGS_test_tmpdir), "in"});
-  absl::Status s = FileUtil::SetContents(in, absl::string_view("m\0zc\xEF", 5));
+  absl::Status s = FileUtil::SetContents(in, std::string_view("m\0zc\xEF", 5));
   ASSERT_OK(s);
 
   // Generate a packed file into |actual|.

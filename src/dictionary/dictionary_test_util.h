@@ -38,7 +38,7 @@
 #include "dictionary/dictionary_token.h"
 #include "testing/gunit.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -49,7 +49,7 @@ class CollectTokenCallback : public DictionaryInterface::Callback {
   const std::vector<Token> &tokens() const { return tokens_; }
   void Clear() { tokens_.clear(); }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override;
 
  private:
@@ -62,7 +62,7 @@ class CheckTokenExistenceCallback : public DictionaryInterface::Callback {
   explicit CheckTokenExistenceCallback(const Token *target_token);
   bool found() const { return found_; }
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override;
 
  private:
@@ -77,7 +77,7 @@ class CheckMultiTokensExistenceCallback : public DictionaryInterface::Callback {
   bool IsFound(const Token *token) const;
   bool AreAllFound() const;
 
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const Token &token) override;
 
  private:

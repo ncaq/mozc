@@ -37,19 +37,19 @@
 #include <type_traits>
 
 #include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::win32 {
 
 // Returns how many wide characters are necessary in UTF-16 to represent the
 // UTF-8 input string. Note that the result of this method becomes greater
 // than that of Util::CharsLen if |src| contains surrogate pairs in UTF-16.
-size_t WideCharsLen(absl::string_view input);
+size_t WideCharsLen(std::string_view input);
 
 // Converts the UTF-8 input string to a UTF-16 wide string. This function uses
 // the Win32 MultiByteToWideChar API internally. Invalid characters are replaced
 // with U+FFFD.
-std::wstring Utf8ToWide(absl::string_view input);
+std::wstring Utf8ToWide(std::string_view input);
 
 // Converts the UTF-16 wide string input to UTF-8. This function uses the Win32
 // WideCharToMultiByte API internally. Invalid characters are replaced with

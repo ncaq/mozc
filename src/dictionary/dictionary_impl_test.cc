@@ -51,7 +51,7 @@
 #include "request/conversion_request.h"
 #include "testing/googletest.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -95,12 +95,12 @@ class DictionaryImplTest : public ::testing::Test {
 
   class CheckKeyValueExistenceCallback : public DictionaryInterface::Callback {
    public:
-    CheckKeyValueExistenceCallback(absl::string_view key,
-                                   absl::string_view value)
+    CheckKeyValueExistenceCallback(std::string_view key,
+                                   std::string_view value)
         : key_(key), value_(value), found_(false) {}
 
-    ResultType OnToken(absl::string_view /* key */,
-                       absl::string_view /* actual_key */,
+    ResultType OnToken(std::string_view /* key */,
+                       std::string_view /* actual_key */,
                        const Token &token) override {
       if (token.key == key_ && token.value == value_) {
         found_ = true;
@@ -112,18 +112,18 @@ class DictionaryImplTest : public ::testing::Test {
     bool found() const { return found_; }
 
    private:
-    const absl::string_view key_, value_;
+    const std::string_view key_, value_;
     bool found_;
   };
 
   class CheckSpellingExistenceCallback : public DictionaryInterface::Callback {
    public:
-    CheckSpellingExistenceCallback(absl::string_view key,
-                                   absl::string_view value)
+    CheckSpellingExistenceCallback(std::string_view key,
+                                   std::string_view value)
         : key_(key), value_(value), found_(false) {}
 
-    ResultType OnToken(absl::string_view /* key */,
-                       absl::string_view /* actual_key */,
+    ResultType OnToken(std::string_view /* key */,
+                       std::string_view /* actual_key */,
                        const Token &token) override {
       if (token.key == key_ && token.value == value_ &&
           (token.attributes & Token::SPELLING_CORRECTION)) {
@@ -136,19 +136,19 @@ class DictionaryImplTest : public ::testing::Test {
     bool found() const { return found_; }
 
    private:
-    const absl::string_view key_, value_;
+    const std::string_view key_, value_;
     bool found_;
   };
 
   class CheckZipCodeExistenceCallback : public DictionaryInterface::Callback {
    public:
-    explicit CheckZipCodeExistenceCallback(absl::string_view key,
-                                           absl::string_view value,
+    explicit CheckZipCodeExistenceCallback(std::string_view key,
+                                           std::string_view value,
                                            const PosMatcher *pos_matcher)
         : key_(key), value_(value), pos_matcher_(pos_matcher), found_(false) {}
 
-    ResultType OnToken(absl::string_view /* key */,
-                       absl::string_view /* actual_key */,
+    ResultType OnToken(std::string_view /* key */,
+                       std::string_view /* actual_key */,
                        const Token &token) override {
       if (token.key == key_ && token.value == value_ &&
           pos_matcher_->IsZipcode(token.lid)) {
@@ -161,18 +161,18 @@ class DictionaryImplTest : public ::testing::Test {
     bool found() const { return found_; }
 
    private:
-    const absl::string_view key_, value_;
+    const std::string_view key_, value_;
     const PosMatcher *pos_matcher_;
     bool found_;
   };
 
   class CheckEnglishT13nCallback : public DictionaryInterface::Callback {
    public:
-    CheckEnglishT13nCallback(absl::string_view key, absl::string_view value)
+    CheckEnglishT13nCallback(std::string_view key, std::string_view value)
         : key_(key), value_(value), found_(false) {}
 
-    ResultType OnToken(absl::string_view /* key */,
-                       absl::string_view /* actual_key */,
+    ResultType OnToken(std::string_view /* key */,
+                       std::string_view /* actual_key */,
                        const Token &token) override {
       if (token.key == key_ && token.value == value_ &&
           Util::IsEnglishTransliteration(token.value)) {
@@ -185,14 +185,14 @@ class DictionaryImplTest : public ::testing::Test {
     bool found() const { return found_; }
 
    private:
-    const absl::string_view key_, value_;
+    const std::string_view key_, value_;
     bool found_;
   };
 
   // Pair of DictionaryInterface's lookup method and query text.
   struct LookupMethodAndQuery {
     void (DictionaryInterface::*lookup_method)(
-        absl::string_view, const ConversionRequest &,
+        std::string_view, const ConversionRequest &,
         DictionaryInterface::Callback *) const;
     const char *query;
   };

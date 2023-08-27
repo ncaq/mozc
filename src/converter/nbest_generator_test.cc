@@ -54,7 +54,7 @@
 #include "request/conversion_request.h"
 #include "testing/googletest.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -93,7 +93,7 @@ class MockDataAndImmutableConverter {
         suppression_dictionary_.get(), &pos_matcher_);
     CHECK(dictionary_);
 
-    absl::string_view suffix_key_array_data, suffix_value_array_data;
+    std::string_view suffix_key_array_data, suffix_value_array_data;
     const uint32_t *token_array = nullptr;
     data_manager_->GetSuffixDictionaryData(
         &suffix_key_array_data, &suffix_value_array_data, &token_array);
@@ -306,7 +306,7 @@ TEST_F(NBestGeneratorTest, InnerSegmentBoundary) {
   EXPECT_EQ(top_cand.key, kInput);
   EXPECT_EQ(top_cand.value, "東京か名古屋に行きたい");
 
-  std::vector<absl::string_view> keys, values, content_keys, content_values;
+  std::vector<std::string_view> keys, values, content_keys, content_values;
   for (Segment::Candidate::InnerSegmentIterator iter(&top_cand); !iter.Done();
        iter.Next()) {
     keys.push_back(iter.GetKey());

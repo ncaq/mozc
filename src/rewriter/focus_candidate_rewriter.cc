@@ -40,7 +40,7 @@
 #include "converter/segments.h"
 #include "data_manager/data_manager_interface.h"
 #include "rewriter/number_compound_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -53,7 +53,7 @@ bool IsConnectorSegment(const Segment &segment) {
 }
 
 // Finds value from the candidates list and move the candidate to the top.
-bool RewriteCandidate(Segment *segment, absl::string_view value) {
+bool RewriteCandidate(Segment *segment, std::string_view value) {
   for (int i = 0; i < segment->candidates_size(); ++i) {
     if (segment->candidate(i).content_value == value) {
       segment->move_candidate(i, 0);  // move to top
@@ -131,7 +131,7 @@ FocusCandidateRewriter::FocusCandidateRewriter(
   const char *array = nullptr;
   size_t size = 0;
   data_manager->GetCounterSuffixSortedArray(&array, &size);
-  const absl::string_view data(array, size);
+  const std::string_view data(array, size);
   // Data manager is responsible for providing a valid data.  Just verify data
   // in debug build.
   DCHECK(SerializedStringArray::VerifyData(data));
@@ -173,7 +173,7 @@ bool FocusCandidateRewriter::Focus(Segments *segments, size_t segment_index,
   {
     const std::string &left_value =
         seg.candidate(candidate_index).content_value;
-    absl::string_view right_value;
+    std::string_view right_value;
 
     if (Util::IsOpenBracket(left_value, &right_value)) {
       int num_nest = 1;
@@ -189,7 +189,7 @@ bool FocusCandidateRewriter::Focus(Segments *segments, size_t segment_index,
         }
         const std::string &target_right_value =
             target_right_seg->candidate(0).content_value;
-        absl::string_view tmp;
+        std::string_view tmp;
         if (Util::IsOpenBracket(target_right_value, &tmp)) {
           ++num_nest;
         } else if (Util::IsCloseBracket(target_right_value, &tmp)) {
@@ -209,7 +209,7 @@ bool FocusCandidateRewriter::Focus(Segments *segments, size_t segment_index,
   {
     const std::string &right_value =
         seg.candidate(candidate_index).content_value;
-    absl::string_view left_value;
+    std::string_view left_value;
 
     if (Util::IsCloseBracket(right_value, &left_value)) {
       int num_nest = 1;
@@ -225,7 +225,7 @@ bool FocusCandidateRewriter::Focus(Segments *segments, size_t segment_index,
         }
         const std::string &target_left_value =
             target_left_seg->candidate(0).content_value;
-        absl::string_view tmp;
+        std::string_view tmp;
         if (Util::IsCloseBracket(target_left_value, &tmp)) {
           ++num_nest;
         } else if (Util::IsOpenBracket(target_left_value, &tmp)) {
@@ -318,7 +318,7 @@ bool FocusCandidateRewriter::RerankNumberCandidates(Segments *segments,
                                                     size_t segment_index,
                                                     int candidate_index) const {
   // Check if the focused candidate is a number compound.
-  absl::string_view number, suffix;
+  std::string_view number, suffix;
   uint32_t number_script_type = 0;
   const Segment &seg = segments->segment(segment_index);
   if (!ParseNumberCandidate(seg.candidate(candidate_index), &number, &suffix,
@@ -357,11 +357,11 @@ bool FocusCandidateRewriter::RerankNumberCandidates(Segments *segments,
 
 int FocusCandidateRewriter::FindMatchingCandidates(
     const Segment &seg, uint32_t ref_script_type,
-    absl::string_view ref_suffix) const {
+    std::string_view ref_suffix) const {
   // Only segments whose top candidate is a number compound are target of
   // reranking.
   const Segment::Candidate &cand = seg.candidate(0);
-  absl::string_view number, suffix;
+  std::string_view number, suffix;
   uint32_t script_type = 0;
   if (!ParseNumberCandidate(cand, &number, &suffix, &script_type)) {
     return -1;
@@ -388,8 +388,8 @@ int FocusCandidateRewriter::FindMatchingCandidates(
 }
 
 bool FocusCandidateRewriter::ParseNumberCandidate(
-    const Segment::Candidate &cand, absl::string_view *number,
-    absl::string_view *suffix, uint32_t *script_type) const {
+    const Segment::Candidate &cand, std::string_view *number,
+    std::string_view *suffix, uint32_t *script_type) const {
   // If the lengths of content value and value are different, particles may be
   // appended to value.  In such cases, we only accept parallel markers.
   // Otherwise, the following wrong rewrite will occur.

@@ -46,7 +46,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -55,7 +55,7 @@ using ::mozc::config::CharacterFormManager;
 using ::mozc::dictionary::PosMatcher;
 
 // Returns true if |full| has the corresponding half width form.
-bool IsConvertibleToHalfWidthForm(const absl::string_view full) {
+bool IsConvertibleToHalfWidthForm(const std::string_view full) {
   // TODO(b/209357879): remove this line once FullWidthToHalfWidth() itself will
   // support the conversion.
   const std::string tmp =
@@ -78,7 +78,7 @@ bool IsConvertibleToHalfWidthForm(const absl::string_view full) {
 // "google" => false (not symbol)
 // "㌫" => false (all symbol, all full but not convertible to the corresponding
 // half)
-bool HasCharacterFormDescription(const absl::string_view value) {
+bool HasCharacterFormDescription(const std::string_view value) {
   if (value.empty()) {
     return false;
   }
@@ -154,8 +154,8 @@ void VariantsRewriter::SetDescriptionForPrediction(
 void VariantsRewriter::SetDescription(const PosMatcher pos_matcher,
                                       int description_type,
                                       Segment::Candidate *candidate) {
-  absl::string_view character_form_message;
-  std::vector<absl::string_view> pieces;
+  std::string_view character_form_message;
+  std::vector<std::string_view> pieces;
 
   // Add Character form.
   if (description_type & CHARACTER_FORM) {
@@ -215,7 +215,7 @@ void VariantsRewriter::SetDescription(const PosMatcher pos_matcher,
   // Currently, character_form_message is treated as a "default"
   // description.
   if (!candidate->description.empty()) {
-    character_form_message = absl::string_view();
+    character_form_message = std::string_view();
   }
 
   const Util::FormType form = Util::GetFormType(candidate->value);

@@ -36,7 +36,7 @@
 #include "base/init_mozc.h"
 #include "base/thread2.h"
 #include "absl/flags/flag.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/notification.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"

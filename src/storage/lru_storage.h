@@ -38,7 +38,7 @@
 
 #include "base/mmap.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -60,18 +60,18 @@ class LruStorage {
                     size_t new_size, uint32_t new_seed);
 
   // Looks up elements by key.
-  const char *Lookup(absl::string_view key, uint32_t *last_access_time) const;
-  const char *Lookup(absl::string_view key) const {
+  const char *Lookup(std::string_view key, uint32_t *last_access_time) const;
+  const char *Lookup(std::string_view key) const {
       uint32_t last_access_time;
       return Lookup(key, &last_access_time);
   }
 
   // A safer lookup for string values (the pointers returned by above Lookup()'s
   // are not null terminated.)
-  absl::string_view LookupAsString(const absl::string_view key) const {
+  std::string_view LookupAsString(const std::string_view key) const {
     const char *ptr = Lookup(key);
-    return (ptr == nullptr) ? absl::string_view()
-                            : absl::string_view(ptr, value_size_);
+    return (ptr == nullptr) ? std::string_view()
+                            : std::string_view(ptr, value_size_);
   }
 
   // Returns all the values.  The order is new to old (*values->begin() is the
@@ -86,18 +86,18 @@ class LruStorage {
   bool Merge(const LruStorage &storage);
 
   // Updates timestamp.
-  bool Touch(absl::string_view key);
+  bool Touch(std::string_view key);
 
   // Inserts a key value pair.
-  bool Insert(absl::string_view key, const char *value);
+  bool Insert(std::string_view key, const char *value);
 
   // Inserts a key value pair only if |key| already exists.
   // CAUTION: despite the name, it does nothing if there's no value of |key|.
-  bool TryInsert(absl::string_view key, const char *value);
+  bool TryInsert(std::string_view key, const char *value);
 
   // Deletes the element if exists.  Returns false on failure (it's not failure
   // if the element for |key| doesn't exist.)
-  bool Delete(absl::string_view key);
+  bool Delete(std::string_view key);
 
   // Deletes all the elements that have timestamp less than |timestamp|, i.e.,
   // the last access is before |timestamp|.  Returns the number of deleted
@@ -130,7 +130,7 @@ class LruStorage {
   // Writes one entry at |i| th index.
   // i must be 0 <= i < size.
   // This data will not update the index of the storage.
-  void Write(size_t i, uint64_t fp, absl::string_view value,
+  void Write(size_t i, uint64_t fp, std::string_view value,
              uint32_t last_access_time);
 
   // Reads one entry from |i| th index.

@@ -49,15 +49,15 @@
 #include "protocol/config.pb.h"
 #include "absl/container/btree_set.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
 namespace {
 
 // Looks up model cost for current key given previous keys.
-int LookupModelCost(const absl::string_view prev,
-                    const absl::string_view current,
+int LookupModelCost(const std::string_view prev,
+                    const std::string_view current,
                     const TypingModel &typing_model) {
   if (current.size() != 1) {
     return TypingModel::kInfinity;

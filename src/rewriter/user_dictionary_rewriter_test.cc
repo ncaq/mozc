@@ -40,7 +40,7 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {

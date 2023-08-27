@@ -42,7 +42,7 @@
 #include "testing/gunit.h"
 #include "absl/random/distributions.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -50,10 +50,10 @@ namespace {
 using ::testing::Optional;
 using ::testing::Pair;
 
-constexpr absl::string_view kTestMagicNumber = {"ma\0gic", 6};
+constexpr std::string_view kTestMagicNumber = {"ma\0gic", 6};
 
 TEST(DataSetReaderTest, ValidData) {
-  constexpr absl::string_view kGoogle("GOOGLE"), kMozc("m\0zc\xEF", 5);
+  constexpr std::string_view kGoogle("GOOGLE"), kMozc("m\0zc\xEF", 5);
   std::string image;
   {
     DataSetWriter w(kTestMagicNumber);
@@ -68,7 +68,7 @@ TEST(DataSetReaderTest, ValidData) {
   ASSERT_TRUE(DataSetReader::VerifyChecksum(image));
   ASSERT_TRUE(r.Init(image, kTestMagicNumber));
 
-  absl::string_view data;
+  std::string_view data;
   EXPECT_TRUE(r.Get("google", &data));
   EXPECT_EQ(data, kGoogle);
   EXPECT_THAT(r.GetOffsetAndSize("google"), Optional(Pair(6, kGoogle.size())));
@@ -126,7 +126,7 @@ TEST(DataSetReaderTest, BrokenMetadata) {
 }
 
 TEST(DataSetReaderTest, BrokenMetadataFields) {
-  constexpr absl::string_view kGoogle("GOOGLE"), kMozc("m\0zc\xEF", 5);
+  constexpr std::string_view kGoogle("GOOGLE"), kMozc("m\0zc\xEF", 5);
   std::string content;
   {
     DataSetWriter w(kTestMagicNumber);
@@ -176,7 +176,7 @@ TEST(DataSetReaderTest, BrokenMetadataFields) {
 }
 
 TEST(DataSetReaderTest, OneBitError) {
-  constexpr absl::string_view kTestMagicNumber = "Dummy magic number\r\n";
+  constexpr std::string_view kTestMagicNumber = "Dummy magic number\r\n";
 
   // Create data at random.
   std::string image;

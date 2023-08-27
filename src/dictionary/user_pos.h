@@ -41,7 +41,7 @@
 #include "base/container/serialized_string_array.h"
 #include "data_manager/data_manager_interface.h"
 #include "dictionary/user_pos_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -179,17 +179,17 @@ class UserPos : public UserPosInterface {
 
   // Initializes the user pos from the given binary data.  The provided byte
   // data must outlive this instance.
-  UserPos(absl::string_view token_array_data,
-          absl::string_view string_array_data);
+  UserPos(std::string_view token_array_data,
+          std::string_view string_array_data);
   UserPos(const UserPos &) = delete;
   UserPos &operator=(const UserPos &) = delete;
 
   // Implementation of UserPosInterface.
   void GetPosList(std::vector<std::string> *pos_list) const override;
-  bool IsValidPos(absl::string_view pos) const override;
-  bool GetPosIds(absl::string_view pos, uint16_t *id) const override;
-  bool GetTokens(absl::string_view key, absl::string_view value,
-                 absl::string_view pos, absl::string_view locale,
+  bool IsValidPos(std::string_view pos) const override;
+  bool GetPosIds(std::string_view pos, uint16_t *id) const override;
+  bool GetTokens(std::string_view key, std::string_view value,
+                 std::string_view pos, std::string_view locale,
                  std::vector<Token> *tokens) const override;
 
   iterator begin() const { return iterator(token_array_data_.data()); }
@@ -198,7 +198,7 @@ class UserPos : public UserPosInterface {
   }
 
  private:
-  absl::string_view token_array_data_;
+  std::string_view token_array_data_;
   SerializedStringArray string_array_;
 };
 

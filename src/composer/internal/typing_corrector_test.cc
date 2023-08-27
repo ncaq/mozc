@@ -46,7 +46,7 @@
 #include "protocol/commands.pb.h"
 #include "session/request_test_util.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -58,7 +58,7 @@ using ::mozc::config::ConfigHandler;
 // Embedded cost for testing purpose.
 class CostTableForTest {
  public:
-  typedef std::map<absl::string_view, ProbableKeyEvents> CorrectionTable;
+  typedef std::map<std::string_view, ProbableKeyEvents> CorrectionTable;
 
   CostTableForTest() {
     {
@@ -277,7 +277,7 @@ class CostTableForTest {
   CostTableForTest &operator=(const CostTableForTest &) = delete;
 
   void InsertCharacter(TypingCorrector *corrector,
-                       absl::string_view key) const {
+                       std::string_view key) const {
     CompositionInput input;
     input.InitFromRaw({key.data(), key.size()}, /*is_new_input=*/false);
     input.set_probable_key_events(table_.find(key)->second);
@@ -314,12 +314,12 @@ class TypingCorrectorTest : public ::testing::Test {
   void InsertOneByOne(const char *keys, TypingCorrector *corrector) {
     for (const char *key = keys; *key != '\0'; ++key) {
       Singleton<CostTableForTest>::get()->InsertCharacter(
-          corrector, absl::string_view(key, 1));
+          corrector, std::string_view(key, 1));
     }
   }
 
   bool FindKey(const std::vector<TypeCorrectedQuery> &queries,
-               const absl::string_view key) {
+               const std::string_view key) {
     for (size_t i = 0; i < queries.size(); ++i) {
       const std::set<std::string> &expanded = queries[i].expanded;
       if (expanded.empty() && queries[i].base == key) {
@@ -431,8 +431,8 @@ TEST_F(TypingCorrectorTest, SkipFirstProbKeys) {
   ASSERT_TRUE(corrector.IsAvailable());
 
   struct {
-    const absl::string_view keys;
-    const absl::string_view correction;
+    const std::string_view keys;
+    const std::string_view correction;
     const bool expected_default;
     const bool expected_skip_first_prob_keys;
   } kTestCases[] = {
@@ -448,8 +448,8 @@ TEST_F(TypingCorrectorTest, SkipFirstProbKeys) {
       {"kaish", "かいしゃ", false, false},
   };
 
-  auto contains_correction = [this](absl::string_view keys,
-                                    absl::string_view correction,
+  auto contains_correction = [this](std::string_view keys,
+                                    std::string_view correction,
                                     TypingCorrector *corrector) {
     SCOPED_TRACE(absl::StrCat("key: ", keys));
     InsertOneByOne(keys.data(), corrector);
@@ -555,7 +555,7 @@ TEST_F(TypingCorrectorTest, Cost) {
   Table table;
 
   // Creates a typing model which always returns cost 0.
-  constexpr absl::string_view chars = "ab^";
+  constexpr std::string_view chars = "ab^";
   // TypingCorrector looks up tri-gram.
   // The maximum index will be (len(`chars`) + 1)^3 - 1.
   const uint8_t costs[4 * 4 * 4] = {0};

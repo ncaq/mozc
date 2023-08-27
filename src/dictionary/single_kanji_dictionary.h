@@ -39,7 +39,7 @@
 #include "base/container/serialized_string_array.h"
 #include "data_manager/data_manager_interface.h"
 #include "data_manager/serialized_dictionary.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -54,7 +54,7 @@ class SingleKanjiDictionary {
   ~SingleKanjiDictionary() = default;
 
   // Looks up single kanji list from key (reading).  Returns false if not found.
-  bool LookupKanjiEntries(absl::string_view key, bool use_svs,
+  bool LookupKanjiEntries(std::string_view key, bool use_svs,
                           std::vector<std::string> *kanji_list) const;
 
   // Returns the iterator range for noun prefix kanji entries
@@ -63,20 +63,20 @@ class SingleKanjiDictionary {
   // mozc/rewriter/gen_single_kanji_noun_prefix_data.cc
   std::pair<SerializedDictionary::const_iterator,
             SerializedDictionary::const_iterator>
-  LookupNounPrefixEntries(absl::string_view key) const {
+  LookupNounPrefixEntries(std::string_view key) const {
     return noun_prefix_dictionary_->equal_range(key);
   }
 
   // Generates kanji variant description.
   // Returns false if the description was not found.
-  bool GenerateDescription(absl::string_view kanji_surface,
+  bool GenerateDescription(std::string_view kanji_surface,
                            std::string *desc) const;
 
  private:
-  absl::string_view single_kanji_token_array_;
+  std::string_view single_kanji_token_array_;
   SerializedStringArray single_kanji_string_array_;
   SerializedStringArray variant_type_array_;
-  absl::string_view variant_token_array_;
+  std::string_view variant_token_array_;
   SerializedStringArray variant_string_array_;
 
   // Since noun_prefix_dictionary_ is just a tentative workaround,

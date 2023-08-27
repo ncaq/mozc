@@ -109,7 +109,7 @@ class PaddedMessageIterator {
   // The original data length in bit is stored as 8-byte-length data.
   static constexpr size_t kDataBitLengthBytes = sizeof(uint64_t);
 
-  explicit PaddedMessageIterator(absl::string_view source)
+  explicit PaddedMessageIterator(std::string_view source)
       : source_(source),
         num_total_message_(GetTotalMessageCount(source.size())),
         message_index_(0) {}
@@ -117,7 +117,7 @@ class PaddedMessageIterator {
   bool HasMessage() const { return message_index_ < num_total_message_; }
 
   void FillNextMessage(
-      absl::string_view::value_type dest[kMessageBlockBytes]) const {
+      std::string_view::value_type dest[kMessageBlockBytes]) const {
     // 5.1.1 SHA-1, SHA-224 and SHA-256
     static_assert(CHAR_BIT == 8, "Assuming 1 byte == 8 bit");
 
@@ -184,12 +184,12 @@ class PaddedMessageIterator {
     return (minimum_size + kMessageBlockBytes - 1) / kMessageBlockBytes;
   }
 
-  const absl::string_view source_;
+  const std::string_view source_;
   const size_t num_total_message_;
   size_t message_index_;
 };
 
-std::string MakeDigestImpl(absl::string_view source) {
+std::string MakeDigestImpl(std::string_view source) {
   // 5.3 Setting the Initial Hash Value / 5.3.1 SHA-1
 
   // 6.1.1 SHA-1 Preprocessing
@@ -199,7 +199,7 @@ std::string MakeDigestImpl(absl::string_view source) {
 
   // 6.1.2 SHA-1 Hash Computation
   for (PaddedMessageIterator it(source); it.HasMessage(); it.MoveNext()) {
-    absl::string_view::value_type message[64];
+    std::string_view::value_type message[64];
     it.FillNextMessage(message);
 
     uint32_t W[80];  // Message schedule.
@@ -238,7 +238,7 @@ std::string MakeDigestImpl(absl::string_view source) {
 
 }  // namespace
 
-std::string UnverifiedSHA1::MakeDigest(absl::string_view source) {
+std::string UnverifiedSHA1::MakeDigest(std::string_view source) {
   return MakeDigestImpl(source);
 }
 

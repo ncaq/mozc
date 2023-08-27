@@ -43,7 +43,7 @@
 #include "base/logging.h"
 #include "testing/gunit.h"
 #ifdef _WIN32
-#include "absl/strings/string_view.h"
+#include <string_view>
 #endif  // _WIN32
 
 namespace mozc {
@@ -51,7 +51,7 @@ namespace {
 
 #ifdef _WIN32
 
-bool Convert(absl::string_view input, std::string* output) {
+bool Convert(std::string_view input, std::string* output) {
   const int CP_932 = 932;
 
   output->clear();

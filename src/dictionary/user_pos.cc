@@ -44,13 +44,13 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
 
-UserPos::UserPos(absl::string_view token_array_data,
-                 absl::string_view string_array_data)
+UserPos::UserPos(std::string_view token_array_data,
+                 std::string_view string_array_data)
     : token_array_data_(token_array_data) {
   DCHECK_EQ(token_array_data.size() % 8, 0);
   DCHECK(SerializedStringArray::VerifyData(string_array_data));
@@ -64,12 +64,12 @@ void UserPos::GetPosList(std::vector<std::string> *pos_list) const {
     if (!seen.insert(iter.pos_index()).second) {
       continue;
     }
-    const absl::string_view pos = string_array_[iter.pos_index()];
+    const std::string_view pos = string_array_[iter.pos_index()];
     pos_list->emplace_back(pos.data(), pos.size());
   }
 }
 
-bool UserPos::IsValidPos(absl::string_view pos) const {
+bool UserPos::IsValidPos(std::string_view pos) const {
   const auto iter =
       std::lower_bound(string_array_.begin(), string_array_.end(), pos);
   if (iter == string_array_.end()) {
@@ -78,7 +78,7 @@ bool UserPos::IsValidPos(absl::string_view pos) const {
   return std::binary_search(begin(), end(), iter.index());
 }
 
-bool UserPos::GetPosIds(absl::string_view pos, uint16_t *id) const {
+bool UserPos::GetPosIds(std::string_view pos, uint16_t *id) const {
   const auto str_iter =
       std::lower_bound(string_array_.begin(), string_array_.end(), pos);
   if (str_iter == string_array_.end() || *str_iter != pos) {
@@ -92,8 +92,8 @@ bool UserPos::GetPosIds(absl::string_view pos, uint16_t *id) const {
   return true;
 }
 
-bool UserPos::GetTokens(absl::string_view key, absl::string_view value,
-                        absl::string_view pos, absl::string_view locale,
+bool UserPos::GetTokens(std::string_view key, std::string_view value,
+                        std::string_view pos, std::string_view locale,
                         std::vector<Token> *tokens) const {
   if (key.empty() || value.empty() || pos.empty() || tokens == nullptr) {
     return false;
@@ -117,8 +117,8 @@ bool UserPos::GetTokens(absl::string_view key, absl::string_view value,
   const bool is_non_ja_locale =
       !locale.empty() && !absl::StartsWith(locale, "ja");
 
-  constexpr absl::string_view kIsolatedWordPos = "短縮よみ";
-  constexpr absl::string_view kSuggestionOnlyPos = "サジェストのみ";
+  constexpr std::string_view kIsolatedWordPos = "短縮よみ";
+  constexpr std::string_view kSuggestionOnlyPos = "サジェストのみ";
 
   uint16_t attributes = 0;
   if (pos == kIsolatedWordPos) {
@@ -137,12 +137,12 @@ bool UserPos::GetTokens(absl::string_view key, absl::string_view value,
     tokens->front().attributes = attributes;
   } else {
     // expand all other forms
-    absl::string_view key_stem = key;
-    absl::string_view value_stem = value;
+    std::string_view key_stem = key;
+    std::string_view value_stem = value;
     // assume that conjugation_form[0] contains the suffix of "base form".
-    const absl::string_view base_key_suffix =
+    const std::string_view base_key_suffix =
         string_array_[first.key_suffix_index()];
-    const absl::string_view base_value_suffix =
+    const std::string_view base_value_suffix =
         string_array_[first.value_suffix_index()];
 
     if (base_key_suffix.size() < key.size() &&
@@ -154,9 +154,9 @@ bool UserPos::GetTokens(absl::string_view key, absl::string_view value,
     }
     auto dest = tokens->begin();
     for (auto src = first; src != last; ++src, ++dest) {
-      const absl::string_view key_suffix =
+      const std::string_view key_suffix =
           string_array_[src.key_suffix_index()];
-      const absl::string_view value_suffix =
+      const std::string_view value_suffix =
           string_array_[src.value_suffix_index()];
       dest->key = absl::StrCat(key_stem, key_suffix);
       dest->value = absl::StrCat(value_stem, value_suffix);
@@ -170,7 +170,7 @@ bool UserPos::GetTokens(absl::string_view key, absl::string_view value,
 
 std::unique_ptr<UserPos> UserPos::CreateFromDataManager(
     const DataManagerInterface &manager) {
-  absl::string_view token_array_data, string_array_data;
+  std::string_view token_array_data, string_array_data;
   manager.GetUserPosData(&token_array_data, &string_array_data);
   return std::make_unique<UserPos>(token_array_data, string_array_data);
 }

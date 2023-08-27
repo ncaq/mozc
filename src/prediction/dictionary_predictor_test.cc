@@ -68,7 +68,7 @@
 #include "absl/random/random.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc::prediction {
@@ -104,8 +104,8 @@ class DictionaryPredictorTestPeer {
         query_len, key_len, cost, is_suggestion, total_candidates_size);
   }
 
-  static size_t GetMissSpelledPosition(const absl::string_view key,
-                                       const absl::string_view value) {
+  static size_t GetMissSpelledPosition(const std::string_view key,
+                                       const std::string_view value) {
     return DictionaryPredictor::GetMissSpelledPosition(key, value);
   }
 
@@ -172,7 +172,7 @@ using ::testing::SetArgPointee;
 
 constexpr int kInfinity = (2 << 20);
 
-Result CreateResult4(absl::string_view key, absl::string_view value,
+Result CreateResult4(std::string_view key, std::string_view value,
                      PredictionTypes types,
                      Token::AttributesBitfield token_attrs) {
   Result result;
@@ -182,7 +182,7 @@ Result CreateResult4(absl::string_view key, absl::string_view value,
   return result;
 }
 
-Result CreateResult5(absl::string_view key, absl::string_view value, int wcost,
+Result CreateResult5(std::string_view key, std::string_view value, int wcost,
                      PredictionTypes types,
                      Token::AttributesBitfield token_attrs) {
   Result result;
@@ -193,7 +193,7 @@ Result CreateResult5(absl::string_view key, absl::string_view value, int wcost,
   return result;
 }
 
-Result CreateResult6(absl::string_view key, absl::string_view value, int wcost,
+Result CreateResult6(std::string_view key, std::string_view value, int wcost,
                      int cost, PredictionTypes types,
                      Token::AttributesBitfield token_attrs) {
   Result result;
@@ -216,7 +216,7 @@ void PushBackInnerSegmentBoundary(size_t key_len, size_t value_len,
   result->inner_segment_boundary.push_back(encoded);
 }
 
-void SetSegmentForCommit(absl::string_view candidate_value,
+void SetSegmentForCommit(std::string_view candidate_value,
                          int candidate_source_info, Segments *segments) {
   segments->Clear();
   Segment *segment = segments->add_segment();
@@ -230,7 +230,7 @@ void SetSegmentForCommit(absl::string_view candidate_value,
   candidate->source_info = candidate_source_info;
 }
 
-void InitSegmentsWithKey(absl::string_view key, Segments *segments) {
+void InitSegmentsWithKey(std::string_view key, Segments *segments) {
   segments->Clear();
 
   Segment *seg = segments->add_segment();
@@ -238,7 +238,7 @@ void InitSegmentsWithKey(absl::string_view key, Segments *segments) {
   seg->set_segment_type(Segment::FREE);
 }
 
-void PrependHistorySegments(absl::string_view key, absl::string_view value,
+void PrependHistorySegments(std::string_view key, std::string_view value,
                             Segments *segments) {
   Segment *seg = segments->push_front_segment();
   seg->set_segment_type(Segment::HISTORY);
@@ -250,7 +250,7 @@ void PrependHistorySegments(absl::string_view key, absl::string_view value,
   c->content_value = c->value;
 }
 
-void GenerateKeyEvents(absl::string_view text,
+void GenerateKeyEvents(std::string_view text,
                        std::vector<commands::KeyEvent> *keys) {
   keys->clear();
   for (const char32_t w : Util::Utf8ToUtf32(text)) {
@@ -265,7 +265,7 @@ void GenerateKeyEvents(absl::string_view text,
   }
 }
 
-void InsertInputSequence(absl::string_view text, composer::Composer *composer) {
+void InsertInputSequence(std::string_view text, composer::Composer *composer) {
   std::vector<commands::KeyEvent> keys;
   GenerateKeyEvents(text, &keys);
 
@@ -274,8 +274,8 @@ void InsertInputSequence(absl::string_view text, composer::Composer *composer) {
   }
 }
 
-bool FindCandidateByKeyValue(const Segment &segment, absl::string_view key,
-                             absl::string_view value) {
+bool FindCandidateByKeyValue(const Segment &segment, std::string_view key,
+                             std::string_view value) {
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     const Segment::Candidate &c = segment.candidate(i);
     if (c.key == key && c.value == value) {
@@ -285,7 +285,7 @@ bool FindCandidateByKeyValue(const Segment &segment, absl::string_view key,
   return false;
 }
 
-bool FindCandidateByValue(const Segment &segment, absl::string_view value) {
+bool FindCandidateByValue(const Segment &segment, std::string_view value) {
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     const Segment::Candidate &c = segment.candidate(i);
     if (c.value == value) {
@@ -834,7 +834,7 @@ TEST_F(DictionaryPredictorTest, PredictivePenaltyForBigramResults) {
   commands::RequestForUnitTest::FillMobileRequest(request_.get());
   predictor.PredictForRequest(*convreq_for_prediction_, &segments);
 
-  auto get_rank_by_value = [&](absl::string_view value) {
+  auto get_rank_by_value = [&](std::string_view value) {
     const Segment &seg = segments.conversion_segment(0);
     for (int i = 0; i < seg.candidates_size(); ++i) {
       if (seg.candidate(i).value == value) {
@@ -1384,7 +1384,7 @@ TEST_F(DictionaryPredictorTest, SingleKanjiCost) {
   }
 
   Segments segments;
-  auto get_rank_by_value = [&](absl::string_view value) {
+  auto get_rank_by_value = [&](std::string_view value) {
     const Segment &seg = segments.conversion_segment(0);
     for (int i = 0; i < seg.candidates_size(); ++i) {
       if (seg.candidate(i).value == value) {
@@ -1818,12 +1818,12 @@ TEST_F(DictionaryPredictorTest, MaybeApplyHomonymCorrectionTest) {
                 (const commands::CheckSpellingRequest &), (const, override));
     MOCK_METHOD(std::optional<std::vector<composer::TypeCorrectedQuery>>,
                 CheckCompositionSpelling,
-                (absl::string_view, absl::string_view,
+                (std::string_view, std::string_view,
                  const commands::Request &),
                 (const, override));
     MOCK_METHOD(std::optional<std::vector<spelling::HomonymCorrection>>,
                 CheckHomonymSpelling,
-                (absl::Span<const absl::string_view>, absl::string_view),
+                (absl::Span<const std::string_view>, std::string_view),
                 (const, override));
   };
 
@@ -1839,10 +1839,10 @@ TEST_F(DictionaryPredictorTest, MaybeApplyHomonymCorrectionTest) {
   auto mock = std::make_unique<MockSpellCheckerService>();
   EXPECT_CALL(*mock,
               CheckHomonymSpelling(
-                  absl::Span<const absl::string_view>(
+                  absl::Span<const std::string_view>(
                       // The first appearing values of key_2, key_1 and key_0.
                       {"value_2", "value_1", "value_0"}),
-                  absl::string_view("")))
+                  std::string_view("")))
       .WillOnce(Return(expected));
 
   composer_->SetSpellCheckerService(mock.get());
@@ -1861,7 +1861,7 @@ TEST_F(DictionaryPredictorTest, Rescoring) {
   prediction::MockRescorer rescorer;
   EXPECT_CALL(rescorer, RescoreResults(_, _, _))
       .WillRepeatedly(
-          Invoke([](const ConversionRequest &request, absl::string_view history,
+          Invoke([](const ConversionRequest &request, std::string_view history,
                     absl::Span<Result> results) {
             for (Result &r : results) r.cost = 100;
           }));

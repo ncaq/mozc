@@ -68,7 +68,7 @@ class CandidateWindowHandler : public CandidateWindowHandlerInterface {
 
   void RegisterGSettingsObserver();
 
-  void OnSettingsUpdated(absl::string_view key,
+  void OnSettingsUpdated(std::string_view key,
                          const GsettingsWrapper::Variant &value);
 
  protected:

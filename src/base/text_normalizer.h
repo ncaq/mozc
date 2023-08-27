@@ -35,7 +35,7 @@
 
 #include <string>
 
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -52,17 +52,17 @@ class TextNormalizer {
   TextNormalizer& operator=(const TextNormalizer&) = delete;
 
   // Normalizes `input` with all configurations.
-  static std::string NormalizeTextWithFlag(absl::string_view input, Flag flag);
+  static std::string NormalizeTextWithFlag(std::string_view input, Flag flag);
 
   // Normalizes `input` considering the platform.
-  static std::string NormalizeText(absl::string_view input) {
+  static std::string NormalizeText(std::string_view input) {
     return NormalizeTextWithFlag(input, kDefault);
   }
 
   // Normalizes Japanese CJK compatibility ideographs to SVS characters.
   // Returns false and keeps output as is, if no character is normalized.
-  static bool NormalizeTextToSvs(absl::string_view input, std::string *output);
-  static std::string NormalizeTextToSvs(absl::string_view input);
+  static bool NormalizeTextToSvs(std::string_view input, std::string *output);
+  static std::string NormalizeTextToSvs(std::string_view input);
 };
 
 }  // namespace mozc

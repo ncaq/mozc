@@ -40,20 +40,20 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "transliteration/transliteration.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddCandidate(Segment *segment, const absl::string_view value) {
+void AddCandidate(Segment *segment, const std::string_view value) {
   Segment::Candidate *c = segment->add_candidate();
   c->value = std::string(value);
   c->content_value = std::string(value);
 }
 
 void AddCandidateWithContentValue(Segment *segment,
-                                  const absl::string_view value,
-                                  const absl::string_view content_value) {
+                                  const std::string_view value,
+                                  const std::string_view content_value) {
   Segment::Candidate *c = segment->add_candidate();
   c->value = std::string(value);
   c->content_value = std::string(content_value);

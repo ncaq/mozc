@@ -40,7 +40,7 @@
 #include "config/config_handler.h"
 #include "testing/gunit.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -475,7 +475,7 @@ TEST(CandidateTest, InnerSegmentIterator) {
     candidate.value = "redgreenblue";
     candidate.PushBackInnerSegmentBoundary(4, 3, 4, 3);
     candidate.PushBackInnerSegmentBoundary(6, 9, 3, 5);
-    std::vector<absl::string_view> keys, values, content_keys, content_values,
+    std::vector<std::string_view> keys, values, content_keys, content_values,
         functional_keys, functional_values;
     for (Segment::Candidate::InnerSegmentIterator iter(&candidate);
          !iter.Done(); iter.Next()) {

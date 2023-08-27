@@ -44,7 +44,7 @@
 #include "prediction/result.h"
 #include "protocol/commands.pb.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc::prediction {
@@ -121,7 +121,7 @@ std::vector<Result> SingleKanjiPredictionAggregator::AggregateResults(
 }
 
 void SingleKanjiPredictionAggregator::AppendResults(
-    absl::string_view kanji_key, absl::string_view original_input_key,
+    std::string_view kanji_key, std::string_view original_input_key,
     absl::Span<const std::string> kanji_list, const int offset,
     std::vector<Result> *results) const {
   for (const std::string &kanji : kanji_list) {

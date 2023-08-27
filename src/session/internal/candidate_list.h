@@ -115,10 +115,10 @@ class CandidateList final {
   void Clear();
 
   const Candidate &GetDeepestFocusedCandidate() const;
-  void AddCandidate(int id, absl::string_view value) {
+  void AddCandidate(int id, std::string_view value) {
     AddCandidateWithAttributes(id, value, NO_ATTRIBUTES);
   }
-  void AddCandidateWithAttributes(int id, absl::string_view value,
+  void AddCandidateWithAttributes(int id, std::string_view value,
                                   Attributes attributes);
   void AddSubCandidateList(CandidateList *subcandidate_list);
   CandidateList *AllocateSubCandidateList(bool rotate);

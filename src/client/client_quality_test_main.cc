@@ -50,7 +50,7 @@
 #include "absl/flags/flag.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 ABSL_FLAG(std::string, server_path, "", "specify server path");
@@ -61,7 +61,7 @@ ABSL_FLAG(int32_t, max_case_for_source, 500,
 namespace mozc {
 namespace {
 
-bool IsValidSourceSentence(const absl::string_view str) {
+bool IsValidSourceSentence(const std::string_view str) {
   // TODO(noriyukit) Treat alphabets by changing to Eisu-mode
   if (Util::ContainsScriptType(str, Util::ALPHABET)) {
     LOG(WARNING) << "contains ALPHABET: " << str;
@@ -85,7 +85,7 @@ bool IsValidSourceSentence(const absl::string_view str) {
 }
 
 std::optional<std::vector<commands::KeyEvent>> GenerateKeySequenceFrom(
-    const absl::string_view hiragana_sentence) {
+    const std::string_view hiragana_sentence) {
   std::vector<commands::KeyEvent> keys;
 
   std::string input;
@@ -143,8 +143,8 @@ std::optional<std::string> GetPreedit(const commands::Output &output) {
 }
 
 std::optional<double> CalculateBleu(client::Client &client,
-                                    const absl::string_view hiragana_sentence,
-                                    const absl::string_view expected_result) {
+                                    const std::string_view hiragana_sentence,
+                                    const std::string_view expected_result) {
   // Prepare key events
   std::optional<std::vector<commands::KeyEvent>> keys =
       GenerateKeySequenceFrom(hiragana_sentence);
@@ -234,9 +234,9 @@ int main(int argc, char *argv[]) {
   absl::flat_hash_map<std::string, std::vector<double>> score_map;
 
   for (const TestCase &test_case : kTestCases) {
-    const absl::string_view source = test_case.source;
-    const absl::string_view hiragana_sentence = test_case.hiragana_sentence;
-    const absl::string_view expected_result = test_case.expected_result;
+    const std::string_view source = test_case.source;
+    const std::string_view hiragana_sentence = test_case.hiragana_sentence;
+    const std::string_view expected_result = test_case.expected_result;
 
     if (score_map[source].size() >= absl::GetFlag(FLAGS_max_case_for_source)) {
       continue;

@@ -52,7 +52,7 @@
 #include "prediction/single_kanji_prediction_aggregator.h"
 #include "prediction/zero_query_dict.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace prediction {
@@ -119,7 +119,7 @@ class DictionaryPredictionAggregator : public PredictionAggregatorInterface {
   // to |results|.
   // Returns false if there is no result for |key|.
   static bool GetZeroQueryCandidatesForKey(
-      const ConversionRequest &request, absl::string_view key,
+      const ConversionRequest &request, std::string_view key,
       const ZeroQueryDict &dict, std::vector<ZeroQueryResult> *results);
 
   static void AppendZeroQueryToResults(
@@ -139,8 +139,8 @@ class DictionaryPredictionAggregator : public PredictionAggregatorInterface {
                                     std::vector<Result> *results) const;
 
   // Adds prediction results from history key and value.
-  void AddBigramResultsFromHistory(absl::string_view history_key,
-                                   absl::string_view history_value,
+  void AddBigramResultsFromHistory(std::string_view history_key,
+                                   std::string_view history_value,
                                    const ConversionRequest &request,
                                    const Segments &segments,
                                    Segment::Candidate::SourceInfo source_info,
@@ -155,14 +155,14 @@ class DictionaryPredictionAggregator : public PredictionAggregatorInterface {
 
   static void GetPredictiveResults(
       const dictionary::DictionaryInterface &dictionary,
-      absl::string_view history_key, const ConversionRequest &request,
+      std::string_view history_key, const ConversionRequest &request,
       const Segments &segments, PredictionTypes types, size_t lookup_limit,
       Segment::Candidate::SourceInfo source_info, int zip_code_id,
       int unknown_id, std::vector<Result> *results);
 
   void GetPredictiveResultsForBigram(
       const dictionary::DictionaryInterface &dictionary,
-      absl::string_view history_key, absl::string_view history_value,
+      std::string_view history_key, std::string_view history_value,
       const ConversionRequest &request, const Segments &segments,
       PredictionTypes types, size_t lookup_limit,
       Segment::Candidate::SourceInfo source_info, int unknown_id,
@@ -172,7 +172,7 @@ class DictionaryPredictionAggregator : public PredictionAggregatorInterface {
   // applied to lookup key and/or output results.
   void GetPredictiveResultsForEnglishKey(
       const dictionary::DictionaryInterface &dictionary,
-      const ConversionRequest &request, absl::string_view input_key,
+      const ConversionRequest &request, std::string_view input_key,
       PredictionTypes types, size_t lookup_limit,
       std::vector<Result> *results) const;
 
@@ -196,7 +196,7 @@ class DictionaryPredictionAggregator : public PredictionAggregatorInterface {
       const ConversionRequest &request, const Segments &segments);
 
   // Returns true if key consistes of '0'-'9' or '-'
-  static bool IsZipCodeRequest(absl::string_view key);
+  static bool IsZipCodeRequest(std::string_view key);
 
   // Returns max size of realtime candidates.
   size_t GetRealtimeCandidateMaxSize(const ConversionRequest &request,

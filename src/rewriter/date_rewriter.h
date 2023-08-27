@@ -40,7 +40,7 @@
 #include "dictionary/dictionary_interface.h"
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace date_rewriter_internal {
@@ -48,11 +48,11 @@ namespace date_rewriter_internal {
 // TODO(yuryu): Move Candidate and private static methods to date_rewriter.cc.
 struct DateCandidate {
   DateCandidate() = default;
-  DateCandidate(std::string candidate, absl::string_view description)
+  DateCandidate(std::string candidate, std::string_view description)
       : candidate(std::move(candidate)), description(description) {}
 
   std::string candidate;
-  absl::string_view description;
+  std::string_view description;
 };
 
 }  // namespace date_rewriter_internal
@@ -69,9 +69,9 @@ class DateRewriter : public RewriterInterface {
                Segments *segments) const override;
 
   struct DateData {
-    absl::string_view key;
-    absl::string_view value;
-    absl::string_view description;
+    std::string_view key;
+    std::string_view value;
+    std::string_view description;
     int diff;  // diff from the current time in day or month or year
     int type;  // type of diff (e.g. year, month, date, etc).
   };
@@ -103,7 +103,7 @@ class DateRewriter : public RewriterInterface {
   //                        "1313年", "１３１３年", "一三一三年" },
   //                       {"昭和2年", "昭和2年", "昭和2年",
   //                        "正和2年", "正和2年", "正和2年"}
-  static bool EraToAd(absl::string_view key, std::vector<std::string> *results,
+  static bool EraToAd(std::string_view key, std::vector<std::string> *results,
                       std::vector<std::string> *descriptions);
 
   // Converts given time to string expression.
@@ -149,7 +149,7 @@ class DateRewriter : public RewriterInterface {
   static constexpr char kExtraFormatKey[] = "DATE_FORMAT";
 
  private:
-  static bool RewriteDate(Segment *segment, absl::string_view extra_format);
+  static bool RewriteDate(Segment *segment, std::string_view extra_format);
   static bool RewriteEra(Segment *current_segment, const Segment &next_segment);
   static bool RewriteAd(Segment *segment);
 
@@ -167,13 +167,13 @@ class DateRewriter : public RewriterInterface {
 
   // Helper functions for RewriteConsecutiveDigits().
   static bool RewriteConsecutiveTwoDigits(
-      absl::string_view str,
+      std::string_view str,
       std::vector<date_rewriter_internal::DateCandidate> *results);
   static bool RewriteConsecutiveThreeDigits(
-      absl::string_view str,
+      std::string_view str,
       std::vector<date_rewriter_internal::DateCandidate> *results);
   static bool RewriteConsecutiveFourDigits(
-      absl::string_view str,
+      std::string_view str,
       std::vector<date_rewriter_internal::DateCandidate> *results);
 
   const dictionary::DictionaryInterface *dictionary_ = nullptr;

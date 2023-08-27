@@ -39,14 +39,14 @@
 #include <vector>
 
 #include "base/file_stream.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
 class InputMultiFile {
  public:
   // filenames must be separated by comma(s), e.g., "foo.txt,hoge.txt".
-  explicit InputMultiFile(absl::string_view filenames,
+  explicit InputMultiFile(std::string_view filenames,
                           std::ios_base::openmode mode = std::ios_base::in);
   InputMultiFile(const InputMultiFile&) = delete;
   InputMultiFile& operator=(const InputMultiFile&) = delete;

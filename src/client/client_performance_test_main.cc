@@ -58,7 +58,7 @@
 #include "absl/algorithm/container.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 #include "absl/types/span.h"
 
@@ -291,7 +291,7 @@ class PredictionCommon : public TestScenarioInterface {
     std::vector<std::string> request_keys;
     CreatePredictionKeys(type, &request_keys);
     for (size_t i = 0; i < request_keys.size(); ++i) {
-      const absl::string_view keys = request_keys[i];
+      const std::string_view keys = request_keys[i];
       for (size_t j = 0; j < keys.size(); ++j) {
         commands::KeyEvent key;
         key.set_key_code(static_cast<int>(keys[j]));

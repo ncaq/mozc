@@ -45,7 +45,7 @@
 #include "dictionary/pos_matcher.h"
 #include "protocol/commands.pb.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 // For T13n normalize
 #include "transliteration/transliteration.h"
 #include "usage_stats/usage_stats.h"
@@ -116,7 +116,7 @@ struct IsNonnegativeAndLessThan<std::false_type> {
   }
 };
 
-void ModifyT13nsForGodan(const absl::string_view key,
+void ModifyT13nsForGodan(const std::string_view key,
                          std::vector<std::string> *t13ns) {
   static const char *const kKeycodeToT13nMap[] = {
       nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
@@ -155,7 +155,7 @@ void ModifyT13nsForGodan(const absl::string_view key,
   //   Also, just clearing it (i.e. make it an empty string) doesn't work.
   //   Thus, as a work around, we set the original key, so that it'll be
   //   removed in the later phase of de-dupping.
-  const absl::string_view half_ascii = dst.empty() ? key : dst;
+  const std::string_view half_ascii = dst.empty() ? key : dst;
   std::string full_ascii;
   japanese_util::HalfWidthAsciiToFullWidthAscii(half_ascii, &full_ascii);
   std::string half_ascii_upper(half_ascii);
@@ -424,7 +424,7 @@ bool TransliterationRewriter::Rewrite(const ConversionRequest &request,
 }
 
 void TransliterationRewriter::InitT13nCandidate(
-    const absl::string_view key, const absl::string_view value,
+    const std::string_view key, const std::string_view value,
     const uint16_t lid, const uint16_t rid, Segment::Candidate *cand) const {
   DCHECK(cand);
   cand->value = std::string(value);
@@ -436,7 +436,7 @@ void TransliterationRewriter::InitT13nCandidate(
 }
 
 bool TransliterationRewriter::SetTransliterations(
-    const std::vector<std::string> &t13ns, const absl::string_view key,
+    const std::vector<std::string> &t13ns, const std::string_view key,
     Segment *segment) const {
   if (t13ns.size() != transliteration::NUM_T13N_TYPES ||
       !IsTransliterated(t13ns)) {

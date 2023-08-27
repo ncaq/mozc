@@ -40,7 +40,7 @@
 #include "dictionary/dictionary_token.h"
 #include "protocol/commands.pb.h"
 #include "request/conversion_request.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -51,7 +51,7 @@ struct SpatialCostParams {
   bool enable_new_spatial_scoring = false;
   int penalty = kKanaModifierInsensitivePenalty;
   int min_char_length = 0;
-  int GetPenalty(absl::string_view key) const {
+  int GetPenalty(std::string_view key) const {
     return (min_char_length > 0 && Util::CharsLen(key) < min_char_length)
                ? kKanaModifierInsensitivePenalty
                : penalty;
@@ -92,14 +92,14 @@ class BaseNodeListBuilder : public dictionary::DictionaryInterface::Callback {
   BaseNodeListBuilder &operator=(const BaseNodeListBuilder &) = delete;
 
   // Determines a penalty for tokens of this (key, actual_key) pair.
-  ResultType OnActualKey(absl::string_view key, absl::string_view actual_key,
+  ResultType OnActualKey(std::string_view key, std::string_view actual_key,
                          int num_expanded) override {
     penalty_ = num_expanded > 0 ? spatial_cost_params_.GetPenalty(key) : 0;
     return TRAVERSE_CONTINUE;
   }
 
   // Creates a new node and prepends it to the current list.
-  ResultType OnToken(absl::string_view key, absl::string_view actual_key,
+  ResultType OnToken(std::string_view key, std::string_view actual_key,
                      const dictionary::Token &token) override {
     Node *new_node = NewNodeFromToken(token);
     PrependNode(new_node);
@@ -147,7 +147,7 @@ class NodeListBuilderForLookupPrefix : public BaseNodeListBuilder {
   NodeListBuilderForLookupPrefix &operator=(
       const NodeListBuilderForLookupPrefix &) = delete;
 
-  ResultType OnKey(absl::string_view key) override {
+  ResultType OnKey(std::string_view key) override {
     return key.size() < min_key_length_ ? TRAVERSE_NEXT_KEY : TRAVERSE_CONTINUE;
   }
 

@@ -37,7 +37,7 @@
 #include "converter/segments.h"
 #include "dictionary/pos_matcher.h"
 #include "rewriter/rewriter_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -45,22 +45,22 @@ class VariantsRewriter : public RewriterInterface {
  public:
   // Annotation constants.
 #ifdef __ANDROID__
-  static constexpr absl::string_view kHiragana = "";
-  static constexpr absl::string_view kKatakana = "";
-  static constexpr absl::string_view kNumber = "";
-  static constexpr absl::string_view kAlphabet = "";
-  static constexpr absl::string_view kKanji = "";
+  static constexpr std::string_view kHiragana = "";
+  static constexpr std::string_view kKatakana = "";
+  static constexpr std::string_view kNumber = "";
+  static constexpr std::string_view kAlphabet = "";
+  static constexpr std::string_view kKanji = "";
 #else   // __ANDROID__
-  static constexpr absl::string_view kHiragana = "ひらがな";
-  static constexpr absl::string_view kKatakana = "カタカナ";
-  static constexpr absl::string_view kNumber = "数字";
-  static constexpr absl::string_view kAlphabet = "アルファベット";
-  static constexpr absl::string_view kKanji = "漢字";
+  static constexpr std::string_view kHiragana = "ひらがな";
+  static constexpr std::string_view kKatakana = "カタカナ";
+  static constexpr std::string_view kNumber = "数字";
+  static constexpr std::string_view kAlphabet = "アルファベット";
+  static constexpr std::string_view kKanji = "漢字";
 #endif  // __ANDROID__
-  static constexpr absl::string_view kFullWidth = "[全]";
-  static constexpr absl::string_view kHalfWidth = "[半]";
-  static constexpr absl::string_view kDidYouMean = "<もしかして>";
-  static constexpr absl::string_view kYenKigou = "円記号";
+  static constexpr std::string_view kFullWidth = "[全]";
+  static constexpr std::string_view kHalfWidth = "[半]";
+  static constexpr std::string_view kDidYouMean = "<もしかして>";
+  static constexpr std::string_view kYenKigou = "円記号";
 
   explicit VariantsRewriter(dictionary::PosMatcher pos_matcher)
       : pos_matcher_(pos_matcher) {}

@@ -35,7 +35,7 @@
 
 #include "storage/louds/louds.h"
 #include "storage/louds/simple_succinct_bit_vector_index.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -110,16 +110,16 @@ class LoudsTrie {
   // to be passed in |buf|.  The returned string view points to a piece of
   // |buf|.
   // REQUIRES: |buf| is longer than kMaxDepth + 1.
-  absl::string_view RestoreKeyString(Node node, char *buf) const;
+  std::string_view RestoreKeyString(Node node, char *buf) const;
 
   // Restores the key string corresponding to |key_id|.  The caller is
   // responsible for allocating a buffer for the result string view, which needs
   // to be passed in |buf|.  The returned string view points to a piece of
   // |buf|.
   // REQUIRES: |buf| is longer than kMaxDepth + 1.
-  absl::string_view RestoreKeyString(int key_id, char *buf) const {
+  std::string_view RestoreKeyString(int key_id, char *buf) const {
     // TODO(noriyukit): Check if it's necessary to handle negative IDs.
-    return key_id < 0 ? absl::string_view()
+    return key_id < 0 ? std::string_view()
                       : RestoreKeyString(GetTerminalNodeFromKeyId(key_id), buf);
   }
 
@@ -142,12 +142,12 @@ class LoudsTrie {
   // Traverses a trie for |key|, starting from |node|, and modifies |node| to
   // the destination terminal node.  Here, |node| is not necessarily the root.
   // Returns false if there's no node reachable by |key|.
-  bool Traverse(absl::string_view key, Node *node) const;
+  bool Traverse(std::string_view key, Node *node) const;
 
   // Higher level APIs.
 
   // Returns true if |key| is in this trie.
-  bool HasKey(absl::string_view key) const {
+  bool HasKey(std::string_view key) const {
     Node node;  // Root
     return Traverse(key, &node) && IsTerminalNode(node);
   }
@@ -156,7 +156,7 @@ class LoudsTrie {
   // -1 if such key doesn't exist.
   // NOTE: When you only need to check if |key| is in this trie, use HasKey()
   // method, which is more efficient.
-  int ExactSearch(absl::string_view key) const;
+  int ExactSearch(std::string_view key) const;
 
   // Runs a functor for the prefixes of |key| that exist in the trie.
   // |callback| needs to have the following signature:
@@ -172,9 +172,9 @@ class LoudsTrie {
   //   node: The location information, from which key ID can be recovered by
   //         LoudsTrie::GetKeyIdOfTerminalNode() method.
   template <typename Func>
-  void PrefixSearch(absl::string_view key, Func callback) const {
+  void PrefixSearch(std::string_view key, Func callback) const {
     Node node;
-    for (absl::string_view::size_type i = 0; i < key.size();) {
+    for (std::string_view::size_type i = 0; i < key.size();) {
       if (!MoveToChildByLabel(key[i], &node)) {
         return;
       }

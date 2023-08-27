@@ -48,7 +48,7 @@
 #include "usage_stats/usage_stats.h"
 #include "absl/status/status.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -209,7 +209,7 @@ bool UserBoundaryHistoryRewriter::Reload() {
     return false;
   }
 
-  constexpr absl::string_view kFileSuffix = ".merge_pending";
+  constexpr std::string_view kFileSuffix = ".merge_pending";
   const std::string merge_pending_file = absl::StrCat(filename, kFileSuffix);
 
   // merge pending file does not always exist.

@@ -40,7 +40,7 @@
 #include "dictionary/system/words_info.h"
 #include "storage/louds/louds_trie.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -51,7 +51,7 @@ class TokenDecodeIterator {
   TokenDecodeIterator &operator=(const TokenDecodeIterator &) = delete;
   TokenDecodeIterator(const SystemDictionaryCodecInterface *codec,
                       const storage::louds::LoudsTrie &value_trie,
-                      const uint32_t *frequent_pos, absl::string_view key,
+                      const uint32_t *frequent_pos, std::string_view key,
                       const uint8_t *ptr);
   ~TokenDecodeIterator() = default;
 
@@ -70,7 +70,7 @@ class TokenDecodeIterator {
 
   void LookupValue(int id, std::string *value) const {
     char buffer[storage::louds::LoudsTrie::kMaxDepth + 1];
-    const absl::string_view encoded_value =
+    const std::string_view encoded_value =
         value_trie_->RestoreKeyString(id, buffer);
     codec_->DecodeValue(encoded_value, value);
   }
@@ -79,7 +79,7 @@ class TokenDecodeIterator {
   const storage::louds::LoudsTrie *value_trie_;
   const uint32_t *frequent_pos_;
 
-  const absl::string_view key_;
+  const std::string_view key_;
   // Katakana key will be lazily initialized.
   std::string key_katakana_;
 
@@ -95,7 +95,7 @@ class TokenDecodeIterator {
 inline TokenDecodeIterator::TokenDecodeIterator(
     const SystemDictionaryCodecInterface *codec,
     const storage::louds::LoudsTrie &value_trie, const uint32_t *frequent_pos,
-    absl::string_view key, const uint8_t *ptr)
+    std::string_view key, const uint8_t *ptr)
     : codec_(codec),
       value_trie_(&value_trie),
       frequent_pos_(frequent_pos),

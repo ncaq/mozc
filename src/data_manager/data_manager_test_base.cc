@@ -52,7 +52,7 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -259,12 +259,12 @@ void DataManagerTestBase::CounterSuffixTest_ValidateTest() {
   data_manager_->GetCounterSuffixSortedArray(&data, &data_size);
 
   SerializedStringArray suffix_array;
-  ASSERT_TRUE(suffix_array.Init(absl::string_view(data, data_size)));
+  ASSERT_TRUE(suffix_array.Init(std::string_view(data, data_size)));
 
   // Check if the array is sorted in ascending order.
-  absl::string_view prev_suffix;  // The smallest string.
+  std::string_view prev_suffix;  // The smallest string.
   for (size_t i = 0; i < suffix_array.size(); ++i) {
-    const absl::string_view suffix = suffix_array[i];
+    const std::string_view suffix = suffix_array[i];
     EXPECT_LE(prev_suffix, suffix);
     prev_suffix = suffix;
   }

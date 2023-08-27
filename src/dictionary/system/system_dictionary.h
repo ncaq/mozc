@@ -46,7 +46,7 @@
 #include "storage/louds/louds_trie.h"
 #include "absl/container/btree_set.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -73,7 +73,7 @@ class SystemDictionary : public DictionaryInterface {
   class Builder {
    public:
     // Creates Builder from filename
-    explicit Builder(absl::string_view filename);
+    explicit Builder(std::string_view filename);
     // Creates Builder from image
     Builder(const char *ptr, int len);
     Builder(const Builder &) = delete;
@@ -98,7 +98,7 @@ class SystemDictionary : public DictionaryInterface {
         IMAGE,
       };
 
-      Specification(InputType t, absl::string_view fn, const char *p, int l,
+      Specification(InputType t, std::string_view fn, const char *p, int l,
                     Options o, const SystemDictionaryCodecInterface *codec,
                     const DictionaryFileCodecInterface *file_codec)
           : type(t),
@@ -134,26 +134,26 @@ class SystemDictionary : public DictionaryInterface {
   const storage::louds::LoudsTrie &value_trie() const { return value_trie_; }
 
   // Implementation of DictionaryInterface.
-  bool HasKey(absl::string_view key) const override;
-  bool HasValue(absl::string_view value) const override;
+  bool HasKey(std::string_view key) const override;
+  bool HasValue(std::string_view value) const override;
 
-  void LookupPredictive(absl::string_view key,
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override;
 
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override;
 
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override;
 
-  void LookupReverse(absl::string_view str,
+  void LookupReverse(std::string_view str,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override;
 
-  void PopulateReverseLookupCache(absl::string_view str) const override;
+  void PopulateReverseLookupCache(std::string_view str) const override;
   void ClearReverseLookupCache() const override;
 
  private:
@@ -166,9 +166,9 @@ class SystemDictionary : public DictionaryInterface {
 
   bool OpenDictionaryFile(bool enable_reverse_lookup_index);
 
-  void RegisterReverseLookupTokensForT13N(absl::string_view value,
+  void RegisterReverseLookupTokensForT13N(std::string_view value,
                                           Callback *callback) const;
-  void RegisterReverseLookupTokensForValue(absl::string_view value,
+  void RegisterReverseLookupTokensForValue(std::string_view value,
                                            Callback *callback) const;
   void ScanTokens(const absl::btree_set<int> &id_set,
                   ReverseLookupCache *cache) const;
@@ -178,14 +178,14 @@ class SystemDictionary : public DictionaryInterface {
   void InitReverseLookupIndex();
 
   Callback::ResultType LookupPrefixWithKeyExpansionImpl(
-      const char *key, absl::string_view encoded_key,
+      const char *key, std::string_view encoded_key,
       const KeyExpansionTable &table, Callback *callback,
       storage::louds::LoudsTrie::Node node,
-      absl::string_view::size_type key_pos, int num_expanded,
+      std::string_view::size_type key_pos, int num_expanded,
       char *actual_key_buffer, std::string *actual_prefix) const;
 
   void CollectPredictiveNodesInBfsOrder(
-      absl::string_view encoded_key, const KeyExpansionTable &table,
+      std::string_view encoded_key, const KeyExpansionTable &table,
       size_t limit, std::vector<PredictiveLookupSearchState> *result) const;
 
   storage::louds::LoudsTrie key_trie_;

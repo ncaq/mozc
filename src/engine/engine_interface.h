@@ -38,7 +38,7 @@
 #include "dictionary/suppression_dictionary.h"
 #include "engine/user_data_manager_interface.h"
 #include "prediction/predictor_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -75,7 +75,7 @@ class EngineInterface {
   virtual UserDataManagerInterface *GetUserDataManager() = 0;
 
   // Gets the version of underlying data set.
-  virtual absl::string_view GetDataVersion() const = 0;
+  virtual std::string_view GetDataVersion() const = 0;
 
   // Gets the data manager.
   virtual const DataManagerInterface *GetDataManager() const = 0;

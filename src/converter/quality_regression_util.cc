@@ -53,7 +53,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace quality_regression {
@@ -74,14 +74,14 @@ constexpr char kSuggestionNotExpect[] = "Suggestion Not Expected";
 constexpr char kZeroQueryExpect[] = "ZeroQuery Expected";
 constexpr char kZeroQueryNotExpect[] = "ZeroQuery Not Expected";
 
-int GetRank(absl::string_view value, const Segments *segments,
+int GetRank(std::string_view value, const Segments *segments,
             size_t current_segment) {
   if (current_segment == segments->segments_size()) {
     return value.empty() ? 0 : -1;
   }
   const Segment &seg = segments->segment(current_segment);
   int rank = 0;
-  absl::flat_hash_set<absl::string_view> dedup;
+  absl::flat_hash_set<std::string_view> dedup;
   for (const Segment::Candidate *cand : seg.candidates()) {
     const std::string &cand_value = cand->value;
     const bool new_value = dedup.insert(cand_value).second;
@@ -106,7 +106,7 @@ int GetRank(absl::string_view value, const Segments *segments,
   return -1;
 }
 
-absl::StatusOr<uint32_t> GetPlatformFromString(absl::string_view str) {
+absl::StatusOr<uint32_t> GetPlatformFromString(std::string_view str) {
   std::string lower;
   lower.assign(str.data(), str.size());
   Util::LowerString(&lower);
@@ -134,7 +134,7 @@ std::string QualityRegressionUtil::TestItem::OutputAsTSV() const {
 
 absl::Status QualityRegressionUtil::TestItem::ParseFromTSV(
     const std::string &line) {
-  std::vector<absl::string_view> tokens =
+  std::vector<std::string_view> tokens =
       absl::StrSplit(line, '\t', absl::SkipEmpty());
   if (tokens.size() < 4) {
     return absl::InvalidArgumentError(
@@ -165,7 +165,7 @@ absl::Status QualityRegressionUtil::TestItem::ParseFromTSV(
   }
   platform = 0;
   if (tokens.size() >= 7) {
-    std::vector<absl::string_view> platforms =
+    std::vector<std::string_view> platforms =
         absl::StrSplit(tokens[6], ',', absl::SkipEmpty());
     for (size_t i = 0; i < platforms.size(); ++i) {
       auto result = GetPlatformFromString(platforms[i]);

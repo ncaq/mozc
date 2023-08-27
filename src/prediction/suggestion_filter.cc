@@ -37,7 +37,7 @@
 #include "base/status.h"
 #include "base/util.h"
 #include "storage/existence_filter.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -61,7 +61,7 @@ SuggestionFilter SuggestionFilter::CreateOrDie(
   return *std::move(filter);
 }
 
-bool SuggestionFilter::IsBadSuggestion(const absl::string_view text) const {
+bool SuggestionFilter::IsBadSuggestion(const std::string_view text) const {
   std::string lower_text(text);
   Util::LowerString(&lower_text);
   return filter_.Exists(Fingerprint(lower_text));

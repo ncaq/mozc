@@ -59,7 +59,7 @@
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 ABSL_FLAG(std::string, sorting_table, "", "sorting table file");
@@ -101,7 +101,7 @@ SortingKeyMap CreateSortingKeyMap(const std::string &auto_file,
     if (line.empty() || line[0] == '#') {
       continue;
     }
-    const std::vector<absl::string_view> fields =
+    const std::vector<std::string_view> fields =
         absl::StrSplit(line, absl::ByAnyChar("\t "), absl::SkipEmpty());
     CHECK_GE(fields.size(), 2);
     uint32_t ucs4 = 0;
@@ -118,15 +118,15 @@ SortingKeyMap CreateSortingKeyMap(const std::string &auto_file,
   return sorting_keys;
 }
 
-void AddSymbolToDictionary(const absl::string_view pos,
-                           const absl::string_view value,
+void AddSymbolToDictionary(const std::string_view pos,
+                           const std::string_view value,
                            const absl::Span<const std::string> keys,
-                           const absl::string_view description,
-                           const absl::string_view additional_description,
+                           const std::string_view description,
+                           const std::string_view additional_description,
                            const SortingKeyMap &sorting_keys,
                            rewriter::DictionaryGenerator &dictionary) {
   // use first char of value as sorting key.
-  const absl::string_view first_value = Util::Utf8SubString(value, 0, 1);
+  const std::string_view first_value = Util::Utf8SubString(value, 0, 1);
   const auto it = sorting_keys.find(first_value);
   uint16_t sorting_key = 0;
   if (it == sorting_keys.end()) {
@@ -172,7 +172,7 @@ void MakeDictionary(const std::string &symbol_dictionary_file,
     // Format:
     // POS <tab> value <tab> readings(space delimited) <tab>
     // description <tab> memo
-    std::vector<absl::string_view> fields =
+    std::vector<std::string_view> fields =
         absl::StrSplit(line, '\t', absl::AllowEmpty());
     if (fields.size() < 3 || (fields[1].empty() && fields[2].empty())) {
       VLOG(3) << "invalid format. skip line: " << line;
@@ -180,7 +180,7 @@ void MakeDictionary(const std::string &symbol_dictionary_file,
     }
     std::string pos(fields[0]);
     Util::UpperString(&pos);
-    const absl::string_view value = fields[1];
+    const std::string_view value = fields[1];
     if (seen.contains(value)) {
       LOG(WARNING) << "already inserted: " << value;
       continue;
@@ -189,13 +189,13 @@ void MakeDictionary(const std::string &symbol_dictionary_file,
     }
 
     std::vector<std::string> keys;
-    for (const absl::string_view key :
+    for (const std::string_view key :
          absl::StrSplit(fields[2], ' ', absl::SkipEmpty())) {
       keys.push_back(
           absl::StrReplaceAll(key, {{"　", " "}}));  // Full-width space
     }
-    const absl::string_view description = fields.size() > 3 ? fields[3] : "";
-    const absl::string_view additional_description =
+    const std::string_view description = fields.size() > 3 ? fields[3] : "";
+    const std::string_view additional_description =
         fields.size() > 4 ? fields[4] : "";
     AddSymbolToDictionary(pos, value, keys, description, additional_description,
                           sorting_keys, dictionary);
@@ -224,7 +224,7 @@ int main(int argc, char **argv) {
   CHECK_OK(tmp_text_file);
 
   // User pos manager data for build tools has no magic number.
-  constexpr absl::string_view kMagicNumber = "";
+  constexpr std::string_view kMagicNumber = "";
   mozc::DataManager data_manager;
   const mozc::DataManager::Status status =
       data_manager.InitUserPosManagerDataFromFile(

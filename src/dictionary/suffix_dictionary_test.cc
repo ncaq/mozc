@@ -40,7 +40,7 @@
 #include "request/conversion_request.h"
 #include "testing/gunit.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -52,7 +52,7 @@ TEST(SuffixDictionaryTest, LookupPredictive) {
   ConversionRequest convreq;
   {
     const testing::MockDataManager manager;
-    absl::string_view key_array_data, value_arra_data;
+    std::string_view key_array_data, value_arra_data;
     const uint32_t *token_array = nullptr;
     manager.GetSuffixDictionaryData(&key_array_data, &value_arra_data,
                                     &token_array);

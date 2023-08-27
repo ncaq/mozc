@@ -37,7 +37,7 @@
 #include "dictionary/pos_matcher.h"
 #include "rewriter/rewriter_interface.h"
 #include "testing/gunit_prod.h"  // for FRIEND_TEST()
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 class ConversionRequest;
@@ -57,7 +57,7 @@ class EnglishVariantsRewriter : public RewriterInterface {
   FRIEND_TEST(EnglishVariantsRewriterTest, ExpandEnglishVariants);
   bool IsT13NCandidate(Segment::Candidate *candidate) const;
   bool IsEnglishCandidate(Segment::Candidate *candidate) const;
-  bool ExpandEnglishVariants(absl::string_view input,
+  bool ExpandEnglishVariants(std::string_view input,
                              std::vector<std::string> *variants) const;
   bool ExpandEnglishVariantsWithSegment(Segment *seg) const;
 

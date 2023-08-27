@@ -37,7 +37,7 @@
 #include "base/singleton.h"
 #include "base/thread2.h"
 #include "ipc/ipc_path_manager.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 #include <wil/resource.h>
@@ -96,7 +96,7 @@ uint32_t IPCClient::GetServerProcessId() const {
 }
 
 // static
-bool IPCClient::TerminateServer(const absl::string_view name) {
+bool IPCClient::TerminateServer(const std::string_view name) {
   IPCClient client(name);
 
   if (!client.Connected()) {

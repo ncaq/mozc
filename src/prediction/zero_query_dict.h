@@ -36,7 +36,7 @@
 #include <utility>
 
 #include "base/container/serialized_string_array.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -108,8 +108,8 @@ class ZeroQueryDict {
       return static_cast<ZeroQueryType>(val);
     }
 
-    absl::string_view key() const { return (*string_array_)[key_index()]; }
-    absl::string_view value() const { return (*string_array_)[value_index()]; }
+    std::string_view key() const { return (*string_array_)[key_index()]; }
+    std::string_view value() const { return (*string_array_)[value_index()]; }
 
     iterator &operator++() {
       ptr_ += kTokenByteSize;
@@ -179,8 +179,8 @@ class ZeroQueryDict {
     const SerializedStringArray *string_array_;
   };
 
-  void Init(absl::string_view token_array_data,
-            absl::string_view string_array_data) {
+  void Init(std::string_view token_array_data,
+            std::string_view string_array_data) {
     token_array_ = token_array_data;
     string_array_.Set(string_array_data);
   }
@@ -193,7 +193,7 @@ class ZeroQueryDict {
     return iterator(token_array_.data() + token_array_.size(), &string_array_);
   }
 
-  std::pair<iterator, iterator> equal_range(absl::string_view key) const {
+  std::pair<iterator, iterator> equal_range(std::string_view key) const {
     const auto iter =
         std::lower_bound(string_array_.begin(), string_array_.end(), key);
     if (iter == string_array_.end() || *iter != key) {
@@ -203,7 +203,7 @@ class ZeroQueryDict {
   }
 
  private:
-  absl::string_view token_array_;
+  std::string_view token_array_;
   SerializedStringArray string_array_;
 };
 

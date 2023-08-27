@@ -30,12 +30,12 @@
 #include "base/clock_mock.h"
 
 #include "base/logging.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
 
-absl::Time ParseTimeOrDie(absl::string_view time) {
+absl::Time ParseTimeOrDie(std::string_view time) {
   absl::Time t;
   CHECK(absl::ParseTime(absl::RFC3339_full, time, &t, nullptr));
   return t;

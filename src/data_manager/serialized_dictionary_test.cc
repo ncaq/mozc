@@ -37,7 +37,7 @@
 
 #include "base/container/serialized_string_array.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -51,14 +51,14 @@ class SerializedDictionaryTest : public ::testing::Test {
  protected:
   void SetUp() override {
     std::stringstream ifs(kTestInput);
-    const std::pair<absl::string_view, absl::string_view> data =
+    const std::pair<std::string_view, std::string_view> data =
         SerializedDictionary::Compile(&ifs, &buf1_, &buf2_);
     token_array_data_ = data.first;
     string_array_data_ = data.second;
   }
 
-  absl::string_view token_array_data_;   // Pointing to a block of buf1_
-  absl::string_view string_array_data_;  // Pointing to a block of buf2_
+  std::string_view token_array_data_;   // Pointing to a block of buf1_
+  std::string_view string_array_data_;  // Pointing to a block of buf2_
 
  private:
   std::unique_ptr<uint32_t[]> buf1_;

@@ -49,7 +49,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "rewriter/rewriter_util.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 // SymbolRewriter:
 // 1. Update data/symbol/symbol.tsv
@@ -67,7 +67,7 @@ constexpr size_t kMaxInsertToMedium = 15;
 }  // namespace
 
 size_t SymbolRewriter::GetOffset(const ConversionRequest &request,
-                                 absl::string_view key) {
+                                 std::string_view key) {
   const bool is_symbol_key =
       Util::CharsLen(key) == 1 && Util::IsScriptType(key, Util::UNKNOWN_SCRIPT);
 
@@ -88,8 +88,8 @@ size_t SymbolRewriter::GetOffset(const ConversionRequest &request,
 // TODO(taku): allow us to define two descriptions in *.tsv file
 // static function
 std::string SymbolRewriter::GetDescription(
-    const absl::string_view value, const absl::string_view description,
-    const absl::string_view additional_description) {
+    const std::string_view value, const std::string_view description,
+    const std::string_view additional_description) {
   if (description.empty()) {
     return "";
   }
@@ -102,7 +102,7 @@ std::string SymbolRewriter::GetDescription(
 
 // return true key has no-hiragana
 // static function
-bool SymbolRewriter::IsSymbol(const absl::string_view key) {
+bool SymbolRewriter::IsSymbol(const std::string_view key) {
   for (ConstChar32Iterator iter(key); !iter.Done(); iter.Next()) {
     const char32_t ucs4 = iter.Get();
     if (ucs4 >= 0x3041 && ucs4 <= 0x309F) {  // hiragana
@@ -114,7 +114,7 @@ bool SymbolRewriter::IsSymbol(const absl::string_view key) {
 
 // static function
 void SymbolRewriter::ExpandSpace(Segment *segment) {
-  auto insert_candidate = [segment](int base, absl::string_view value) {
+  auto insert_candidate = [segment](int base, std::string_view value) {
     auto c = std::make_unique<Segment::Candidate>(segment->candidate(base));
     strings::Assign(c->value, value);
     strings::Assign(c->content_value, value);
@@ -123,8 +123,8 @@ void SymbolRewriter::ExpandSpace(Segment *segment) {
     segment->insert_candidate(base + 1, std::move(c));
   };
 
-  constexpr absl::string_view kHalfWidthSpace = " ";   // U+0020
-  constexpr absl::string_view kFullWidthSpace = "　";  // U+3000
+  constexpr std::string_view kHalfWidthSpace = " ";   // U+0020
+  constexpr std::string_view kFullWidthSpace = "　";  // U+3000
   for (size_t i = 0; i < segment->candidates_size(); ++i) {
     if (segment->candidate(i).value == kHalfWidthSpace) {
       insert_candidate(i, kFullWidthSpace);
@@ -354,7 +354,7 @@ SymbolRewriter::SymbolRewriter(const ConverterInterface *parent_converter,
                                const DataManagerInterface *data_manager)
     : parent_converter_(parent_converter) {
   DCHECK(parent_converter_);
-  absl::string_view token_array_data, string_array_data;
+  std::string_view token_array_data, string_array_data;
   data_manager->GetSymbolRewriterData(&token_array_data, &string_array_data);
   DCHECK(SerializedDictionary::VerifyData(token_array_data, string_array_data));
   dictionary_ = std::make_unique<SerializedDictionary>(token_array_data,

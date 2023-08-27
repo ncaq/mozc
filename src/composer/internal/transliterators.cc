@@ -37,7 +37,7 @@
 #include "base/strings/assign.h"
 #include "base/util.h"
 #include "config/character_form_manager.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace composer {
@@ -45,8 +45,8 @@ namespace {
 
 using ::mozc::config::CharacterFormManager;
 
-bool SplitPrimaryString(const size_t position, const absl::string_view primary,
-                        const absl::string_view secondary,
+bool SplitPrimaryString(const size_t position, const std::string_view primary,
+                        const std::string_view secondary,
                         std::string *primary_lhs, std::string *primary_rhs,
                         std::string *secondary_lhs,
                         std::string *secondary_rhs) {
@@ -91,8 +91,8 @@ class ConversionStringSelector : public TransliteratorInterface {
  public:
   ~ConversionStringSelector() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     return std::string(converted);
   }
 
@@ -100,8 +100,8 @@ class ConversionStringSelector : public TransliteratorInterface {
   // const because this function overrides the virtual function of
   // TransliterateInterface whose first argument is not const.
   // Otherwise the Windows compiler (cl.exe) raises an error.
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitConverted(position, raw, converted, raw_lhs,
@@ -116,13 +116,13 @@ class RawStringSelector : public TransliteratorInterface {
  public:
   ~RawStringSelector() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     return std::string(raw);
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitRaw(position, raw, converted, raw_lhs, raw_rhs,
@@ -134,8 +134,8 @@ class HiraganaTransliterator : public TransliteratorInterface {
  public:
   ~HiraganaTransliterator() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     std::string full, output;
     japanese_util::HalfWidthToFullWidth(converted, &full);
     CharacterFormManager::GetCharacterFormManager()->ConvertPreeditString(
@@ -143,8 +143,8 @@ class HiraganaTransliterator : public TransliteratorInterface {
     return output;
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitConverted(position, raw, converted, raw_lhs,
@@ -157,8 +157,8 @@ class FullKatakanaTransliterator : public TransliteratorInterface {
  public:
   ~FullKatakanaTransliterator() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     std::string t13n, full;
     japanese_util::HiraganaToKatakana(converted, &t13n);
     japanese_util::HalfWidthToFullWidth(t13n, &full);
@@ -169,8 +169,8 @@ class FullKatakanaTransliterator : public TransliteratorInterface {
     return output;
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitConverted(position, raw, converted, raw_lhs,
@@ -183,7 +183,7 @@ class HalfKatakanaTransliterator : public TransliteratorInterface {
  public:
   ~HalfKatakanaTransliterator() override = default;
 
-  static void HalfKatakanaToHiragana(const absl::string_view half_katakana,
+  static void HalfKatakanaToHiragana(const std::string_view half_katakana,
                                      std::string *hiragana) {
     std::string full_katakana;
     japanese_util::HalfWidthKatakanaToFullWidthKatakana(half_katakana,
@@ -191,8 +191,8 @@ class HalfKatakanaTransliterator : public TransliteratorInterface {
     japanese_util::KatakanaToHiragana(full_katakana, hiragana);
   }
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     std::string t13n;
     std::string katakana_output;
     japanese_util::HiraganaToKatakana(converted, &katakana_output);
@@ -200,8 +200,8 @@ class HalfKatakanaTransliterator : public TransliteratorInterface {
     return t13n;
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     const std::string half_katakana = Transliterate(raw, converted);
@@ -227,16 +227,16 @@ class HalfAsciiTransliterator : public TransliteratorInterface {
  public:
   ~HalfAsciiTransliterator() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     std::string t13n;
-    const absl::string_view input = raw.empty() ? converted : raw;
+    const std::string_view input = raw.empty() ? converted : raw;
     japanese_util::FullWidthAsciiToHalfWidthAscii(input, &t13n);
     return t13n;
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitRaw(position, raw, converted, raw_lhs, raw_rhs,
@@ -248,16 +248,16 @@ class FullAsciiTransliterator : public TransliteratorInterface {
  public:
   ~FullAsciiTransliterator() override = default;
 
-  std::string Transliterate(const absl::string_view raw,
-                            const absl::string_view converted) const override {
+  std::string Transliterate(const std::string_view raw,
+                            const std::string_view converted) const override {
     std::string t13n;
-    const absl::string_view input = raw.empty() ? converted : raw;
+    const std::string_view input = raw.empty() ? converted : raw;
     japanese_util::HalfWidthAsciiToFullWidthAscii(input, &t13n);
     return t13n;
   }
 
-  bool Split(size_t position, const absl::string_view raw,
-             const absl::string_view converted, std::string *raw_lhs,
+  bool Split(size_t position, const std::string_view raw,
+             const std::string_view converted, std::string *raw_lhs,
              std::string *raw_rhs, std::string *converted_lhs,
              std::string *converted_rhs) const override {
     return Transliterators::SplitRaw(position, raw, converted, raw_lhs, raw_rhs,
@@ -296,8 +296,8 @@ const TransliteratorInterface *Transliterators::GetTransliterator(
 
 // static
 bool Transliterators::SplitRaw(const size_t position,
-                               const absl::string_view raw,
-                               const absl::string_view converted,
+                               const std::string_view raw,
+                               const std::string_view converted,
                                std::string *raw_lhs, std::string *raw_rhs,
                                std::string *converted_lhs,
                                std::string *converted_rhs) {
@@ -307,8 +307,8 @@ bool Transliterators::SplitRaw(const size_t position,
 
 // static
 bool Transliterators::SplitConverted(const size_t position,
-                                     const absl::string_view raw,
-                                     const absl::string_view converted,
+                                     const std::string_view raw,
+                                     const std::string_view converted,
                                      std::string *raw_lhs, std::string *raw_rhs,
                                      std::string *converted_lhs,
                                      std::string *converted_rhs) {

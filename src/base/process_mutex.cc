@@ -39,7 +39,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/synchronization/mutex.h"
 
 #ifdef _WIN32
@@ -61,14 +61,14 @@
 namespace mozc {
 namespace {
 
-std::string CreateProcessMutexFileName(const absl::string_view name) {
-  absl::string_view hidden_prefix = TargetIsWindows() ? "" : ".";
+std::string CreateProcessMutexFileName(const std::string_view name) {
+  std::string_view hidden_prefix = TargetIsWindows() ? "" : ".";
   std::string basename = absl::StrCat(hidden_prefix, name, ".lock");
   return FileUtil::JoinPath(SystemUtil::GetUserProfileDirectory(), basename);
 }
 }  // namespace
 
-ProcessMutex::ProcessMutex(absl::string_view name)
+ProcessMutex::ProcessMutex(std::string_view name)
     : filename_(CreateProcessMutexFileName(name)) {}
 
 ProcessMutex::~ProcessMutex() { UnLock(); }
@@ -77,7 +77,7 @@ bool ProcessMutex::Lock() { return LockAndWrite(""); }
 
 #ifdef _WIN32
 
-bool ProcessMutex::LockAndWrite(const absl::string_view message) {
+bool ProcessMutex::LockAndWrite(const std::string_view message) {
   if (locked_) {
     VLOG(1) << filename_ << " is already locked";
     return false;
@@ -216,7 +216,7 @@ class FileLockManager {
 
 }  // namespace
 
-bool ProcessMutex::LockAndWrite(const absl::string_view message) {
+bool ProcessMutex::LockAndWrite(const std::string_view message) {
   absl::StatusOr<int> status_or_fd =
       Singleton<FileLockManager>::get()->Lock(filename_);
   if (!status_or_fd.ok()) {

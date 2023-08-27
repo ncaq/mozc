@@ -45,13 +45,13 @@
 #include "absl/strings/match.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
 // Checks given string is ucs4 expression or not.
-bool IsValidUcs4Expression(const absl::string_view input) {
+bool IsValidUcs4Expression(const std::string_view input) {
   if (input.size() < 3 || input.size() > 8) {
     return false;
   }
@@ -64,7 +64,7 @@ bool IsValidUcs4Expression(const absl::string_view input) {
 }
 
 // Converts given string to 32bit unsigned integer.
-bool UCS4ExpressionToInteger(const absl::string_view input, uint32_t *ucs4) {
+bool UCS4ExpressionToInteger(const std::string_view input, uint32_t *ucs4) {
   DCHECK(ucs4);
   return absl::SimpleHexAtoi(input.substr(2), ucs4);
 }

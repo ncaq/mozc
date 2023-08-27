@@ -41,7 +41,7 @@
 #include "base/unverified_aes256.h"
 #include "base/unverified_sha1.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #if defined(_WIN32)
 // clang-format off
@@ -90,8 +90,8 @@ using ::mozc::internal::UnverifiedSHA1;
 //    hBaseData parameter.
 // 5. Concatenate the result of step 3 with the result of step 4.
 // 6. Use the first n bytes of the result of step 5 as the derived key.
-std::string GetMSCryptDeriveKeyWithSHA1(const absl::string_view password,
-                                        const absl::string_view salt) {
+std::string GetMSCryptDeriveKeyWithSHA1(const std::string_view password,
+                                        const std::string_view salt) {
   // Step1.
   std::string buf1(64, 0x36);
 
@@ -121,8 +121,8 @@ size_t Encryptor::Key::GetEncryptedSize(size_t size) const {
   return (size / block_size() + 1) * block_size();
 }
 
-bool Encryptor::Key::DeriveFromPassword(const absl::string_view password,
-                                        const absl::string_view salt,
+bool Encryptor::Key::DeriveFromPassword(const std::string_view password,
+                                        const std::string_view salt,
                                         const uint8_t *iv) {
   if (IsAvailable()) {
     LOG(WARNING) << "key is already set";
@@ -259,7 +259,7 @@ bool Encryptor::DecryptArray(const Encryptor::Key &key, char *buf,
 // Protect|Unprotect Data
 #ifdef _WIN32
 // See. http://msdn.microsoft.com/en-us/library/aa380261.aspx
-bool Encryptor::ProtectData(const absl::string_view plain_text,
+bool Encryptor::ProtectData(const std::string_view plain_text,
                             std::string *cipher_text) {
   DCHECK(cipher_text);
   DATA_BLOB input;
@@ -283,7 +283,7 @@ bool Encryptor::ProtectData(const absl::string_view plain_text,
 }
 
 // See. http://msdn.microsoft.com/en-us/library/aa380882(VS.85).aspx
-bool Encryptor::UnprotectData(const absl::string_view cipher_text,
+bool Encryptor::UnprotectData(const std::string_view cipher_text,
                               std::string *plain_text) {
   DCHECK(plain_text);
   DATA_BLOB input;
@@ -310,7 +310,7 @@ bool Encryptor::UnprotectData(const absl::string_view cipher_text,
 #elif defined(__APPLE__)
 
 // ProtectData for Mac uses the serial number and the current pid as the key.
-bool Encryptor::ProtectData(const absl::string_view plain_text,
+bool Encryptor::ProtectData(const std::string_view plain_text,
                             std::string *cipher_text) {
   DCHECK(cipher_text);
   Encryptor::Key key;
@@ -335,7 +335,7 @@ bool Encryptor::ProtectData(const absl::string_view plain_text,
 }
 
 // Same as ProtectData.
-bool Encryptor::UnprotectData(const absl::string_view cipher_text,
+bool Encryptor::UnprotectData(const std::string_view cipher_text,
                               std::string *plain_text) {
   DCHECK(plain_text);
   Encryptor::Key key;
@@ -368,7 +368,7 @@ constexpr size_t kSaltSize = 32;
 }  // namespace
 
 // Use AES to emulate ProtectData
-bool Encryptor::ProtectData(const absl::string_view plain_text,
+bool Encryptor::ProtectData(const std::string_view plain_text,
                             std::string *cipher_text) {
   std::string password;
   if (!PasswordManager::GetPassword(&password)) {
@@ -397,7 +397,7 @@ bool Encryptor::ProtectData(const absl::string_view plain_text,
 }
 
 // Use AES to emulate UnprotectData
-bool Encryptor::UnprotectData(const absl::string_view cipher_text,
+bool Encryptor::UnprotectData(const std::string_view cipher_text,
                               std::string *plain_text) {
   if (cipher_text.size() < kSaltSize) {
     LOG(ERROR) << "encrypted message is too short";

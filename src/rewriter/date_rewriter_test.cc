@@ -50,7 +50,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -66,27 +66,27 @@ using ::testing::Matcher;
 using ::testing::Not;
 using ::testing::StrEq;
 
-void InitCandidate(const absl::string_view key, const absl::string_view value,
+void InitCandidate(const std::string_view key, const std::string_view value,
                    Segment::Candidate *candidate) {
   candidate->content_key = std::string(key);
   candidate->value = std::string(value);
   candidate->content_value = std::string(value);
 }
 
-void AppendSegment(const absl::string_view key, const absl::string_view value,
+void AppendSegment(const std::string_view key, const std::string_view value,
                    Segments *segments) {
   Segment *seg = segments->add_segment();
   seg->set_key(key);
   InitCandidate(key, value, seg->add_candidate());
 }
 
-void InitSegment(const absl::string_view key, const absl::string_view value,
+void InitSegment(const std::string_view key, const std::string_view value,
                  Segments *segments) {
   segments->Clear();
   AppendSegment(key, value, segments);
 }
 
-void InsertCandidate(const absl::string_view key, const absl::string_view value,
+void InsertCandidate(const std::string_view key, const std::string_view value,
                      const int position, Segment *segment) {
   Segment::Candidate *cand = segment->insert_candidate(position);
   cand->content_key = std::string(key);
@@ -94,13 +94,13 @@ void InsertCandidate(const absl::string_view key, const absl::string_view value,
   cand->content_value = std::string(value);
 }
 
-Matcher<const Segment::Candidate *> ValueIs(absl::string_view value) {
+Matcher<const Segment::Candidate *> ValueIs(std::string_view value) {
   return Field(&Segment::Candidate::value, value);
 }
 
 // A matcher to test if a candidate has the given value and description.
-Matcher<const Segment::Candidate *> ValueAndDescAre(absl::string_view value,
-                                                    absl::string_view desc) {
+Matcher<const Segment::Candidate *> ValueAndDescAre(std::string_view value,
+                                                    std::string_view desc) {
   return Pointee(AllOf(Field(&Segment::Candidate::value, value),
                        Field(&Segment::Candidate::description, desc)));
 }
@@ -108,7 +108,7 @@ Matcher<const Segment::Candidate *> ValueAndDescAre(absl::string_view value,
 // An action that invokes a DictionaryInterface::Callback with the token whose
 // value is set to the given one.
 ACTION_P(InvokeCallbackWithUserDictionaryToken, value) {
-  const absl::string_view key = arg0;
+  const std::string_view key = arg0;
   DictionaryInterface::Callback *const callback = arg2;
   const Token token(key, value, MockDictionary::kDefaultCost,
                     MockDictionary::kDefaultPosId,
@@ -131,7 +131,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
   {
     InitSegment("きょう", "今日", &segments);
     EXPECT_TRUE(rewriter.Rewrite(request, &segments));
-    constexpr absl::string_view kDesc = "今日の日付";
+    constexpr std::string_view kDesc = "今日の日付";
     ASSERT_EQ(segments.segments_size(), 1);
     EXPECT_THAT(segments.segment(0),
                 CandidatesAreArray({
@@ -146,7 +146,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
   {
     InitSegment("あした", "明日", &segments);
     EXPECT_TRUE(rewriter.Rewrite(request, &segments));
-    constexpr absl::string_view kDesc = "明日の日付";
+    constexpr std::string_view kDesc = "明日の日付";
     ASSERT_EQ(segments.segments_size(), 1);
     EXPECT_THAT(segments.segment(0),
                 CandidatesAreArray({
@@ -161,7 +161,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
   {
     InitSegment("きのう", "昨日", &segments);
     EXPECT_TRUE(rewriter.Rewrite(request, &segments));
-    constexpr absl::string_view kDesc = "昨日の日付";
+    constexpr std::string_view kDesc = "昨日の日付";
     ASSERT_EQ(segments.segments_size(), 1);
     EXPECT_THAT(segments.segment(0),
                 CandidatesAreArray({
@@ -176,7 +176,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
   {
     InitSegment("あさって", "明後日", &segments);
     EXPECT_TRUE(rewriter.Rewrite(request, &segments));
-    constexpr absl::string_view kDesc = "明後日の日付";
+    constexpr std::string_view kDesc = "明後日の日付";
     ASSERT_EQ(segments.segments_size(), 1);
     EXPECT_THAT(segments.segment(0),
                 CandidatesAreArray({
@@ -201,7 +201,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
   {
     InitSegment("いま", "今", &segments);
     EXPECT_TRUE(rewriter.Rewrite(request, &segments));
-    constexpr absl::string_view kDesc = "現在の時刻";
+    constexpr std::string_view kDesc = "現在の時刻";
     ASSERT_EQ(segments.segments_size(), 1);
     EXPECT_THAT(segments.segment(0), CandidatesAreArray({
                                          ValueAndDescAre("今", ""),
@@ -213,7 +213,7 @@ TEST_F(DateRewriterTest, DateRewriteTest) {
 
   // Tests for insert positions.
   {
-    constexpr absl::string_view kDesc = "今日の日付";
+    constexpr std::string_view kDesc = "今日の日付";
 
     // If the segment contains only one candidate, the date rewriter adds
     // candidates after it. This case is already tested above; see the case for
@@ -894,8 +894,8 @@ TEST_F(DateRewriterTest, NumberRewriterTest) {
 #undef TIME
 
   constexpr auto ValueAndDescAre =
-      [](absl::string_view value,
-         absl::string_view desc) -> Matcher<const Segment::Candidate *> {
+      [](std::string_view value,
+         std::string_view desc) -> Matcher<const Segment::Candidate *> {
     return Pointee(AllOf(Field(&Segment::Candidate::value, value),
                          Field(&Segment::Candidate::description, desc)));
   };
@@ -1115,7 +1115,7 @@ TEST_F(DateRewriterTest, ExtraFormatTest) {
   EXPECT_TRUE(rewriter.Rewrite(request, &segments));
 
   ASSERT_EQ(segments.segments_size(), 1);
-  constexpr absl::string_view kDesc = "今日の日付";
+  constexpr std::string_view kDesc = "今日の日付";
   EXPECT_THAT(segments.segment(0),
               CandidatesAreArray({
                   ValueAndDescAre("今日", ""),
@@ -1133,8 +1133,8 @@ TEST_F(DateRewriterTest, ExtraFormatSyntaxTest) {
   ClockMock clock(ParseTimeOrDie("2011-04-18T15:06:31Z"));
   Clock::SetClockForUnitTest(&clock);
 
-  auto syntax_test = [](const absl::string_view input,
-                        const absl::string_view output) {
+  auto syntax_test = [](const std::string_view input,
+                        const std::string_view output) {
     MockDictionary dictionary;
     EXPECT_CALL(dictionary,
                 LookupExact(StrEq(DateRewriter::kExtraFormatKey), _, _))

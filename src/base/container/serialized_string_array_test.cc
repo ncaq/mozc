@@ -36,7 +36,7 @@
 #include <string>
 
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -49,7 +49,7 @@ TEST(SerializedStringArrayTest, DefaultConstructor) {
 
 TEST(SerializedStringArrayTest, EmptyArray) {
   alignas(uint32_t) constexpr char kDataArray[] = "\x00\x00\x00\x00";
-  const absl::string_view kData(kDataArray, 4);
+  const std::string_view kData(kDataArray, 4);
   ASSERT_TRUE(SerializedStringArray::VerifyData(kData));
 
   SerializedStringArray a;
@@ -67,12 +67,12 @@ alignas(uint32_t) constexpr char kTestDataArray[] =
     "Mozc\0"                            // offset = 34, len = 4
     "google\0";                         // offset = 39, len = 6
 
-constexpr absl::string_view kTestData(kTestDataArray,
+constexpr std::string_view kTestData(kTestDataArray,
                                       std::size(kTestDataArray) - 1);
 
 TEST(SerializedStringArrayTest, SerializeToBuffer) {
   std::unique_ptr<uint32_t[]> buf;
-  const absl::string_view actual = SerializedStringArray::SerializeToBuffer(
+  const std::string_view actual = SerializedStringArray::SerializeToBuffer(
       {"Hello", "Mozc", "google"}, &buf);
   EXPECT_EQ(actual, kTestData);
 }

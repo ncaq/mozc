@@ -39,7 +39,7 @@
 #include "base/util.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::composer::internal {
 namespace {
@@ -66,23 +66,23 @@ constexpr bool IsSpecialKey(char32_t c) {
   return (kSpecialKeyBegin <= c && c <= kSpecialKeyEnd);
 }
 
-std::optional<Block> FindBlock(const absl::string_view input,
-                               const absl::string_view open,
-                               const absl::string_view close) {
+std::optional<Block> FindBlock(const std::string_view input,
+                               const std::string_view open,
+                               const std::string_view close) {
   size_t open_pos = input.find(open);
-  if (open_pos == absl::string_view::npos) {
+  if (open_pos == std::string_view::npos) {
     return std::nullopt;
   }
   size_t close_pos = input.find(close, open_pos);
-  if (close_pos == absl::string_view::npos) {
+  if (close_pos == std::string_view::npos) {
     return std::nullopt;
   }
   return Block{open_pos, close_pos};
 }
 
-using OnKeyFound = std::function<std::string(const absl::string_view)>;
+using OnKeyFound = std::function<std::string(const std::string_view)>;
 
-std::string ParseBlock(absl::string_view input, const OnKeyFound callback) {
+std::string ParseBlock(std::string_view input, const OnKeyFound callback) {
   std::string output;
   while (!input.empty()) {
     std::optional<Block> block = FindBlock(input, "{", "}");
@@ -94,7 +94,7 @@ std::string ParseBlock(absl::string_view input, const OnKeyFound callback) {
     absl::StrAppend(&output, input.substr(0, block->open_pos));
 
     // The both sizes of "{" and "}" is 1.
-    const absl::string_view key = input.substr(
+    const std::string_view key = input.substr(
         block->open_pos + 1, block->close_pos - block->open_pos - 1);
     if (key == "{") {
       // "{{}" is treated as "{".
@@ -109,8 +109,8 @@ std::string ParseBlock(absl::string_view input, const OnKeyFound callback) {
 
 }  // namespace
 
-std::string SpecialKeyMap::Register(const absl::string_view input) {
-  OnKeyFound callback = [this](const absl::string_view key) {
+std::string SpecialKeyMap::Register(const std::string_view input) {
+  OnKeyFound callback = [this](const std::string_view key) {
     if (auto it = map_.find(key); it != map_.end()) {
       return it->second;  // existing entry
     }
@@ -129,8 +129,8 @@ std::string SpecialKeyMap::Register(const absl::string_view input) {
   return ParseBlock(input, callback);
 }
 
-std::string SpecialKeyMap::Parse(const absl::string_view input) const {
-  OnKeyFound callback = [this](const absl::string_view key) {
+std::string SpecialKeyMap::Parse(const std::string_view input) const {
+  OnKeyFound callback = [this](const std::string_view key) {
     if (auto it = map_.find(key); it != map_.end()) {
       return it->second;  // existing entry
     }
@@ -141,10 +141,10 @@ std::string SpecialKeyMap::Parse(const absl::string_view input) const {
   return ParseBlock(input, callback);
 }
 
-absl::string_view TrimLeadingSpecialKey(absl::string_view input) {
+std::string_view TrimLeadingSpecialKey(std::string_view input) {
   // Check if the first character is a Unicode PUA converted from a special key.
   char32_t first_char;
-  absl::string_view rest;
+  std::string_view rest;
   Util::SplitFirstChar32(input, &first_char, &rest);
   if (IsSpecialKey(first_char)) {
     return input.substr(input.size() - rest.size());
@@ -155,13 +155,13 @@ absl::string_view TrimLeadingSpecialKey(absl::string_view input) {
     return input;
   }
   size_t close_pos = input.find(kSpecialKeyClose, 1);
-  if (close_pos == absl::string_view::npos) {
+  if (close_pos == std::string_view::npos) {
     return input;
   }
   return input.substr(close_pos + 1);
 }
 
-std::string DeleteSpecialKeys(absl::string_view input) {
+std::string DeleteSpecialKeys(std::string_view input) {
   std::string output;
   while (!input.empty()) {
     std::optional<Block> block =

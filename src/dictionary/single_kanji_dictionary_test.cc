@@ -87,7 +87,7 @@ TEST_F(SingleKanjiDictionaryTest, LookupKanjiEntries) {
   SingleKanjiDictionary dictionary(*data_manager_);
 
   auto contains = [](std::vector<std::string> entries,
-                     absl::string_view value) {
+                     std::string_view value) {
     auto it = std::find(entries.begin(), entries.end(), value);
     return it != entries.end();
   };

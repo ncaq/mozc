@@ -37,7 +37,7 @@
 #include <string>
 
 #include "base/logging.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -55,13 +55,13 @@ inline uint32_t LengthAt(const char *data, uint32_t index) {
   return GetOffsetArray(data)[index * 2 + 1];
 }
 
-inline absl::string_view DataAt(const char *data, uint32_t index) {
-  return absl::string_view(data + OffsetAt(data, index), LengthAt(data, index));
+inline std::string_view DataAt(const char *data, uint32_t index) {
+  return std::string_view(data + OffsetAt(data, index), LengthAt(data, index));
 }
 
 class const_iterator {
  public:
-  using value_type = absl::string_view;
+  using value_type = std::string_view;
   using difference_type = int32_t;
   using pointer = const value_type *;
   using reference = const value_type &;
@@ -168,7 +168,7 @@ constexpr bool operator>=(const_iterator x, const_iterator y) {
 // At runtime, we can access array contents just by loading a binary image,
 // e.g., from a file, onto memory where the first address must be aligned at
 // 4-byte boundary.  For array access, a similar interface to
-// vector<absl::string_view> is available; e.g., operator[], size(), and
+// vector<std::string_view> is available; e.g., operator[], size(), and
 // iterator.
 //
 // * Binary format
@@ -214,7 +214,7 @@ constexpr bool operator>=(const_iterator x, const_iterator y) {
 // +=====================================================================+
 class SerializedStringArray {
  public:
-  using value_type = absl::string_view;
+  using value_type = std::string_view;
   using pointer = value_type *;
   using const_pointer = const pointer;
   using reference = value_type &;
@@ -229,10 +229,10 @@ class SerializedStringArray {
 
   // Initializes the array from given memory block.  The block must be aligned
   // at 4 byte boundary.  Returns false when the data is invalid.
-  bool Init(absl::string_view data_aligned_at_4byte_boundary);
+  bool Init(std::string_view data_aligned_at_4byte_boundary);
 
   // Initializes the array from given memory block without verifying data.
-  void Set(absl::string_view data_aligned_at_4byte_boundary);
+  void Set(std::string_view data_aligned_at_4byte_boundary);
 
   size_type size() const {
     // The first 4 bytes of data stores the number of elements in this array in
@@ -246,8 +246,8 @@ class SerializedStringArray {
   }
 
   bool empty() const { return size() == 0; }
-  absl::string_view data() const { return data_; }
-  void clear() { data_ = absl::string_view(); }
+  std::string_view data() const { return data_; }
+  void clear() { data_ = std::string_view(); }
 
   const_iterator begin() const { return const_iterator(data_.data(), 0); }
   const_iterator end() const { return const_iterator(data_.data(), size()); }
@@ -255,20 +255,20 @@ class SerializedStringArray {
   void swap(SerializedStringArray &other) noexcept { data_.swap(other.data_); }
 
   // Checks if the data is a valid array image.
-  static bool VerifyData(absl::string_view data);
+  static bool VerifyData(std::string_view data);
 
   // Creates a byte image of |strs| in |buffer| and returns the memory block in
   // |buffer| pointing to the image.  Note that uint32_t array is used for
   // buffer to align data at 4 byte boundary.
-  static absl::string_view SerializeToBuffer(
-      absl::Span<const absl::string_view> strs,
+  static std::string_view SerializeToBuffer(
+      absl::Span<const std::string_view> strs,
       std::unique_ptr<uint32_t[]> *buffer);
 
-  static void SerializeToFile(absl::Span<const absl::string_view> strs,
+  static void SerializeToFile(absl::Span<const std::string_view> strs,
                               const std::string &filepath);
 
  private:
-  absl::string_view data_;
+  std::string_view data_;
 };
 
 }  // namespace mozc

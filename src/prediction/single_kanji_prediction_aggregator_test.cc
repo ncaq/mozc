@@ -47,12 +47,12 @@
 #include "testing/gmock.h"
 #include "testing/googletest.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::prediction {
 namespace {
 
-void SetUpInputWithKey(absl::string_view key, composer::Composer *composer,
+void SetUpInputWithKey(std::string_view key, composer::Composer *composer,
                        Segments *segments) {
   composer->SetPreeditTextForTestOnly(key);
   Segment *seg = segments->add_segment();
@@ -61,7 +61,7 @@ void SetUpInputWithKey(absl::string_view key, composer::Composer *composer,
 }
 
 bool FindResultByKey(const std::vector<Result> &results,
-                     const absl::string_view key) {
+                     const std::string_view key) {
   for (const auto &result : results) {
     if (result.key == key && !result.removed) {
       return true;
@@ -186,7 +186,7 @@ TEST_F(SingleKanjiPredictionAggregatorTest, SvsVariation) {
       aggregator.AggregateResults(*convreq_, segments);
   EXPECT_GT(results.size(), 1);
 
-  auto contains = [&](absl::string_view value) {
+  auto contains = [&](std::string_view value) {
     for (const auto &result : results) {
       if (result.value == value) {
         return true;

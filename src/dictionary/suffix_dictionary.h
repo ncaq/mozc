@@ -34,7 +34,7 @@
 
 #include "base/container/serialized_string_array.h"
 #include "dictionary/dictionary_interface.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace dictionary {
@@ -52,31 +52,31 @@ namespace dictionary {
 // functional word with this dictionary.
 class SuffixDictionary : public DictionaryInterface {
  public:
-  SuffixDictionary(absl::string_view key_array_data,
-                   absl::string_view value_array_data,
+  SuffixDictionary(std::string_view key_array_data,
+                   std::string_view value_array_data,
                    const uint32_t *token_array);
   SuffixDictionary(const SuffixDictionary &) = delete;
   SuffixDictionary &operator=(const SuffixDictionary &) = delete;
   ~SuffixDictionary() override = default;
 
-  bool HasKey(absl::string_view key) const override;
-  bool HasValue(absl::string_view value) const override;
+  bool HasKey(std::string_view key) const override;
+  bool HasValue(std::string_view value) const override;
 
   // Kana modifier insensitive lookup is not supported.
-  void LookupPredictive(absl::string_view key,
+  void LookupPredictive(std::string_view key,
                         const ConversionRequest &conversion_request,
                         Callback *callback) const override;
 
   // SuffixDictionary doesn't support Prefix/Revese/Exact Lookup.
-  void LookupPrefix(absl::string_view key,
+  void LookupPrefix(std::string_view key,
                     const ConversionRequest &conversion_request,
                     Callback *callback) const override {}
 
-  void LookupExact(absl::string_view key,
+  void LookupExact(std::string_view key,
                    const ConversionRequest &conversion_request,
                    Callback *callback) const override {}
 
-  void LookupReverse(absl::string_view key,
+  void LookupReverse(std::string_view key,
                      const ConversionRequest &conversion_request,
                      Callback *callback) const override {}
 

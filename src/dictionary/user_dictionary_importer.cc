@@ -51,7 +51,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_split.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -68,7 +68,7 @@ uint64_t EntryFingerprint(const UserDictionary::Entry &entry) {
                      static_cast<char>(entry.pos()));
 }
 
-void NormalizePos(const absl::string_view input, std::string *output) {
+void NormalizePos(const std::string_view input, std::string *output) {
   std::string tmp;
   output->clear();
   japanese_util::FullWidthAsciiToHalfWidthAscii(input, &tmp);
@@ -241,7 +241,7 @@ UserDictionaryImporter::ImportFromTextLineIterator(
 }
 
 UserDictionaryImporter::StringTextLineIterator::StringTextLineIterator(
-    absl::string_view data)
+    std::string_view data)
     : data_(data), position_(0) {}
 
 UserDictionaryImporter::StringTextLineIterator::~StringTextLineIterator() =
@@ -256,20 +256,20 @@ bool UserDictionaryImporter::StringTextLineIterator::Next(std::string *line) {
     return false;
   }
 
-  const absl::string_view crlf("\r\n");
+  const std::string_view crlf("\r\n");
   for (size_t i = position_; i < data_.length(); ++i) {
     if (data_[i] == '\n' || data_[i] == '\r') {
-      const absl::string_view next_line =
+      const std::string_view next_line =
           absl::ClippedSubstr(data_, position_, i - position_);
       line->assign(next_line.data(), next_line.size());
       // Handles CR/LF issue.
-      const absl::string_view possible_crlf = absl::ClippedSubstr(data_, i, 2);
+      const std::string_view possible_crlf = absl::ClippedSubstr(data_, i, 2);
       position_ = possible_crlf.compare(crlf) == 0 ? (i + 2) : (i + 1);
       return true;
     }
   }
 
-  const absl::string_view next_line =
+  const std::string_view next_line =
       absl::ClippedSubstr(data_, position_, data_.size() - position_);
   line->assign(next_line.data(), next_line.size());
   position_ = data_.length();
@@ -377,7 +377,7 @@ bool UserDictionaryImporter::ConvertEntry(const RawEntry &from,
 }
 
 UserDictionaryImporter::IMEType UserDictionaryImporter::GuessIMEType(
-    absl::string_view line) {
+    std::string_view line) {
   if (line.empty()) {
     return NUM_IMES;
   }
@@ -440,7 +440,7 @@ UserDictionaryImporter::IMEType UserDictionaryImporter::DetermineFinalIMEType(
 }
 
 UserDictionaryImporter::EncodingType UserDictionaryImporter::GuessEncodingType(
-    absl::string_view str) {
+    std::string_view str) {
   // Unicode BOM.
   if (str.size() >= 2 && ((static_cast<uint8_t>(str[0]) == 0xFF &&
                            static_cast<uint8_t>(str[1]) == 0xFE) ||
@@ -502,7 +502,7 @@ UserDictionaryImporter::GuessFileEncodingType(const std::string &filename) {
   }
   constexpr size_t kMaxCheckSize = 1024;
   const size_t size = std::min<size_t>(kMaxCheckSize, mmap->size());
-  const absl::string_view mapped_data(mmap->begin(), size);
+  const std::string_view mapped_data(mmap->begin(), size);
   return GuessEncodingType(mapped_data);
 }
 

@@ -41,7 +41,7 @@
 #include "testing/googletest.h"
 #include "testing/gunit.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace storage {
@@ -65,7 +65,7 @@ void CheckValues(const ExistenceFilter &filter, int m, int n) {
   LOG(INFO) << "false_positives: " << false_positives;
 }
 
-std::vector<uint32_t> StringToAlignedBuffer(const absl::string_view str) {
+std::vector<uint32_t> StringToAlignedBuffer(const std::string_view str) {
   std::vector<uint32_t> aligned_buf(str.size() / sizeof(uint32_t));
   memcpy(aligned_buf.data(), str.data(), str.size());
   return aligned_buf;
@@ -111,7 +111,7 @@ TEST(ExistenceFilterTest, MinFilterSizeEstimateTest) {
 }
 
 TEST(ExistenceFilterTest, ReadWriteTest) {
-  constexpr absl::string_view kWords[] = {"a", "b", "c"};
+  constexpr std::string_view kWords[] = {"a", "b", "c"};
 
   static constexpr float kErrorRate = 0.0001;
   int num_bytes = ExistenceFilterBuilder::MinFilterSizeInBytesForErrorRate(
@@ -120,7 +120,7 @@ TEST(ExistenceFilterTest, ReadWriteTest) {
   ExistenceFilterBuilder builder(
       ExistenceFilterBuilder::CreateOptimal(num_bytes, std::size(kWords)));
 
-  for (const absl::string_view &word : kWords) {
+  for (const std::string_view &word : kWords) {
     builder.Insert(Fingerprint(word));
   }
 
@@ -130,7 +130,7 @@ TEST(ExistenceFilterTest, ReadWriteTest) {
       ExistenceFilter::Read(aligned_buf));
   EXPECT_OK(filter_read);
 
-  for (const absl::string_view &word : kWords) {
+  for (const std::string_view &word : kWords) {
     EXPECT_TRUE(filter_read->Exists(Fingerprint(word)));
   }
 }

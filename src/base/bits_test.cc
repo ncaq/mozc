@@ -51,7 +51,7 @@ TEST(BitsTest, LoadUnaligned) {
             0xa09080706050403);
 
   {
-    absl::string_view sv(kArray, sizeof(kArray));
+    std::string_view sv(kArray, sizeof(kArray));
     auto iter = sv.begin() + 1;
     EXPECT_EQ(HostToLittle(LoadUnalignedAdvance<uint32_t>(iter)), 0x04030201);
     EXPECT_EQ(HostToLittle(LoadUnalignedAdvance<uint32_t>(iter)), 0x08070605);

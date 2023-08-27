@@ -39,12 +39,12 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-constexpr absl::string_view kDummyDataVersion = "dataversion";
+constexpr std::string_view kDummyDataVersion = "dataversion";
 
 class VersionRewriterTest : public testing::TestWithTempUserProfile {
  protected:
@@ -63,7 +63,7 @@ class VersionRewriterTest : public testing::TestWithTempUserProfile {
     candidate->content_key = std::move(key);
   }
 
-  static bool FindCandidateWithPrefix(const absl::string_view prefix,
+  static bool FindCandidateWithPrefix(const std::string_view prefix,
                                       const Segments &segments) {
     for (size_t i = 0; i < segments.segments_size(); ++i) {
       for (size_t j = 0; j < segments.segment(i).candidates_size(); ++j) {
@@ -103,11 +103,11 @@ TEST_F(VersionRewriterTest, MobileEnvironmentTest) {
 
 TEST_F(VersionRewriterTest, RewriteTestVersion) {
 #ifdef GOOGLE_JAPANESE_INPUT_BUILD
-  constexpr absl::string_view kVersionPrefixExpected = "GoogleJapaneseInput-";
-  constexpr absl::string_view kVersionPrefixUnexpected = "Mozc-";
+  constexpr std::string_view kVersionPrefixExpected = "GoogleJapaneseInput-";
+  constexpr std::string_view kVersionPrefixUnexpected = "Mozc-";
 #else   // GOOGLE_JAPANESE_INPUT_BUILD
-  constexpr absl::string_view kVersionPrefixExpected = "Mozc-";
-  constexpr absl::string_view kVersionPrefixUnexpected = "GoogleJapaneseInput-";
+  constexpr std::string_view kVersionPrefixExpected = "Mozc-";
+  constexpr std::string_view kVersionPrefixUnexpected = "GoogleJapaneseInput-";
 #endif  // GOOGLE_JAPANESE_INPUT_BUILD
 
   VersionRewriter version_rewriter(kDummyDataVersion);

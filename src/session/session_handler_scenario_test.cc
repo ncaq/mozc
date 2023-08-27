@@ -50,7 +50,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -206,7 +206,7 @@ INSTANTIATE_TEST_SUITE_P(DISABLED_SessionHandlerScenarioParameters,
                          SessionHandlerScenarioTest,
                          ::testing::ValuesIn(kFailedScenarioFileList));
 
-bool GetCandidateIdByValue(const absl::string_view value, const Output &output,
+bool GetCandidateIdByValue(const std::string_view value, const Output &output,
                            uint32_t *id) {
   if (!output.has_all_candidate_words()) {
     return false;
@@ -223,7 +223,7 @@ bool GetCandidateIdByValue(const absl::string_view value, const Output &output,
   return false;
 }
 
-bool IsInAllCandidateWords(const absl::string_view expected_candidate,
+bool IsInAllCandidateWords(const std::string_view expected_candidate,
                            const Output &output) {
   uint32_t tmp;
   return GetCandidateIdByValue(expected_candidate, output, &tmp);
@@ -243,7 +243,7 @@ bool IsInAllCandidateWords(const absl::string_view expected_candidate,
 
 ::testing::AssertionResult IsNotInAllCandidateWordsWithFormat(
     const char *expected_candidate_string, const char *output_string,
-    const absl::string_view expected_candidate, const Output &output) {
+    const std::string_view expected_candidate, const Output &output) {
   if (IsInAllCandidateWords(expected_candidate, output)) {
     return ::testing::AssertionFailure()
            << expected_candidate_string << "(" << expected_candidate << ")"

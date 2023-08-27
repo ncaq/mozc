@@ -36,7 +36,7 @@
 
 #include "protocol/commands.pb.h"
 #include "absl/random/random.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/types/span.h"
 
 namespace mozc {
@@ -64,14 +64,14 @@ class RandomKeyEventsGenerator {
   // Example:
   // const absl::Span<const char *> sentences =
   //     RandomKeyEventsGenerator::GetTestSentences();
-  // const absl::string_view s = sentences[10];
+  // const std::string_view s = sentences[10];
   static absl::Span<const char *> GetTestSentences();
 
  private:
   uint32_t GetRandomAsciiKey();
-  void TypeRawKeys(absl::string_view romaji, bool create_probable_key_events,
+  void TypeRawKeys(std::string_view romaji, bool create_probable_key_events,
                    std::vector<commands::KeyEvent> *keys);
-  void GenerateMobileSequenceInternal(absl::string_view sentence,
+  void GenerateMobileSequenceInternal(std::string_view sentence,
                                       bool create_probable_key_events,
                                       std::vector<commands::KeyEvent> *keys);
 

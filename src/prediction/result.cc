@@ -35,17 +35,17 @@
 #include "converter/segments.h"
 #include "dictionary/dictionary_token.h"
 #include "prediction/zero_query_dict.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace prediction {
 namespace result_internal {
 
-bool ValueLess(absl::string_view lhs, absl::string_view rhs) {
+bool ValueLess(std::string_view lhs, std::string_view rhs) {
   // This loop processes lhs and rhs in one pass.
   while (!lhs.empty() && !rhs.empty()) {
     // Read each Unicode character.
-    absl::string_view lhs_char, rhs_char;
+    std::string_view lhs_char, rhs_char;
     std::tie(lhs_char, lhs) = strings::FrontChar(lhs);
     std::tie(rhs_char, rhs) = strings::FrontChar(rhs);
     if (lhs_char != rhs_char) {

@@ -46,7 +46,7 @@
 #include "rewriter/rewriter_interface.h"
 #include "testing/gunit_prod.h"  // for FRIEND_TEST()
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -103,7 +103,7 @@ class UsageRewriter : public RewriterInterface {
   };
 
   using StrPair = std::pair<std::string, std::string>;
-  static std::string GetKanjiPrefixAndOneHiragana(absl::string_view word);
+  static std::string GetKanjiPrefixAndOneHiragana(std::string_view word);
 
   UsageDictItemIterator LookupUnmatchedUsageHeuristically(
       const Segment::Candidate &candidate) const;

@@ -59,7 +59,7 @@
 #include "transliteration/transliteration.h"
 #include "usage_stats/usage_stats.h"
 #include "absl/strings/match.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 #ifdef __APPLE__
@@ -2759,7 +2759,7 @@ namespace {
 //  (config.auto_conversion_key() &
 //   config::Config::AUTO_CONVERSION_EXCLAMATION_MARK));
 bool IsValidKey(const config::Config &config, const uint32_t key_code,
-                absl::string_view key_string) {
+                std::string_view key_string) {
   return (((key_code == static_cast<uint32_t>('.') && key_string.empty()) ||
            key_string == "." || key_string == "．" || key_string == "。" ||
            key_string == "｡") &&
@@ -2821,7 +2821,7 @@ bool Session::CanStartAutoConversion(
 
   std::string preedit;
   context_->composer().GetStringForPreedit(&preedit);
-  const absl::string_view last_char =
+  const std::string_view last_char =
       Util::Utf8SubString(preedit, length - 1, 1);
   if (last_char.empty()) {
     return false;
@@ -2838,7 +2838,7 @@ bool Session::CanStartAutoConversion(
   // when |last_prev_char| is number, we don't invoke auto_conversion
   // if the same invoke key is repeated, do not conversion.
   // http://b/issue?id=2932118
-  const absl::string_view last_prev_char =
+  const std::string_view last_prev_char =
       Util::Utf8SubString(preedit, length - 2, 1);
   if (last_prev_char.empty() || last_prev_char == last_char ||
       Util::NUMBER == Util::GetScriptType(last_prev_char)) {

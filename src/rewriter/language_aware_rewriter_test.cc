@@ -45,7 +45,7 @@
 #include "testing/mozctest.h"
 #include "usage_stats/usage_stats.h"
 #include "usage_stats/usage_stats_testing_util.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -60,7 +60,7 @@ using ::testing::Pointee;
 using ::testing::Return;
 using ::testing::StrEq;
 
-void InsertASCIISequence(const absl::string_view text,
+void InsertASCIISequence(const std::string_view text,
                          composer::Composer *composer) {
   for (size_t i = 0; i < text.size(); ++i) {
     commands::KeyEvent key;
@@ -76,7 +76,7 @@ class LanguageAwareRewriterTest : public testing::TestWithTempUserProfile {
   void TearDown() override { usage_stats::UsageStats::ClearAllStatsForTest(); }
 
   bool RewriteWithLanguageAwareInput(const LanguageAwareRewriter *rewriter,
-                                     const absl::string_view key,
+                                     const std::string_view key,
                                      bool is_mobile, std::string *composition,
                                      Segments *segments) {
     commands::Request client_request;
@@ -114,7 +114,7 @@ class LanguageAwareRewriterTest : public testing::TestWithTempUserProfile {
   const testing::MockDataManager data_manager_;
 };
 
-void PushFrontCandidate(const absl::string_view data, Segment *segment) {
+void PushFrontCandidate(const std::string_view data, Segment *segment) {
   Segment::Candidate *candidate = segment->push_front_candidate();
   candidate->value = std::string(data);
   candidate->key = std::string(data);
@@ -122,7 +122,7 @@ void PushFrontCandidate(const absl::string_view data, Segment *segment) {
   candidate->content_key = std::string(data);
 }
 
-void PushFrontCandidate(const absl::string_view data, int attributes,
+void PushFrontCandidate(const std::string_view data, int attributes,
                         Segment *segment) {
   PushFrontCandidate(data, segment);
   if (attributes) {
@@ -139,7 +139,7 @@ constexpr auto ValueIs =
 // A matcher for Segment::Candidate to test if a candidate has the given value
 // with "did you mean" annotation.
 constexpr auto IsLangAwareCandidate =
-    [](absl::string_view value) -> Matcher<const Segment::Candidate *> {
+    [](std::string_view value) -> Matcher<const Segment::Candidate *> {
   return Pointee(AllOf(Field(&Segment::Candidate::key, value),
                        Field(&Segment::Candidate::value, value),
                        Field(&Segment::Candidate::prefix, "→ "),

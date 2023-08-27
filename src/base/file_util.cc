@@ -51,7 +51,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_replace.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 #ifdef _WIN32
 // clang-format off
@@ -138,7 +138,7 @@ absl::StatusCode Win32ErrorToStatusCode(DWORD error_code) {
 }
 
 // Converts the Win32 error code to absl::Status.
-absl::Status Win32ErrorToStatus(DWORD error_code, absl::string_view message) {
+absl::Status Win32ErrorToStatus(DWORD error_code, std::string_view message) {
   return absl::Status(Win32ErrorToStatusCode(error_code),
                       absl::StrCat(message, ": error_code=", error_code));
 }
@@ -622,9 +622,9 @@ absl::Status FileUtilImpl::CreateHardLink(const std::string &from,
 }
 
 std::string FileUtil::JoinPath(
-    const std::vector<absl::string_view> &components) {
+    const std::vector<std::string_view> &components) {
   std::string output;
-  for (const absl::string_view component : components) {
+  for (const std::string_view component : components) {
     if (component.empty()) {
       continue;
     }
@@ -655,8 +655,8 @@ std::string FileUtil::Basename(const std::string &filename) {
 
 std::string FileUtil::NormalizeDirectorySeparator(const std::string &path) {
   if constexpr (TargetIsWindows()) {
-    constexpr absl::string_view kFileDelimiterForUnix = "/";
-    constexpr absl::string_view kFileDelimiterForWindows = "\\";
+    constexpr std::string_view kFileDelimiterForUnix = "/";
+    constexpr std::string_view kFileDelimiterForWindows = "\\";
     return absl::StrReplaceAll(
         path, {{kFileDelimiterForUnix, kFileDelimiterForWindows}});
   } else {
@@ -739,7 +739,7 @@ absl::StatusOr<std::string> FileUtil::GetContents(
 }
 
 absl::Status FileUtil::SetContents(const std::string &filename,
-                                   absl::string_view content,
+                                   std::string_view content,
                                    std::ios_base::openmode mode) {
   OutputFileStream ofs(filename, mode);
   if (ofs.fail()) {

@@ -38,14 +38,14 @@
 #include "converter/segments.h"
 #include "request/conversion_request.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
 constexpr struct {
-  absl::string_view key;
-  absl::string_view base_candidate;
+  std::string_view key;
+  std::string_view base_candidate;
 } kKeyCandList[] = {
     {
         "う゛ぁーじょん",
@@ -67,7 +67,7 @@ constexpr struct {
 
 }  // namespace
 
-VersionRewriter::VersionRewriter(absl::string_view data_version) {
+VersionRewriter::VersionRewriter(std::string_view data_version) {
   std::string version_string =
       absl::StrCat(kVersionRewriterVersionPrefix, Version::GetMozcVersion(),
                    "+", data_version);

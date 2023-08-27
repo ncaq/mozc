@@ -40,7 +40,7 @@
 #include "base/win32/hresult.h"
 #include "testing/gmock.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc::win32 {
 namespace {
@@ -103,9 +103,9 @@ TEST(HResultOr, String) {
   TestHResultOrTypeAttributes<std::string>();
   TestHResultOrTypeAttributes<std::string *>();
   TestHResultOrTypeAttributes<const std::string *>();
-  TestHResultOrTypeAttributes<absl::string_view>();
+  TestHResultOrTypeAttributes<std::string_view>();
 
-  constexpr absl::string_view kTestStr = "hello";
+  constexpr std::string_view kTestStr = "hello";
   HResultOr<std::string> v(kTestStr);
   EXPECT_TRUE(v.has_value());
   EXPECT_EQ(v.value(), kTestStr);
@@ -177,7 +177,7 @@ TEST(HResultOr, Conversions) {
   const HResultOr<std::string> implicit_conversion_ctor = "abc";
   EXPECT_EQ(implicit_conversion_ctor, "abc");
   const HResultOr<std::string> explicit_conversion_ctor(
-      absl::string_view("abc"));
+      std::string_view("abc"));
   EXPECT_EQ(explicit_conversion_ctor, "abc");
 }
 

@@ -47,7 +47,7 @@
 #include "absl/status/status.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/strings/strip.h"
 
 #ifdef _WIN32
@@ -57,21 +57,21 @@
 namespace mozc {
 namespace {
 
-constexpr absl::string_view kSystemPrefix = "system://";
-constexpr absl::string_view kUserPrefix = "user://";
-constexpr absl::string_view kFilePrefix = "file://";
-constexpr absl::string_view kMemoryPrefix = "memory://";
+constexpr std::string_view kSystemPrefix = "system://";
+constexpr std::string_view kUserPrefix = "user://";
+constexpr std::string_view kFilePrefix = "file://";
+constexpr std::string_view kMemoryPrefix = "memory://";
 
 struct FileData {
-  absl::string_view name;
-  absl::string_view data;
+  std::string_view name;
+  std::string_view data;
 };
 
 #include "base/config_file_stream_data.inc"
 
 class OnMemoryFileMap {
  public:
-  const std::string &get(const absl::string_view key) const {
+  const std::string &get(const std::string_view key) const {
     auto it = map_.find(key);
     if (it != map_.end()) {
       return it->second;
@@ -79,7 +79,7 @@ class OnMemoryFileMap {
     return empty_string_;
   }
 
-  void set(const absl::string_view key, const std::string &value) {
+  void set(const std::string_view key, const std::string &value) {
     map_[key] = value;
   }
 
@@ -95,7 +95,7 @@ std::unique_ptr<std::istream> ConfigFileStream::Open(
     const std::string &filename, std::ios_base::openmode mode) {
   // system://foo.bar.txt
   if (absl::StartsWith(filename, kSystemPrefix)) {
-    const absl::string_view new_filename =
+    const std::string_view new_filename =
         absl::StripPrefix(filename, kSystemPrefix);
     for (size_t i = 0; i < std::size(kFileData); ++i) {
       if (new_filename == kFileData[i].name) {
@@ -121,7 +121,7 @@ std::unique_ptr<std::istream> ConfigFileStream::Open(
     return nullptr;
     // file:///foo.map
   } else if (absl::StartsWith(filename, kFilePrefix)) {
-    const absl::string_view new_filename =
+    const std::string_view new_filename =
         absl::StripPrefix(filename, kFilePrefix);
     auto ifs =
         std::make_unique<InputFileStream>(std::string(new_filename), mode);
@@ -198,7 +198,7 @@ bool ConfigFileStream::AtomicUpdate(const std::string &filename,
   return true;
 }
 
-std::string ConfigFileStream::GetFileName(const absl::string_view filename) {
+std::string ConfigFileStream::GetFileName(const std::string_view filename) {
   if (absl::StartsWith(filename, kSystemPrefix) ||
       absl::StartsWith(filename, kMemoryPrefix)) {
     return "";

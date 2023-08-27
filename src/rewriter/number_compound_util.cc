@@ -34,7 +34,7 @@
 
 #include "base/util.h"
 #include "dictionary/pos_matcher.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 using mozc::dictionary::PosMatcher;
 
@@ -42,11 +42,11 @@ namespace mozc {
 namespace number_compound_util {
 
 bool SplitStringIntoNumberAndCounterSuffix(
-    const SerializedStringArray &suffix_array, absl::string_view input,
-    absl::string_view *number, absl::string_view *counter_suffix,
+    const SerializedStringArray &suffix_array, std::string_view input,
+    std::string_view *number, std::string_view *counter_suffix,
     uint32_t *script_type) {
   *script_type = NONE;
-  absl::string_view s = input, rest = input;
+  std::string_view s = input, rest = input;
   while (!s.empty()) {
     char32_t c;
     if (!Util::SplitFirstChar32(s, &c, &rest)) {
@@ -118,7 +118,7 @@ bool IsNumber(const SerializedStringArray &suffix_array,
   // it's successful and the resulting number component is nonempty, we may
   // assume the candidate is number.  This check prevents, e.g., the following
   // misrewrite: 百舌鳥(もず, noun) -> 100舌鳥, １００舌鳥, etc.
-  absl::string_view number, suffix;
+  std::string_view number, suffix;
   uint32_t script_type = 0;
   if (!number_compound_util::SplitStringIntoNumberAndCounterSuffix(
           suffix_array, cand.content_value, &number, &suffix, &script_type)) {

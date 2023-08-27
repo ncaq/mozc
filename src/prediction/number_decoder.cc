@@ -38,7 +38,7 @@
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -55,12 +55,12 @@ void MaybeAppendResult(const State &state,
   }
 
   // Filter out invalid number sequences.
-  std::vector<absl::string_view> keys = state.consumed_keys;
+  std::vector<std::string_view> keys = state.consumed_keys;
   if (state.consumed_key_byte_len < state.key.size()) {
     keys.emplace_back(state.key.substr(state.consumed_key_byte_len));
   }
   for (int i = 0; i < keys.size(); ++i) {
-    const absl::string_view k = keys[i];
+    const std::string_view k = keys[i];
     if ((k == "よ" || k == "く") && i + 1 < keys.size()) {
       // Other than the tail of the sequence is invalid
       return;
@@ -135,7 +135,7 @@ Trie<Entry> InitEntries() {
                   Entry({Type::UNIT_AND_STOP_DECODING, 3, -1, "", true, 6}));
 
   // number suffix conflicting with the other entries
-  constexpr absl::string_view kSuffixEntries[] = {
+  constexpr std::string_view kSuffixEntries[] = {
       // に
       // 握り, 日, 人
       "にぎり",
@@ -197,7 +197,7 @@ std::ostream &operator<<(std::ostream &os, const NumberDecoderResult &r) {
 NumberDecoder::NumberDecoder() : entries_(InitEntries()) {}
 
 std::vector<NumberDecoder::Result> NumberDecoder::Decode(
-    absl::string_view key) const {
+    std::string_view key) const {
   State state;
   state.key = key;
   std::vector<NumberDecoder::Result> results;
@@ -207,7 +207,7 @@ std::vector<NumberDecoder::Result> NumberDecoder::Decode(
   return results;
 }
 
-void NumberDecoder::DecodeAux(absl::string_view key, State &state,
+void NumberDecoder::DecodeAux(std::string_view key, State &state,
                               std::vector<Result> &results) const {
   if (key.empty()) {
     return;
@@ -217,7 +217,7 @@ void NumberDecoder::DecodeAux(absl::string_view key, State &state,
   if (!entries_.LongestMatch(key, &e, &key_byte_len)) {
     return;
   }
-  const absl::string_view k = key.substr(0, key_byte_len);
+  const std::string_view k = key.substr(0, key_byte_len);
   switch (e.type) {
     case Type::STOP_DECODING:
       return;
@@ -240,13 +240,13 @@ void NumberDecoder::DecodeAux(absl::string_view key, State &state,
       state.consumed_key_byte_len += key_byte_len;
       break;
     case Type::UNIT_AND_BIG_DIGIT: {
-      const absl::string_view unit_key =
+      const std::string_view unit_key =
           key.substr(0, e.consume_byte_len_of_first);
       if (!HandleUnitEntry(unit_key, e, state, results)) {
         return;
       }
       state.consumed_key_byte_len += e.consume_byte_len_of_first;
-      const absl::string_view digit_key =
+      const std::string_view digit_key =
           key.substr(e.consume_byte_len_of_first,
                      (key_byte_len - e.consume_byte_len_of_first));
       if (!HandleBigDigitEntry(digit_key, e, state, results)) {
@@ -257,7 +257,7 @@ void NumberDecoder::DecodeAux(absl::string_view key, State &state,
       break;
     }
     case Type::UNIT_AND_STOP_DECODING: {
-      const absl::string_view unit_key =
+      const std::string_view unit_key =
           key.substr(0, e.consume_byte_len_of_first);
       if (!HandleUnitEntry(unit_key, e, state, results)) {
         return;
@@ -272,7 +272,7 @@ void NumberDecoder::DecodeAux(absl::string_view key, State &state,
   DecodeAux(key.substr(key_byte_len), state, results);
 }
 
-bool NumberDecoder::HandleUnitEntry(absl::string_view key, const Entry &entry,
+bool NumberDecoder::HandleUnitEntry(std::string_view key, const Entry &entry,
                                     State &state,
                                     std::vector<Result> &results) const {
   results.clear();
@@ -301,7 +301,7 @@ bool NumberDecoder::HandleUnitEntry(absl::string_view key, const Entry &entry,
   return true;
 }
 
-bool NumberDecoder::HandleSmallDigitEntry(absl::string_view key,
+bool NumberDecoder::HandleSmallDigitEntry(std::string_view key,
                                           const Entry &entry, State &state,
                                           std::vector<Result> &results) const {
   results.clear();
@@ -330,7 +330,7 @@ bool NumberDecoder::HandleSmallDigitEntry(absl::string_view key,
   return true;
 }
 
-bool NumberDecoder::HandleBigDigitEntry(absl::string_view key,
+bool NumberDecoder::HandleBigDigitEntry(std::string_view key,
                                         const Entry &entry, State &state,
                                         std::vector<Result> &results) const {
   results.clear();

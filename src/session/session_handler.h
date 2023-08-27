@@ -50,7 +50,7 @@
 #include "storage/lru_cache.h"
 #include "testing/gunit_prod.h"  // for FRIEND_TEST()
 #include "absl/random/random.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 #ifndef MOZC_DISABLE_SESSION_WATCHDOG
@@ -81,7 +81,7 @@ class SessionHandler : public SessionHandlerInterface {
   session::SessionInterface *NewSession();
 
   void AddObserver(session::SessionObserverInterface *observer) override;
-  absl::string_view GetDataVersion() const override {
+  std::string_view GetDataVersion() const override {
     return engine_->GetDataVersion();
   }
 

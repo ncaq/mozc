@@ -52,7 +52,7 @@
 #include "request/conversion_request.h"
 #include "rewriter/rewriter_interface.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -192,11 +192,11 @@ bool NormalizeCandidate(Segment::Candidate *candidate,
   return true;
 }
 
-EmojiDataIterator begin(const absl::string_view token_array_data) {
+EmojiDataIterator begin(const std::string_view token_array_data) {
   return EmojiDataIterator(token_array_data.data());
 }
 
-EmojiDataIterator end(const absl::string_view token_array_data) {
+EmojiDataIterator end(const std::string_view token_array_data) {
   return EmojiDataIterator(token_array_data.data() + token_array_data.size());
 }
 
@@ -220,7 +220,7 @@ ExtractTargetEmojis(
     if (results.find(version) == results.end()) {
       continue;
     }
-    const absl::string_view utf8_emoji = string_array[iter.emoji_index()];
+    const std::string_view utf8_emoji = string_array[iter.emoji_index()];
     results[version].push_back(Util::Utf8ToUtf32(utf8_emoji));
   }
   return results;
@@ -364,8 +364,8 @@ int EnvironmentalFilterRewriter::capability(
 
 EnvironmentalFilterRewriter::EnvironmentalFilterRewriter(
     const DataManagerInterface &data_manager) {
-  absl::string_view token_array_data;
-  absl::string_view string_array_data;
+  std::string_view token_array_data;
+  std::string_view string_array_data;
 
   // TODO(mozc-team):
   // Currently, this rewriter uses data from emoji_data.tsv, which is for Emoji

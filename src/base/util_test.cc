@@ -46,7 +46,7 @@
 #include "testing/gmock.h"
 #include "testing/gunit.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -279,7 +279,7 @@ TEST(UtilTest, Utf8ToUtf32) {
   // Single codepoint characters.
   EXPECT_EQ(Util::Utf8ToUtf32("aあ亜\na"), U"aあ亜\na");
   // Multiple codepoint characters
-  constexpr absl::string_view kStr =
+  constexpr std::string_view kStr =
       ("神"  // U+795E
        "神󠄀"  // U+795E,U+E0100 - 2 codepoints [IVS]
        "あ゙"  // U+3042,U+3099  - 2 codepoints [Dakuten]
@@ -292,7 +292,7 @@ TEST(UtilTest, Utf32ToUtf8) {
   // Single codepoint characters.
   EXPECT_EQ(Util::Utf32ToUtf8(U"aあ亜\na"), "aあ亜\na");
   // Multiple codepoint characters
-  constexpr absl::string_view kExpected =
+  constexpr std::string_view kExpected =
       ("神"  // U+795E
        "神󠄀"  // U+795E,U+E0100 - 2 codepoints [IVS]
        "あ゙"  // U+3042,U+3099  - 2 codepoints [Dakuten]
@@ -301,7 +301,7 @@ TEST(UtilTest, Utf32ToUtf8) {
   EXPECT_EQ(Util::Utf32ToUtf8(kU32Str), kExpected);
 }
 
-void VerifyUtf8ToUcs4(absl::string_view text, char32_t expected_ucs4,
+void VerifyUtf8ToUcs4(std::string_view text, char32_t expected_ucs4,
                       size_t expected_len) {
   const char *begin = text.data();
   const char *end = begin + text.size();
@@ -382,8 +382,8 @@ TEST(UtilTest, CharsLen) {
 }
 
 TEST(UtilTest, Utf8SubString) {
-  const absl::string_view src = "私の名前は中野です";
-  absl::string_view result;
+  const std::string_view src = "私の名前は中野です";
+  std::string_view result;
 
   result = Util::Utf8SubString(src, 0, 2);
   EXPECT_EQ(result, "私の");
@@ -416,9 +416,9 @@ TEST(UtilTest, Utf8SubString) {
 }
 
 TEST(UtilTest, Utf8SubString2) {
-  const absl::string_view src = "私はGoogleです";
+  const std::string_view src = "私はGoogleです";
 
-  absl::string_view result;
+  std::string_view result;
 
   result = Util::Utf8SubString(src, 0);
   EXPECT_EQ(result, src);
@@ -434,7 +434,7 @@ TEST(UtilTest, Utf8SubString2) {
 }
 
 TEST(UtilTest, Utf8SubString3) {
-  const absl::string_view src = "私の名前は中野です";
+  const std::string_view src = "私の名前は中野です";
   std::string result;
 
   result.clear();
@@ -529,7 +529,7 @@ TEST(UtilTest, IsUtf16Bom) {
 }
 
 TEST(UtilTest, BracketTest) {
-  using BracketPair = std::pair<absl::string_view, absl::string_view>;
+  using BracketPair = std::pair<std::string_view, std::string_view>;
   constexpr std::array<BracketPair, 16> kBracketType = {{
       // {{, }} is necessary to initialize std::array.
       {"（", "）"},
@@ -550,7 +550,7 @@ TEST(UtilTest, BracketTest) {
       {"〝", "〟"},
   }};
 
-  absl::string_view pair;
+  std::string_view pair;
   for (const BracketPair &bracket : kBracketType) {
     EXPECT_TRUE(Util::IsOpenBracket(bracket.first, &pair));
     EXPECT_EQ(pair, bracket.second);
@@ -964,17 +964,17 @@ TEST(UtilTest, IsKanaSymbolContained) {
 }
 
 TEST(UtilTest, SplitFirstChar32) {
-  absl::string_view rest;
+  std::string_view rest;
   char32_t c = 0;
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_FALSE(Util::SplitFirstChar32("", &c, &rest));
   EXPECT_EQ(c, 0);
   EXPECT_TRUE(rest.empty());
 
   // Allow nullptr to ignore the matched value.
-  rest = absl::string_view();
+  rest = std::string_view();
   EXPECT_TRUE(Util::SplitFirstChar32("01", nullptr, &rest));
   EXPECT_EQ(rest, "1");
 
@@ -983,73 +983,73 @@ TEST(UtilTest, SplitFirstChar32) {
   EXPECT_TRUE(Util::SplitFirstChar32("01", &c, nullptr));
   EXPECT_EQ(c, '0');
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\x01 ", &c, &rest));
   EXPECT_EQ(c, 1);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\x7F ", &c, &rest));
   EXPECT_EQ(c, 0x7F);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xC2\x80 ", &c, &rest));
   EXPECT_EQ(c, 0x80);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xDF\xBF ", &c, &rest));
   EXPECT_EQ(c, 0x7FF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xE0\xA0\x80 ", &c, &rest));
   EXPECT_EQ(c, 0x800);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xEF\xBF\xBF ", &c, &rest));
   EXPECT_EQ(c, 0xFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xF0\x90\x80\x80 ", &c, &rest));
   EXPECT_EQ(c, 0x10000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xF7\xBF\xBF\xBF ", &c, &rest));
   EXPECT_EQ(c, 0x1FFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xF8\x88\x80\x80\x80 ", &c, &rest));
   EXPECT_EQ(c, 0x200000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xFB\xBF\xBF\xBF\xBF ", &c, &rest));
   EXPECT_EQ(c, 0x3FFFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xFC\x84\x80\x80\x80\x80 ", &c, &rest));
   EXPECT_EQ(c, 0x4000000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitFirstChar32("\xFD\xBF\xBF\xBF\xBF\xBF ", &c, &rest));
   EXPECT_EQ(c, 0x7FFFFFFF);
@@ -1111,10 +1111,10 @@ TEST(UtilTest, SplitFirstChar32) {
 }
 
 TEST(UtilTest, SplitLastChar32) {
-  absl::string_view rest;
+  std::string_view rest;
   char32_t c = 0;
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_FALSE(Util::SplitLastChar32("", &rest, &c));
   EXPECT_EQ(c, 0);
@@ -1126,77 +1126,77 @@ TEST(UtilTest, SplitLastChar32) {
   EXPECT_EQ(c, '1');
 
   // Allow nullptr to ignore the matched value.
-  rest = absl::string_view();
+  rest = std::string_view();
   EXPECT_TRUE(Util::SplitLastChar32("01", &rest, nullptr));
   EXPECT_EQ(rest, "0");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \x01", &rest, &c));
   EXPECT_EQ(c, 1);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \x7F", &rest, &c));
   EXPECT_EQ(c, 0x7F);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xC2\x80", &rest, &c));
   EXPECT_EQ(c, 0x80);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xDF\xBF", &rest, &c));
   EXPECT_EQ(c, 0x7FF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xE0\xA0\x80", &rest, &c));
   EXPECT_EQ(c, 0x800);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xEF\xBF\xBF", &rest, &c));
   EXPECT_EQ(c, 0xFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xF0\x90\x80\x80", &rest, &c));
   EXPECT_EQ(c, 0x10000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xF7\xBF\xBF\xBF", &rest, &c));
   EXPECT_EQ(c, 0x1FFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xF8\x88\x80\x80\x80", &rest, &c));
   EXPECT_EQ(c, 0x200000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xFB\xBF\xBF\xBF\xBF", &rest, &c));
   EXPECT_EQ(c, 0x3FFFFFF);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xFC\x84\x80\x80\x80\x80", &rest, &c));
   EXPECT_EQ(c, 0x4000000);
   EXPECT_EQ(rest, " ");
 
-  rest = absl::string_view();
+  rest = std::string_view();
   c = 0;
   EXPECT_TRUE(Util::SplitLastChar32(" \xFD\xBF\xBF\xBF\xBF\xBF", &rest, &c));
   EXPECT_EQ(c, 0x7FFFFFFF);

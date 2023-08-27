@@ -80,7 +80,7 @@ namespace mozc::japanese::internal {
 
   std::vector<std::pair<std::string, std::string>> rules;
   {
-    for (absl::string_view pattern :
+    for (std::string_view pattern :
          absl::StrSplit(files, ',', absl::SkipEmpty())) {
       std::vector<std::string> col =
           absl::StrSplit(pattern, ':', absl::SkipEmpty());

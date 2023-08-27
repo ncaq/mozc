@@ -40,7 +40,7 @@
 #include "protocol/config.pb.h"
 #include "request/conversion_request.h"
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -55,7 +55,7 @@ void CorrectionRewriter::SetCandidate(const ReadingCorrectionItem &item,
 }
 
 bool CorrectionRewriter::LookupCorrection(
-    const absl::string_view key, const absl::string_view value,
+    const std::string_view key, const std::string_view value,
     std::vector<ReadingCorrectionItem> *results) const {
   CHECK(results);
   results->clear();
@@ -64,7 +64,7 @@ bool CorrectionRewriter::LookupCorrection(
   std::pair<Iter, Iter> range =
       std::equal_range(error_array_.begin(), error_array_.end(), key);
   for (; range.first != range.second; ++range.first) {
-    const absl::string_view v = value_array_[range.first.index()];
+    const std::string_view v = value_array_[range.first.index()];
     if (value.empty() || value == v) {
       results->emplace_back(v, *range.first,
                             correction_array_[range.first.index()]);
@@ -74,8 +74,8 @@ bool CorrectionRewriter::LookupCorrection(
 }
 
 CorrectionRewriter::CorrectionRewriter(
-    absl::string_view value_array_data, absl::string_view error_array_data,
-    absl::string_view correction_array_data) {
+    std::string_view value_array_data, std::string_view error_array_data,
+    std::string_view correction_array_data) {
   DCHECK(SerializedStringArray::VerifyData(value_array_data));
   DCHECK(SerializedStringArray::VerifyData(error_array_data));
   DCHECK(SerializedStringArray::VerifyData(correction_array_data));
@@ -90,7 +90,7 @@ CorrectionRewriter::CorrectionRewriter(
 std::unique_ptr<CorrectionRewriter>
 CorrectionRewriter::CreateCorrectionRewriter(
     const DataManagerInterface *data_manager) {
-  absl::string_view value_array_data, error_array_data, correction_array_data;
+  std::string_view value_array_data, error_array_data, correction_array_data;
   data_manager->GetReadingCorrectionData(&value_array_data, &error_array_data,
                                          &correction_array_data);
   return std::make_unique<CorrectionRewriter>(

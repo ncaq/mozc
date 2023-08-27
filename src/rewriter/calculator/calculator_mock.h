@@ -38,7 +38,7 @@
 
 #include "rewriter/calculator/calculator_interface.h"
 #include "absl/container/flat_hash_map.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 
@@ -49,7 +49,7 @@ class CalculatorMock : public CalculatorInterface {
 
   // Injects the behavior that CalculateString converts |key| to |value| and
   // returns |return_value|.
-  void SetCalculatePair(absl::string_view key, absl::string_view value,
+  void SetCalculatePair(std::string_view key, std::string_view value,
                         bool return_value);
 
   // The number that CalculateString() has been called.
@@ -58,7 +58,7 @@ class CalculatorMock : public CalculatorInterface {
   // If |key| has been set by SetCalculatePair, then sets |*result| to the
   // corresponding value and returns |return_value|, otherwise clear |*result|
   // and returns false.
-  bool CalculateString(absl::string_view key,
+  bool CalculateString(std::string_view key,
                        std::string *result) const override;
 
  private:

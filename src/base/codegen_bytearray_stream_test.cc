@@ -39,7 +39,7 @@
 #include "testing/gunit.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
@@ -48,8 +48,8 @@ class CodeGenByteArrayStreamTest : public testing::Test {
  protected:
   CodeGenByteArrayStreamTest() : codegen_stream_(result_stream_) {}
 
-  std::string ExpectedOutput(const absl::string_view var_name_base,
-                             const size_t count, const absl::string_view body) {
+  std::string ExpectedOutput(const std::string_view var_name_base,
+                             const size_t count, const std::string_view body) {
     return absl::StrFormat(
         "alignas(std::max_align_t) constexpr char k%s_data[] = {%s};\n"
         "constexpr size_t k%s_size = %d;\n",

@@ -46,12 +46,12 @@
 #include "testing/gunit.h"
 #include "testing/mozctest.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 
 namespace mozc {
 namespace {
 
-void AddSegment(const absl::string_view key, const absl::string_view value,
+void AddSegment(const std::string_view key, const std::string_view value,
                 Segments *segments) {
   Segment *seg = segments->add_segment();
   Segment::Candidate *candidate = seg->add_candidate();
@@ -61,14 +61,14 @@ void AddSegment(const absl::string_view key, const absl::string_view value,
   candidate->content_value = std::string(value);
 }
 
-void InitSegments(const absl::string_view key, const absl::string_view value,
+void InitSegments(const std::string_view key, const std::string_view value,
                   Segments *segments) {
   segments->Clear();
   AddSegment(key, value, segments);
 }
 
 bool ContainCandidate(const Segments &segments,
-                      const absl::string_view candidate) {
+                      const std::string_view candidate) {
   const Segment &segment = segments.segment(0);
   for (size_t i = 0; i < segment.candidates_size(); ++i) {
     if (candidate == segment.candidate(i).value) {
@@ -97,8 +97,8 @@ TEST_F(UnicodeRewriterTest, UnicodeConversionTest) {
   const ConversionRequest request;
 
   struct UCS4UTF8Data {
-    absl::string_view ucs4;
-    absl::string_view utf8;
+    std::string_view ucs4;
+    std::string_view utf8;
   };
 
   constexpr UCS4UTF8Data kUcs4Utf8Data[] = {
@@ -143,7 +143,7 @@ TEST_F(UnicodeRewriterTest, UnicodeConversionTest) {
       {"U+00A1", "¡"},
   };
 
-  constexpr absl::string_view kMozcUnsupportedUtf8[] = {
+  constexpr std::string_view kMozcUnsupportedUtf8[] = {
       // Control characters
       "U+0000",
       "U+001F",

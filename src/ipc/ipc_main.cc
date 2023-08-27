@@ -38,7 +38,7 @@
 #include "base/thread2.h"
 #include "ipc/ipc.h"
 #include "absl/flags/flag.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 ABSL_FLAG(std::string, server_address, "ipc_test", "");
@@ -56,7 +56,7 @@ class EchoServer : public IPCServer {
   EchoServer(const std::string &path, int32_t num_connections,
              absl::Duration timeout)
       : IPCServer(path, num_connections, timeout) {}
-  bool Process(absl::string_view input, std::string *output) override {
+  bool Process(std::string_view input, std::string *output) override {
     output->assign(input.data(), input.size());
     return (input != "kill");
   }

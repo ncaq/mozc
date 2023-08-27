@@ -52,7 +52,7 @@
 #include "testing/gmock.h"
 #include "testing/googletest.h"
 #include "testing/gunit.h"
-#include "absl/strings/string_view.h"
+#include <string_view>
 #include "absl/time/time.h"
 
 namespace mozc {
@@ -71,7 +71,7 @@ using ::testing::Return;
 // ProbableKeyEvent is the innter-class member so needs to define as alias.
 using ProbableKeyEvent = ::mozc::commands::KeyEvent::ProbableKeyEvent;
 
-bool InsertKey(const absl::string_view key_string, Composer *composer) {
+bool InsertKey(const std::string_view key_string, Composer *composer) {
   commands::KeyEvent key;
   if (!KeyParser::ParseKey(key_string, &key)) {
     return false;
@@ -79,7 +79,7 @@ bool InsertKey(const absl::string_view key_string, Composer *composer) {
   return composer->InsertCharacterKeyEvent(key);
 }
 
-bool InsertKeyWithMode(const absl::string_view key_string,
+bool InsertKeyWithMode(const std::string_view key_string,
                        const commands::CompositionMode mode,
                        Composer *composer) {
   commands::KeyEvent key;
@@ -2722,7 +2722,7 @@ TEST_F(ComposerTest, ShouldCommitHead) {
     const commands::Context::InputFieldType field_type;
     const bool expected_return;
     const size_t expected_commit_length;
-    TestData(const absl::string_view input_text,
+    TestData(const std::string_view input_text,
              commands::Context::InputFieldType field_type, bool expected_return,
              size_t expected_commit_length)
         : input_text(input_text),
@@ -2972,7 +2972,7 @@ ProbableKeyEvents GetStubProbableKeyEvent(int key_code, double probability) {
   return result;
 }
 
-KeyEvent GetKeyEvent(const absl::string_view raw,
+KeyEvent GetKeyEvent(const std::string_view raw,
                      ProbableKeyEvents probable_key_events) {
   KeyEvent key_event;
   key_event.set_key_code(Util::Utf8ToUcs4(raw));
@@ -2986,7 +2986,7 @@ class MockTypingModel : public TypingModel {
  public:
   MockTypingModel() : TypingModel(nullptr, 0, nullptr, 0, nullptr) {}
   ~MockTypingModel() override = default;
-  int GetCost(absl::string_view key) const override { return 10; }
+  int GetCost(std::string_view key) const override { return 10; }
 };
 
 // Test fixture for setting up mobile qwerty romaji table to test typing
