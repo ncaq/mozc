@@ -41,9 +41,6 @@
         '<!@(<(glob_absl) base "**/*.cc"' +
         ' --exclude "**/*_benchmark.cc" "**/*_test*.cc")',
       ],
-      'dependencies': [
-        'absl_hash_internal',
-      ],
       'msvs_disabled_warnings': [
         # 'type' : forcing value to bool 'true' or 'false'
         # (performance warning)
@@ -79,7 +76,6 @@
       ],
       'dependencies': [
         'absl_flags_internal',
-        'absl_hash_internal',
         'absl_synchronization',
       ],
     },
@@ -92,17 +88,6 @@
       ],
       'dependencies': [
         'absl_strings',
-      ],
-    },
-    {
-      'target_name': 'absl_hash_internal',
-      'toolsets': ['host', 'target'],
-      'type': 'static_library',
-      'sources': [
-        '<(absl_srcdir)/container/internal/raw_hash_set.cc',
-        '<(absl_srcdir)/hash/internal/city.cc',
-        '<(absl_srcdir)/hash/internal/hash.cc',
-        '<(absl_srcdir)/hash/internal/low_level_hash.cc',
       ],
     },
     {
@@ -141,17 +126,6 @@
       'dependencies': [
         'absl_base',
         'absl_debugging',
-      ],
-    },
-    {
-      'target_name': 'absl_numeric',
-      'type': 'static_library',
-      'toolsets': ['host', 'target'],
-      'sources': [
-        '<(absl_srcdir)/numeric/int128.cc',
-      ],
-      'dependencies': [
-        'absl_base',
       ],
     },
     {
@@ -195,7 +169,6 @@
       ],
       'dependencies': [
         'absl_base',
-        'absl_numeric',
       ],
     },
     {
@@ -208,7 +181,6 @@
       'dependencies': [
         'absl_base',
         'absl_crc',
-        'absl_numeric',
         'absl_strings_internal',
       ],
     },
@@ -226,7 +198,6 @@
         'absl_base',
         'absl_debugging',
         'absl_time',
-        'absl_numeric'
       ],
     },
     {
@@ -243,7 +214,6 @@
       ],
       'dependencies': [
         'absl_base',
-        'absl_numeric',
         'absl_strings_internal',
       ],
     },
